@@ -1,27 +1,24 @@
 What is it?
 -------------
-This is Telescope Logger v0.1.1 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides simple, efficient and pretty logging for the [Meteor framework](http://meteor.com). 
-
-Why?
-------
-We got frustrated with the need to switch between the terminal and Chrome's js console to keep track of the Meteor app logs, 
-plus needed a basic standard logging package that can support different log levels and present all that in one place in a nice format.
+This is Observatory v0.1.5 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient and pretty logging 
+and monitoring for [Meteor framework](http://meteor.com) application development. 
 
 What does it do?
 ------------------
-Supports different log levels (currently FATAL, ERROR, WARNING, INFO, VERBOSE) with corresponding methods for message output, optional 
+*Easy logging with different log levels with corresponding methods for message output, optional 
 logging to console, pretty output of both Client and Server logs using Twitter Bootstrap right in the browser.
+*Monitoring of your application internals: currently, Templates with all events and a Session object; more to come.
 
-[See for yourself!](http://telescope-logger.meteor.com)
+[See it in action!](http://observatory.meteor.com)
 
 Installation
 -----------------
 #### With meteorite:
 
-	mrt add telescope
+	mrt add observatory
 
 #### Manually:
-Copy telescope.coffee and client/ folder from the repo to your project. Add the Meteor packages this depends on (bootstrap, coffeescript, less, underscore). You should be up and running.
+Copy observatory.coffee, inspect.js and client/ folder from the repo to your project. Add the Meteor packages this depends on (bootstrap, coffeescript, less, underscore). You should be up and running.
 
 Usage
 ---------
@@ -38,17 +35,16 @@ TL.warn("your message")
 TL.info("your message")
 TL.verbose("your message")
 ```
-To actually display the logs, plugin "logs_bootstrap" template anywhere in your Handlebars templates. E.g.:
+To actually display the logs and use monitoring capabilities, plugin "logs_bootstrap" template anywhere in your Handlebars templates. Preferably right before closing body tag:
 ```html
-<div class="span8">
-  <h1>My cool logs</h1>
-
+<body>
+  ...
   {{>logs_bootstrap}}
-</div>
+</body>
 ```
 
 Everything else is done automagically, as always is the case with Meteor. See how it's done in [the sample app](https://github.com/jhoxray/telescope) and how it looks in the 
-[live demo](http://telescope-logger.meteor.com).
+[live demo](http://observatory.meteor.com).
 
 
 API
@@ -73,14 +69,16 @@ class TLog
 
 Feedback
 ----------
-We'd love to hear what you think, whether it's useful and which other features you'd want to see in a proper Meteor logging framework - 
-so please submit issues here on github to share your thoughts and ideas!
+We'd love to hear what you think, whether it's useful and which other features you'd want to see -- so please submit issues here on github to share your thoughts and ideas!
 
 Revision history
 -----------------
+####0.1.5
+Bottom sliding panel with tabs added, monitoring / inspection capabilities added, files renamed, some cleanup started
+
 ####0.1.1 
 Clean up for visibility / encapsulation, now need to use TLog.getLogger() instead of constructing directly
 
 ####0.1
-Initial commit of the sample app deployed to telescope-logger.meteor.com
+Initial commit 
 
