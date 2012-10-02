@@ -8,8 +8,26 @@
       </ul>
 
 <!-- help tab -->
-      <div id="id_help_tab" class="tab-pane">
-        Help
+      <div id="id_help_tab" class="tab-pane" style="height:100%;">
+        <div style="overflow:scroll; height:80%">
+        <p>For details, please see <a href="https://github.com/jhoxray/observatory">Observatory web page</a>. This is version 0.1.5.
+        This package provides
+                powerful logging, inspection and monitoring for your <a href="http://meteor.com">Meteor framework</a> applications. 
+                Observatory panel is controlled by pressing the "O!" button in the bottom-left corner of the page: you can have it small, medium,
+                large or completely turned off. By moving between tabs you can analyze logs (updated live), your application's templates with
+                events, as well as monitor other internals (currently, Session state, more to come). Everything is scrollable, logs are
+                sortable (just click on the column name).</p>
+                <p>
+                  We love to hear your feedback: please submit your ideas, questions, suggestions on Github as issues as we want
+                  to take this project where you need.
+                </p>
+                <h5>Logging in a nutshell:</h5>
+                <p>
+                  Simply call <code>TL = TLog.getLogger(TLog.LOGLEVEL_MAX,true)</code> once in your app's common
+                code (that gets executed on both client and server) and then call the following obvious methods:
+                <code>TL.fatal("..."), error, warn, info, verbose</code>. Your logs will be updated automatically in the "Log" tab.
+                </p>
+              </div>
       </div>
 
       <!-- templates & events tab -->
