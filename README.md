@@ -5,9 +5,10 @@ and monitoring for [Meteor framework](http://meteor.com) application development
 
 What does it do?
 ------------------
-*Easy logging with different log levels with corresponding methods for message output, optional 
+* Easy logging with different log levels with corresponding methods for message output, optional 
 logging to console, pretty output of both Client and Server logs using Twitter Bootstrap right in the browser.
-*Monitoring of your application internals: currently, Templates with all events and a Session object; more to come.
+
+* Monitoring of your application internals: currently, Templates with all events and a Session object; more to come.
 
 [See it in action!](http://observatory.meteor.com)
 
