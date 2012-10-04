@@ -1,6 +1,6 @@
 What is it?
 -------------
-This is Observatory v0.1.5 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient and pretty logging 
+This is Observatory v0.1.6 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient and pretty logging 
 and monitoring for [Meteor framework](http://meteor.com) application development. 
 
 What does it do?
@@ -74,7 +74,7 @@ We'd love to hear what you think, whether it's useful and which other features y
 
 Revision history
 -----------------
-####0.1.5
+####0.1.5, 0.1.6
 Bottom sliding panel with tabs added, monitoring / inspection capabilities added, files renamed, some cleanup started
 
 ####0.1.1 
