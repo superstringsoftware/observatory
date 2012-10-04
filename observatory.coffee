@@ -65,20 +65,20 @@ class TLog
     @_printToConsole = want_to_print
 
   # Main logging methods:
-  fatal: (msg)->
-    @_log(msg,TLog.LOGLEVEL_FATAL)
+  fatal: (msg, module)->
+    @_log(msg,TLog.LOGLEVEL_FATAL,module)
 
-  error: (msg)->
-    @_log(msg,TLog.LOGLEVEL_ERROR)
+  error: (msg, module)->
+    @_log(msg,TLog.LOGLEVEL_ERROR, module)
 
-  warn: (msg)->
-    @_log(msg,TLog.LOGLEVEL_WARNING)
+  warn: (msg, module)->
+    @_log(msg,TLog.LOGLEVEL_WARNING, module)
 
-  info: (msg)->
-    @_log(msg,TLog.LOGLEVEL_INFO)
+  info: (msg, module)->
+    @_log(msg,TLog.LOGLEVEL_INFO, module)
 
-  verbose: (msg)->
-    @_log(msg,TLog.LOGLEVEL_VERBOSE)
+  verbose: (msg, module)->
+    @_log(msg,TLog.LOGLEVEL_VERBOSE, module)
 
   currentLogLevelName: ->
     TLog.LOGLEVEL_NAMES[@_currentLogLevel]
@@ -87,20 +87,29 @@ class TLog
     @_logs.find({}).count()
 
   #internal method doing the logging
-  _log: (msg, loglevel = 3) ->
+  _log: (msg, loglevel = 3, mdl) ->
 
     if loglevel <= @_currentLogLevel
       srv = false
       if Meteor.is_server 
         srv = true
+      ###  
+      if mdl is undefined
+        module = "default"
+      else
+        module = mdl
+      ###
+      module = mdl
       timestamp = new Date()
       ts = @_convertTimestamp(timestamp)
       full_message = if srv then @_ps(ts) + "[SERVER]" else @_ps(ts) + "[CLIENT]"
+      full_message+= @_ps module
       full_message+= @_ps(TLog.LOGLEVEL_NAMES[loglevel]) #TODO: RANGE CHECK!!!
       full_message+= ' ' + msg
       @_logs.insert
         isServer: srv
         message: msg
+        module: module
         loglevel: loglevel
         timestamp_text: ts
         timestamp: timestamp.getTime()

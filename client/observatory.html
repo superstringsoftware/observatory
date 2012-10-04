@@ -91,8 +91,10 @@
 
 <!-- logs tab tab -->
       <div class="tab-pane" id="id_logs_tab" style="height: 100%;" >
-      <table class="table table-condensed">
-        <thead>
+      
+      <div style="overflow:scroll; height:80%">
+        <table class="table table-condensed lb_table-striped">
+          <thead>
           <tr class="lb_header">
             <th id="lbh_timestamp" class="lb_timestamp"><a href="#">timestamp</a></th>
             <th id="lbh_source" class="lb_server"><a href="#">src</a></th>
@@ -101,21 +103,22 @@
             <th><a href="#">message</a></th>
           </tr>
         </thead>
-      </table>
-      <div style="overflow:scroll; height:80%">
-        <table class="table table-condensed">
           <tbody>
             {{#each log_messages}}
             <tr class="{{lb_loglevel_row_decoration}} no_border">
               <td class="lb_timestamp">{{format_timestamp timestamp}}</td>
               {{#if isServer}}
-              <td class="lb_server"><span class="label label-inverse">SRV</span></td>
+              <td class="lb_server"><span class="label label-inverse">server</span></td>
               {{else}}
-              <td class="lb_client"><span class="label lb_test_label">CLI</span></td>
+              <td class="lb_client"><span class="label lb_test_label">client</span></td>
               {{/if}}
-              <td class="lb_module">[dflt]</td>
+              <td class="lb_module">
+                {{#if module}}
+                  <span class="label">{{module}}</span>
+                {{/if}}
+              </td>
               <td class="lb_loglevel"><span class="label {{lb_loglevel_decoration}}">{{loglevel_names loglevel}}</span></td>
-              <td class="lb_message"><span class=" {{lb_loglevel_msg_decoration}}">{{message}}</span></td>
+              <td class="lb_message"><pre class=" {{lb_loglevel_msg_decoration}}">{{message}}</pre></td>
               {{/each}}
             </tbody>
           </table>

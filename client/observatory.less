@@ -1,4 +1,9 @@
 // ------------------ main styling colors ------------------------
+// ----------- Dark scheme --------------
+/*
+@panel_opacity: 85;
+@panel_opacity_fract: .85;
+
 @logs_main_color: #ddd;
 @panel_bg_color: #000;
 @observatory_trigger_color: yellow;//#117711;
@@ -15,8 +20,49 @@
 @clr_darker_grey: #555;
 @clr_dark_grey: #222;
 
+@clr_log_table_stripes: #111;
 
-// -------------- twitter bootstrap colors -----------
+// ----------- other styles --------
+
+.observatory_panel a, .observatory_panel a:visited{
+	color: @clr_panel_links;
+	border-bottom: 1px solid @clr_panel_links;
+}
+
+*/
+// ----------- END Dark scheme --------------
+
+// ----------- Light scheme --------------
+
+@panel_opacity: 95;
+@panel_opacity_fract: .95;
+
+@logs_main_color: #333;
+@panel_bg_color: #eee;
+
+@observatory_trigger_color: #333;//#117711;
+
+@clr_panel_border: #ccc;
+@clr_panel_links: #468847;
+
+@clr_trigger_background: #eee;
+@clr_trigger_bg_hover: #999;
+@clr_vertical_border: #eee;
+
+@yellow:#cccc11;
+@red:#cc1111;
+@clr_msg_warning: #999911;
+@clr_darker_grey: #555;
+@clr_dark_grey: #ccc;
+
+@clr_log_table_stripes: #ddd;
+
+// ----------- other styles --------
+
+
+// ----------- END Light scheme --------------
+
+// -------------- twitter bootstrap colors and common colors -----------
 @tb_green: #468847;
 @tb_red: #b94a48;
 @tb_orange: #f89406;
@@ -24,12 +70,22 @@
 @tb_black: #333333;
 @tb_grey: #999999;
 
+@clr_module_label: #555;
+
+.lb_message pre {
+	margin: 0;
+	padding: 0;
+	background: inherit;
+	color: inherit;
+	border: 0;
+}
+
 .lb_yellow {
 	color: @yellow;
 }
 
 // styling Logs tab
-.lb_loglevel {width: 80px;}
+.lb_loglevel {width: 60px;}
 .lb_timestamp {width: 88px; /*width: 160px;*/}
 .lb_server,
 .lb_client {width: 30px; font-weight: 300;}
@@ -44,22 +100,38 @@
 }
 }
 
+.lb_loglevel .label,
+.lb_client  .label,
+.lb_server  .label,
+.lb_module .label {
+	font-size: 10px;
+}
+
+.lb_module .label {
+	background: @clr_module_label;
+}
+
 .lb_test_label {
 	background: @tb_grey;
 }
 
-.lb_msg_error {
+.lb_message pre.lb_msg_error {
 	color: @red;
 }
 
-.lb_msg_warning {
-	color: @clr_msg_warning;
+.lb_message pre.lb_msg_warning {
+	color: @tb_orange;
 }
 
 tr.no_border,
 .no_border td,
 .no_border th a, {
 	border: none;
+}
+
+.lb_table-striped tbody tr:nth-child(odd) td,
+.lb_table-striped tbody tr:nth-child(odd) th {
+  background-color: @clr_log_table_stripes;
 }
 
 // styling App internals tab
@@ -155,17 +227,19 @@ tr.no_border,
 	-webkit-border-bottom-right-radius: 20px;*/
 	//width: 600px;
 	padding: 10px 10px 10px 40px;
-	filter: alpha(opacity=85);
-	opacity: .85;
+	filter: alpha(opacity=@panel_opacity);
+	opacity: @panel_opacity_fract;
 	z-index: 100000;
+
+	-webkit-box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+     -moz-box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
 }
 
 .observatory_panel a, .observatory_panel a:visited{
 	margin: 0;
 	padding: 0;
-	color: @clr_panel_links;
 	text-decoration: none;
-	border-bottom: 1px solid @clr_panel_links;
 }
 
 a.observatory_trigger{

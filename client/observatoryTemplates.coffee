@@ -35,13 +35,14 @@ _.extend Template.logs_bootstrap,
     rt.sort()
     rt
 
-#filling relevant log messages
+#filling relevant log messages based on the current sort parameters
   log_messages: ->
     sort_order = if Session.get("bl_sort_desc") then -1 else 1
     sort = {timestamp: sort_order}
     switch Session.get("bl_sort_by")
       when "severity" then sort = {loglevel: sort_order}
       when "source" then sort = {isServer: sort_order}
+      when "module" then sort = {module: sort_order}
     TLog._getLogs(sort)
 
 #helper to get log level / severity names
@@ -126,6 +127,12 @@ _.extend Template.logs_bootstrap,
     "click #lbh_timestamp": ->
       #TLog._getLogger().verbose("clicked on timestamp")
       Session.set("bl_sort_by","timestamp")
+      sort_desc = Session.get("bl_sort_desc")
+      if sort_desc then Session.set("bl_sort_desc",false) else Session.set("bl_sort_desc",true)
+
+    "click #lbh_module": ->
+      #TLog._getLogger().verbose("clicked on severity")
+      Session.set("bl_sort_by","module")
       sort_desc = Session.get("bl_sort_desc")
       if sort_desc then Session.set("bl_sort_desc",false) else Session.set("bl_sort_desc",true)
 
