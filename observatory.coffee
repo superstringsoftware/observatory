@@ -98,9 +98,9 @@ class TLog
       
       module = mdl
       timestamp = new Date()
-      ts = @_convertTimestamp(timestamp)
-      full_message = if srv then @_ps(ts) + "[SERVER]" else @_ps(ts) + "[CLIENT]"
-      full_message+= @_ps module
+      ts = @_ps(TLog._convertDate(timestamp)) + @_ps(TLog._convertTime(timestamp))
+      full_message = if srv then ts + "[SERVER]" else ts + "[CLIENT]"
+      full_message+= if module then @_ps module else "[]"
       full_message+= @_ps(TLog.LOGLEVEL_NAMES[loglevel]) #TODO: RANGE CHECK!!!
       full_message+= ' ' + msg
       @_logs.insert

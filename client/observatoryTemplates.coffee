@@ -111,31 +111,22 @@ _.extend Template.logs_bootstrap,
     #Turning the Observatory panel on or off
     #this is ugly but this is the only way it worked after 1hr of trying!!!
     "click #btn_toggle_logs": ->
-      #console.log($("#id_logs_bootstrap"))
-      #$("#id_logs_bootstrap").toggle("fast")
-      _tl = TLog.getLogger()
+      
       if Session.get("bl_panel_height_class") is "height50"
-        _tl.verbose("class is height50, changing to 90","TLog")
         Session.set("bl_panel_height_class","height90")
         Session.set("bl_full_featured_panel",true)
-        
       else
         if Session.get("bl_panel_height_class") is "height90"
           Session.set("bl_panel_height_class","lb_invisible")
-          #Session.set("bl_full_featured_panel",true)
-          #$("#id_logs_bootstrap").hide("fast")
-          #Session.set("bl_full_featured_panel",true)
-          _tl.verbose("class is height90, changing to none, hiding","TLog")
         else
           if Session.get("bl_panel_height_class") is "height25"
             Session.set("bl_panel_height_class","height50")
             Session.set("bl_full_featured_panel",true)
-            _tl.verbose("class is height25, changing to 50","TLog")
           else
             Session.set("bl_panel_height_class","height25")
             $("#id_logs_bootstrap").show("fast")
             Session.set("bl_full_featured_panel",false)
-            _tl.verbose("else: class is supposedly none, changing to 25, showing","TLog")
+      
 
       
     

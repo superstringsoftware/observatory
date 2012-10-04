@@ -1,8 +1,8 @@
 // ------------------ main styling colors ------------------------
 // ----------- Dark scheme --------------
 /*
-@panel_opacity: 85;
-@panel_opacity_fract: .85;
+@panel_opacity: 90;
+@panel_opacity_fract: .90;
 
 @logs_main_color: #ddd;
 @panel_bg_color: #000;
@@ -20,16 +20,13 @@
 @clr_darker_grey: #555;
 @clr_dark_grey: #222;
 
-@clr_log_table_stripes: #111;
+@clr_log_table_stripes: #070703;
 
+@clr_label_text: #fff;
+*/
 // ----------- other styles --------
 
-.observatory_panel a, .observatory_panel a:visited{
-	color: @clr_panel_links;
-	border-bottom: 1px solid @clr_panel_links;
-}
 
-*/
 // ----------- END Dark scheme --------------
 
 // ----------- Light scheme --------------
@@ -43,7 +40,7 @@
 @observatory_trigger_color: #333;//#117711;
 
 @clr_panel_border: #ccc;
-@clr_panel_links: #468847;
+@clr_panel_links: #3a87ad;
 
 @clr_trigger_background: #eee;
 @clr_trigger_bg_hover: #999;
@@ -57,9 +54,9 @@
 
 @clr_log_table_stripes: #ddd;
 
+@clr_label_text: #eee;
+
 // ----------- other styles --------
-
-
 // ----------- END Light scheme --------------
 
 // -------------- twitter bootstrap colors and common colors -----------
@@ -68,7 +65,7 @@
 @tb_orange: #f89406;
 @tb_blue: #3a87ad;
 @tb_black: #333333;
-@tb_grey: #999999;
+@tb_grey: #555;
 
 @clr_fatal: red;
 
@@ -111,6 +108,10 @@
 .lb_server  .label,
 .lb_module .label {
 	font-size: 10px;
+}
+
+.lb_table-striped .label {
+	color: @clr_label_text;
 }
 
 .lb_module .label {
@@ -249,6 +250,11 @@ tr.no_border,
 	-webkit-box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
      -moz-box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
           box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.observatory_panel a, .observatory_panel a:visited{
+	color: @clr_panel_links;
+	border-bottom: 1px solid @clr_panel_links;
 }
 
 .observatory_panel a, .observatory_panel a:visited{

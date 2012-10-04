@@ -30,6 +30,7 @@
                 <code>TL.fatal("..."), error, warn, info, verbose</code>. Your logs will be updated automatically in the "Log" tab.
                 </p>
               </div>
+
       </div>
 
       <!-- templates & events tab -->
@@ -136,23 +137,15 @@
 
 
   <template name="logs_simple">
+    
     {{#each log_messages}}
+    
     {{full_message}}<br/>
+    
     {{/each}}
+  
   </template>
 
 
 
-        <!--
 
-          <tr>
-              <td>{{timestamp_text}}</td>
-              {{#if isServer}}
-                <td>[SERVER]</td>
-              {{else}}
-                <td>[CLIENT]</td>
-              {{/if}}
-              <td>{{loglevel}}</td>
-              <td>{{message}}</td>
-          </tr>
-                  -->
