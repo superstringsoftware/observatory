@@ -95,7 +95,8 @@
         <thead>
           <tr class="lb_header">
             <th id="lbh_timestamp" class="lb_timestamp"><a href="#">timestamp</a></th>
-            <th id="lbh_source" class="lb_server"><a href="#">source</a></th>
+            <th id="lbh_source" class="lb_server"><a href="#">src</a></th>
+            <th id="lbh_module" class="lb_module"><a href="#">module</a></th>
             <th id="lbh_severity" class="lb_loglevel"><a href="#">severity</a></th>
             <th><a href="#">message</a></th>
           </tr>
@@ -108,10 +109,11 @@
             <tr class="{{lb_loglevel_row_decoration}} no_border">
               <td class="lb_timestamp">{{format_timestamp timestamp}}</td>
               {{#if isServer}}
-              <td class="lb_server"><span class="label label-inverse">SERVER</span></td>
+              <td class="lb_server"><span class="label label-inverse">SRV</span></td>
               {{else}}
-              <td class="lb_client"><span class="label">CLIENT</span></td>
+              <td class="lb_client"><span class="label lb_test_label">CLI</span></td>
               {{/if}}
+              <td class="lb_module">[dflt]</td>
               <td class="lb_loglevel"><span class="label {{lb_loglevel_decoration}}">{{loglevel_names loglevel}}</span></td>
               <td class="lb_message"><span class=" {{lb_loglevel_msg_decoration}}">{{message}}</span></td>
               {{/each}}

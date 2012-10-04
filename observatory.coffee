@@ -39,6 +39,9 @@ class TLog
   @LOGLEVEL_NAMES = [
     "FATAL", "ERROR", "WARNING", "INFO", "VERBOSE", "MAX"
   ]
+  @LOGLEVEL_NAMES_SHORT = [
+    "FTL", "ERR", "WRN", "INF", "VRB", "MAX"
+  ]
 
   constructor: (@_currentLogLevel, @_printToConsole, show_warning = true)->
     @_logs = TLog._global_logs

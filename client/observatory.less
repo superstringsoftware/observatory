@@ -1,8 +1,28 @@
+// ------------------ main styling colors ------------------------
 @logs_main_color: #ddd;
 @panel_bg_color: #000;
-@observatory_trigger_color: #117711;
+@observatory_trigger_color: yellow;//#117711;
+@clr_panel_border: #ccc;
+@clr_panel_links: #9FC54E;
+
+@clr_trigger_background: #333;
+@clr_trigger_bg_hover: #111;
+@clr_vertical_border: #eee;
+
 @yellow:#cccc11;
 @red:#cc1111;
+@clr_msg_warning: #999911;
+@clr_darker_grey: #555;
+@clr_dark_grey: #222;
+
+
+// -------------- twitter bootstrap colors -----------
+@tb_green: #468847;
+@tb_red: #b94a48;
+@tb_orange: #f89406;
+@tb_blue: #3a87ad;
+@tb_black: #333333;
+@tb_grey: #999999;
 
 .lb_yellow {
 	color: @yellow;
@@ -10,9 +30,12 @@
 
 // styling Logs tab
 .lb_loglevel {width: 80px;}
-.lb_timestamp {width: 100px; /*width: 160px;*/}
+.lb_timestamp {width: 88px; /*width: 160px;*/}
 .lb_server,
-.lb_client {width: 60px; font-weight: 300;}
+.lb_client {width: 30px; font-weight: 300;}
+
+.lb_module {max-width: 180px;}
+
 .lb_message {color: @logs_main_color; font-weight: normal; font-family: sans-serif, Verdana, monospace; }
 .lb_header {font-weight: 300; }
 .lb_header td {
@@ -21,12 +44,16 @@
 }
 }
 
+.lb_test_label {
+	background: @tb_grey;
+}
+
 .lb_msg_error {
 	color: @red;
 }
 
 .lb_msg_warning {
-	color: #999911;
+	color: @clr_msg_warning;
 }
 
 tr.no_border,
@@ -40,7 +67,7 @@ tr.no_border,
 #id_templates_div {
 	float: left;
 	margin-right: 30px;	
-	border-right: dashed 1px #777;
+	border-right: dashed 1px @clr_vertical_border;
 	padding-right: 10px;
 }
 
@@ -67,7 +94,7 @@ tr.no_border,
 }
 
 #id_templates_div td a:hover {
-	background: #555;
+	background: @clr_darker_grey;
 	color:yellow;
 }
 
@@ -75,11 +102,11 @@ tr.no_border,
 //Tab functionality
 
 .nav-tabs li a:hover  {
-	background: #222;
+	background: @clr_dark_grey;
 }
 
 .nav-tabs .active li a  {
-	background: #222;
+	background: @clr_dark_grey;
 }
 
 #id_help_tab, #id_app_tab, #id_templates_tab {
@@ -119,7 +146,7 @@ tr.no_border,
 	//left: 0;
 	//display: none;
 	background: @panel_bg_color;
-	border:1px solid #111111;
+	border:1px solid @clr_panel_border;
 	-moz-border-radius-topright: 20px;
 	-moz-border-radius-topleft: 20px;
 	-webkit-border-top-right-radius: 20px;
@@ -136,13 +163,13 @@ tr.no_border,
 .observatory_panel a, .observatory_panel a:visited{
 	margin: 0;
 	padding: 0;
-	color: #9FC54E;
+	color: @clr_panel_links;
 	text-decoration: none;
-	border-bottom: 1px solid #9FC54E;
+	border-bottom: 1px solid @clr_panel_links;
 }
 
 a.observatory_trigger{
-	background: #333; //@panel_bg_color;
+	background: @clr_trigger_background; //@panel_bg_color;
 	color: @observatory_trigger_color;
 	position: fixed;
 	text-decoration: none;
@@ -165,8 +192,7 @@ a.observatory_trigger{
 
 a.observatory_trigger:hover{
 
-	background:#222222 85% 55% no-repeat;
-	border:1px solid #444444;
+	background: @clr_trigger_bg_hover 85% 55% no-repeat;
 
 }
 

@@ -46,7 +46,8 @@ _.extend Template.logs_bootstrap,
 
 #helper to get log level / severity names
   loglevel_names: (i)->
-    TLog.LOGLEVEL_NAMES[i]
+      TLog.LOGLEVEL_NAMES[i]
+    
 
 #timestamp formatting helper for the display
   format_timestamp: (ts)->
