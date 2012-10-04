@@ -66,7 +66,7 @@ _.extend Template.logs_bootstrap,
   lb_loglevel_msg_decoration: ->
     switch @loglevel
       when TLog.LOGLEVEL_FATAL then cl = "lb_msg_error"
-      when TLog.LOGLEVEL_ERROR then cl = "lb_msg_error"
+      when TLog.LOGLEVEL_ERROR then cl = "text-error"#"lb_msg_error"
       when TLog.LOGLEVEL_WARNING then cl = "lb_msg_warning"
 
 #apllying class to the whole log row based on loglevel
