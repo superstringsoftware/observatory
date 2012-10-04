@@ -47,7 +47,7 @@
 
 @clr_trigger_background: #eee;
 @clr_trigger_bg_hover: #999;
-@clr_vertical_border: #eee;
+@clr_vertical_border: #999;
 
 @yellow:#cccc11;
 @red:#cc1111;
@@ -70,7 +70,13 @@
 @tb_black: #333333;
 @tb_grey: #999999;
 
+@clr_fatal: red;
+
 @clr_module_label: #555;
+
+.lb_invisible {
+	display: none;
+}
 
 .lb_message pre {
 	margin: 0;
@@ -173,6 +179,11 @@ tr.no_border,
 
 //Tab functionality
 
+.lb_scrollable {
+	overflow: auto;
+	height: 90%;
+}
+
 .nav-tabs li a:hover  {
 	background: @clr_dark_grey;
 }
@@ -192,7 +203,11 @@ tr.no_border,
 
 // Main panel styling. 
 .height25 {
-	height: 25%;
+	height: 150px;
+}
+
+.height25 .lb_scrollable {
+	height:100%;
 }
 
 .height50 {

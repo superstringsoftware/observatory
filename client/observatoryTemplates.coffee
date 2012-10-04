@@ -1,11 +1,19 @@
 #Twitter Bootstrap formatted template
 _.extend Template.logs_bootstrap,
 
+#helper to display either full panel or trimmed down version (e.g., just the logs)
+  fullFeatured: ->
+    Session.get("bl_full_featured_panel")
+
+  height: ->
+    Session.get("bl_panel_height_class","height50")
 
 #setting initial sort order for the logs  
   created: ->
     Session.set("bl_sort_desc", true)
     Session.set("bl_sort_by","timestamp")
+    Session.set("bl_full_featured_panel",true)
+    Session.set("bl_panel_height_class","height50")
     
 
 #Filling Session keys
@@ -105,20 +113,29 @@ _.extend Template.logs_bootstrap,
     "click #btn_toggle_logs": ->
       #console.log($("#id_logs_bootstrap"))
       #$("#id_logs_bootstrap").toggle("fast")
-      if $("#id_logs_bootstrap").hasClass("height50")
-        $("#id_logs_bootstrap").removeClass("height50")
-        $("#id_logs_bootstrap").addClass("height90")
+      _tl = TLog.getLogger()
+      if Session.get("bl_panel_height_class") is "height50"
+        _tl.verbose("class is height50, changing to 90","TLog")
+        Session.set("bl_panel_height_class","height90")
+        Session.set("bl_full_featured_panel",true)
+        
       else
-        if $("#id_logs_bootstrap").hasClass("height90")
-          $("#id_logs_bootstrap").removeClass("height90")
-          $("#id_logs_bootstrap").hide("fast")
+        if Session.get("bl_panel_height_class") is "height90"
+          Session.set("bl_panel_height_class","lb_invisible")
+          #Session.set("bl_full_featured_panel",true)
+          #$("#id_logs_bootstrap").hide("fast")
+          #Session.set("bl_full_featured_panel",true)
+          _tl.verbose("class is height90, changing to none, hiding","TLog")
         else
-          if $("#id_logs_bootstrap").hasClass("height25")
-            $("#id_logs_bootstrap").removeClass("height25")
-            $("#id_logs_bootstrap").addClass("height50")
+          if Session.get("bl_panel_height_class") is "height25"
+            Session.set("bl_panel_height_class","height50")
+            Session.set("bl_full_featured_panel",true)
+            _tl.verbose("class is height25, changing to 50","TLog")
           else
-            $("#id_logs_bootstrap").addClass("height25")
+            Session.set("bl_panel_height_class","height25")
             $("#id_logs_bootstrap").show("fast")
+            Session.set("bl_full_featured_panel",false)
+            _tl.verbose("else: class is supposedly none, changing to 25, showing","TLog")
 
       
     

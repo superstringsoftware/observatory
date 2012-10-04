@@ -74,6 +74,15 @@ We'd love to hear what you think, whether it's useful and which other features y
 
 Revision history
 -----------------
+####0.1.7
+Some styling changes, module names support:
+
+* added 2 themes: dark and light. Not configurable on the flight as of now.
+
+* added module names support to easier sort through logs.
+
+* some css cleanup, started restyling to get away from Bootstrap dependency.
+
 ####0.1.5, 0.1.6
 Bottom sliding panel with tabs added, monitoring / inspection capabilities added, files renamed, some cleanup started
 

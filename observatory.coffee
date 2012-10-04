@@ -24,8 +24,10 @@ class TLog
   # @param [TLog enum] loglevel desired loglevel, one of TLog.LOGLEVEL_FATAL,TLog.LOGLEVEL_ERROR,TLog.LOGLEVEL_WARNING,TLog.LOGLEVEL_INFO,TLog.LOGLEVEL_VERBOSE
   # @param [Bool] want_to_print if true, log messages will be printed to the console as well
   #
-  @getLogger: (loglevel = TLog.LOGLEVEL_MAX, want_to_print = true)->
+  @getLogger: (loglevel = TLog.LOGLEVEL_MAX, want_to_print = true)->    
     @_instance?=new TLog(loglevel,want_to_print, false)
+    @_instance.verbose("getLogger() called","TLog")
+    @_instance
 
   @LOGLEVEL_FATAL = 0
   @LOGLEVEL_ERROR = 1
@@ -93,12 +95,7 @@ class TLog
       srv = false
       if Meteor.is_server 
         srv = true
-      ###  
-      if mdl is undefined
-        module = "default"
-      else
-        module = mdl
-      ###
+      
       module = mdl
       timestamp = new Date()
       ts = @_convertTimestamp(timestamp)
