@@ -50,6 +50,10 @@
 	.lb_table-striped tbody tr:nth-child(odd) th {
   		background-color: @th_dark_clr_log_table_stripes;
 	}
+	.lb_table-striped tbody tr.error td,
+	.lb_table-striped tbody tr.warning td {
+		background-color: inherit;
+	}
 	#id_session_div,
 	#id_templates_div {
 		border-right: dashed 1px @th_dark_clr_vertical_border;
@@ -114,7 +118,14 @@
 	.lb_table-striped tbody tr:nth-child(odd) th {
   		background-color: @th_light_clr_log_table_stripes;
 	}
-	#id_session_div,
+	.lb_table-striped tbody tr.error td {
+		background-color: #f2dede;
+		  
+	}
+	.lb_table-striped tbody tr.warning td {
+		background-color: #fcf8e3;
+	}
+#id_session_div,
 	#id_templates_div {
 		border-right: dashed 1px @th_light_clr_vertical_border;
 	}
@@ -139,6 +150,20 @@
 	}
 	.lb_table-striped .label {
 		color: @th_light_clr_label_text;
+	}
+	.lb_message pre.lb_msg_error {
+		color: @red;
+		font-weight: bold;
+	}
+
+	.lb_message pre.lb_msg_warning {
+		color: @tb_orange;
+		font-weight: bold;
+	}
+
+	.lb_message pre.text-error {
+		color: @tb_red;
+		font-weight: bold;
 	}
 }
 // ************************* end of themes ***************************
@@ -192,6 +217,10 @@
 
 .lb_message pre.lb_msg_warning {
 	color: @tb_orange;
+}
+
+.lb_message pre.text-error {
+	color: @tb_red;
 }
 
 tr.no_border,

@@ -89,12 +89,12 @@ _.extend Template.logs_bootstrap,
 #apllying class to the whole log row based on loglevel
   lb_loglevel_row_decoration: ->
     # Turning OFF for now as this is needed for the "light" scheme
-    ###
+    
     switch @loglevel
       when TLog.LOGLEVEL_FATAL then cl = "error"
       when TLog.LOGLEVEL_ERROR then cl = "error"
       when TLog.LOGLEVEL_WARNING then cl = "warning"
-    ###
+    
 
   events:
     #Trying to make "~" work but it's not working...
