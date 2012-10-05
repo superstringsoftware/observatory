@@ -21,6 +21,7 @@ _.extend Template.logs_bootstrap,
     Session.set("bl_full_featured_panel",true)
     Session.set("bl_panel_height_class","height50")
     Session.set("bl_current_theme", "lb_theme_dark")
+
     
 
 #Filling Session keys
@@ -131,15 +132,19 @@ _.extend Template.logs_bootstrap,
         Session.set("bl_full_featured_panel",true)
       else
         if Session.get("bl_panel_height_class") is "height90"
-          Session.set("bl_panel_height_class","lb_invisible")
+          Session.set("bl_panel_height_class","")
+          Meteor.flush()
+          $("#id_logs_bootstrap").hide("slow")
+
         else
           if Session.get("bl_panel_height_class") is "height25"
             Session.set("bl_panel_height_class","height50")
             Session.set("bl_full_featured_panel",true)
           else
             Session.set("bl_panel_height_class","height25")
-            $("#id_logs_bootstrap").show("fast")
             Session.set("bl_full_featured_panel",false)
+            Meteor.flush()
+            $("#id_logs_bootstrap").show("slow")
       
 
       
