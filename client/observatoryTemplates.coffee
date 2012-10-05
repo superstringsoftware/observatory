@@ -1,11 +1,26 @@
 #Twitter Bootstrap formatted template
 _.extend Template.logs_bootstrap,
 
+#helper to display either full panel or trimmed down version (e.g., just the logs)
+  fullFeatured: ->
+    Session.get("bl_full_featured_panel")
+
+#returning current theme class
+  theme: ->
+    Session.get("bl_current_theme")
+    #"lb_theme_light"
+
+#helper returning the class that corresponds to needed height of the panel
+  height: ->
+    Session.get("bl_panel_height_class","height50")
 
 #setting initial sort order for the logs  
   created: ->
     Session.set("bl_sort_desc", true)
     Session.set("bl_sort_by","timestamp")
+    Session.set("bl_full_featured_panel",true)
+    Session.set("bl_panel_height_class","height50")
+    Session.set("bl_current_theme", "lb_theme_dark")
     
 
 #Filling Session keys
@@ -35,18 +50,20 @@ _.extend Template.logs_bootstrap,
     rt.sort()
     rt
 
-#filling relevant log messages
+#filling relevant log messages based on the current sort parameters
   log_messages: ->
     sort_order = if Session.get("bl_sort_desc") then -1 else 1
     sort = {timestamp: sort_order}
     switch Session.get("bl_sort_by")
       when "severity" then sort = {loglevel: sort_order}
       when "source" then sort = {isServer: sort_order}
+      when "module" then sort = {module: sort_order}
     TLog._getLogs(sort)
 
 #helper to get log level / severity names
   loglevel_names: (i)->
-    TLog.LOGLEVEL_NAMES[i]
+      TLog.LOGLEVEL_NAMES[i]
+    
 
 #timestamp formatting helper for the display
   format_timestamp: (ts)->
@@ -66,18 +83,18 @@ _.extend Template.logs_bootstrap,
   lb_loglevel_msg_decoration: ->
     switch @loglevel
       when TLog.LOGLEVEL_FATAL then cl = "lb_msg_error"
-      when TLog.LOGLEVEL_ERROR then cl = "lb_msg_error"
+      when TLog.LOGLEVEL_ERROR then cl = "text-error"#"lb_msg_error"
       when TLog.LOGLEVEL_WARNING then cl = "lb_msg_warning"
 
 #apllying class to the whole log row based on loglevel
   lb_loglevel_row_decoration: ->
     # Turning OFF for now as this is needed for the "light" scheme
-    ###
+    
     switch @loglevel
       when TLog.LOGLEVEL_FATAL then cl = "error"
       when TLog.LOGLEVEL_ERROR then cl = "error"
       when TLog.LOGLEVEL_WARNING then cl = "warning"
-    ###
+    
 
   events:
     #Trying to make "~" work but it's not working...
@@ -97,26 +114,33 @@ _.extend Template.logs_bootstrap,
       tg = evt.target.getAttribute("href")
       $(".tab-pane").hide()
       $(tg).show()
+
+    #switching themes
+    "click #lb_btn_change_theme": ->
+      if Session.get("bl_current_theme") is "lb_theme_dark"
+        Session.set("bl_current_theme", "lb_theme_light")
+      else
+        Session.set("bl_current_theme", "lb_theme_dark")
     
     #Turning the Observatory panel on or off
     #this is ugly but this is the only way it worked after 1hr of trying!!!
     "click #btn_toggle_logs": ->
-      #console.log($("#id_logs_bootstrap"))
-      #$("#id_logs_bootstrap").toggle("fast")
-      if $("#id_logs_bootstrap").hasClass("height50")
-        $("#id_logs_bootstrap").removeClass("height50")
-        $("#id_logs_bootstrap").addClass("height90")
+      
+      if Session.get("bl_panel_height_class") is "height50"
+        Session.set("bl_panel_height_class","height90")
+        Session.set("bl_full_featured_panel",true)
       else
-        if $("#id_logs_bootstrap").hasClass("height90")
-          $("#id_logs_bootstrap").removeClass("height90")
-          $("#id_logs_bootstrap").hide("fast")
+        if Session.get("bl_panel_height_class") is "height90"
+          Session.set("bl_panel_height_class","lb_invisible")
         else
-          if $("#id_logs_bootstrap").hasClass("height25")
-            $("#id_logs_bootstrap").removeClass("height25")
-            $("#id_logs_bootstrap").addClass("height50")
+          if Session.get("bl_panel_height_class") is "height25"
+            Session.set("bl_panel_height_class","height50")
+            Session.set("bl_full_featured_panel",true)
           else
-            $("#id_logs_bootstrap").addClass("height25")
+            Session.set("bl_panel_height_class","height25")
             $("#id_logs_bootstrap").show("fast")
+            Session.set("bl_full_featured_panel",false)
+      
 
       
     
@@ -125,6 +149,12 @@ _.extend Template.logs_bootstrap,
     "click #lbh_timestamp": ->
       #TLog._getLogger().verbose("clicked on timestamp")
       Session.set("bl_sort_by","timestamp")
+      sort_desc = Session.get("bl_sort_desc")
+      if sort_desc then Session.set("bl_sort_desc",false) else Session.set("bl_sort_desc",true)
+
+    "click #lbh_module": ->
+      #TLog._getLogger().verbose("clicked on severity")
+      Session.set("bl_sort_by","module")
       sort_desc = Session.get("bl_sort_desc")
       if sort_desc then Session.set("bl_sort_desc",false) else Session.set("bl_sort_desc",true)
 
