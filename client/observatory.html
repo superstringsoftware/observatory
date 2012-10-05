@@ -1,15 +1,19 @@
 <template name="logs_bootstrap">
-  <div id="id_logs_bootstrap" class="observatory_panel height50">
+  <div class="{{theme}}"><!-- theming support -->
+  <div id="id_logs_bootstrap" class="observatory_panel {{height}}">
+
+  {{#if fullFeatured}}
   <ul class="nav nav-tabs" id="lb_main_tab">
         <li><a href="#id_logs_tab" id="id_logs_tab_btn">Logs</a></li>
         <li><a href="#id_templates_tab" id="id_templates_tab_btn">Templates&amp;Events</a></li>
         <li><a href="#id_app_tab" id="id_app_tab_btn">Application Internals</a></li>
         <li><a href="#id_help_tab" id="id_help_tab_btn">Help</a></li>
+        <li><button class="btn btn-mini btn-info" type="button" id="lb_btn_change_theme">change theme</button></li>
       </ul>
 
 <!-- help tab -->
       <div id="id_help_tab" class="tab-pane" style="height:100%;">
-        <div style="overflow:scroll; height:80%">
+        <div class="lb_scrollable">
         <p>For details, please see <a href="https://github.com/jhoxray/observatory">Observatory web page</a>. This is version 0.1.5.
         This package provides
                 powerful logging, inspection and monitoring for your <a href="http://meteor.com">Meteor framework</a> applications. 
@@ -28,13 +32,14 @@
                 <code>TL.fatal("..."), error, warn, info, verbose</code>. Your logs will be updated automatically in the "Log" tab.
                 </p>
               </div>
+
       </div>
 
       <!-- templates & events tab -->
       <div id="id_templates_tab" class="tab-pane" style="height: 100%;" >
         
         <!-- template -->
-      <div style="overflow:scroll; height:80%" id="id_templates_div">
+      <div class="lb_scrollable" id="id_templates_div">
         <table class="table table-condensed">
           <thead>
           <tr class="no_border">
@@ -57,7 +62,7 @@
           </table>
         </div>
 
-        <div class="lb_console" style="overflow:scroll; height:80%">
+        <div class="lb_console" class="lb_scrollable">
           <pre id="lb_code_console">
           &nbsp;
           </pre>
@@ -65,11 +70,12 @@
 
       </div>
 
+
 <!-- application internals tab -->
       <div id="id_app_tab" class="tab-pane" style="height: 100%;" >
         
           <!-- session -->
-      <div style="overflow:scroll; height:80%" id="id_session_div">
+      <div class="lb_scrollable" id="id_session_div">
         <table class="table table-condensed">
           <thead>
           <tr>
@@ -88,32 +94,37 @@
         </div>
 
       </div>
-
+  {{/if}}
 <!-- logs tab tab -->
       <div class="tab-pane" id="id_logs_tab" style="height: 100%;" >
-      <table class="table table-condensed">
-        <thead>
+      
+      <div class="lb_scrollable">
+        <table class="table table-condensed lb_table-striped">
+          <thead>
           <tr class="lb_header">
             <th id="lbh_timestamp" class="lb_timestamp"><a href="#">timestamp</a></th>
-            <th id="lbh_source" class="lb_server"><a href="#">source</a></th>
+            <th id="lbh_source" class="lb_server"><a href="#">src</a></th>
+            <th id="lbh_module" class="lb_module"><a href="#">module</a></th>
             <th id="lbh_severity" class="lb_loglevel"><a href="#">severity</a></th>
             <th><a href="#">message</a></th>
           </tr>
         </thead>
-      </table>
-      <div style="overflow:scroll; height:80%">
-        <table class="table table-condensed">
           <tbody>
             {{#each log_messages}}
             <tr class="{{lb_loglevel_row_decoration}} no_border">
               <td class="lb_timestamp">{{format_timestamp timestamp}}</td>
               {{#if isServer}}
-              <td class="lb_server"><span class="label label-inverse">SERVER</span></td>
+              <td class="lb_server"><span class="label label-inverse">server</span></td>
               {{else}}
-              <td class="lb_client"><span class="label">CLIENT</span></td>
+              <td class="lb_client"><span class="label lb_test_label">client</span></td>
               {{/if}}
+              <td class="lb_module">
+                {{#if module}}
+                  <span class="label">{{module}}</span>
+                {{/if}}
+              </td>
               <td class="lb_loglevel"><span class="label {{lb_loglevel_decoration}}">{{loglevel_names loglevel}}</span></td>
-              <td class="lb_message {{lb_loglevel_msg_decoration}}">{{message}}</td>
+              <td class="lb_message"><pre class=" {{lb_loglevel_msg_decoration}}">{{message}}</pre></td>
               {{/each}}
             </tbody>
           </table>
@@ -121,29 +132,23 @@
 
 
       </div>
+
     </div>
     <a class="observatory_trigger" href="#" id="btn_toggle_logs">O!</a>
+  </div>
   </template>
 
 
   <template name="logs_simple">
+    
     {{#each log_messages}}
+    
     {{full_message}}<br/>
+    
     {{/each}}
+  
   </template>
 
 
 
-        <!--
 
-          <tr>
-              <td>{{timestamp_text}}</td>
-              {{#if isServer}}
-                <td>[SERVER]</td>
-              {{else}}
-                <td>[CLIENT]</td>
-              {{/if}}
-              <td>{{loglevel}}</td>
-              <td>{{message}}</td>
-          </tr>
-                  -->
