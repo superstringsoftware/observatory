@@ -1,4 +1,5 @@
 <template name="logs_bootstrap">
+  <div class="{{theme}}"><!-- theming support -->
   <div id="id_logs_bootstrap" class="observatory_panel {{height}}">
 
   {{#if fullFeatured}}
@@ -7,6 +8,7 @@
         <li><a href="#id_templates_tab" id="id_templates_tab_btn">Templates&amp;Events</a></li>
         <li><a href="#id_app_tab" id="id_app_tab_btn">Application Internals</a></li>
         <li><a href="#id_help_tab" id="id_help_tab_btn">Help</a></li>
+        <li><button class="btn btn-mini btn-info" type="button" id="lb_btn_change_theme">change theme</button></li>
       </ul>
 
 <!-- help tab -->
@@ -133,6 +135,7 @@
 
     </div>
     <a class="observatory_trigger" href="#" id="btn_toggle_logs">O!</a>
+  </div>
   </template>
 
 

@@ -5,6 +5,12 @@ _.extend Template.logs_bootstrap,
   fullFeatured: ->
     Session.get("bl_full_featured_panel")
 
+#returning current theme class
+  theme: ->
+    Session.get("bl_current_theme")
+    #"lb_theme_light"
+
+#helper returning the class that corresponds to needed height of the panel
   height: ->
     Session.get("bl_panel_height_class","height50")
 
@@ -14,6 +20,7 @@ _.extend Template.logs_bootstrap,
     Session.set("bl_sort_by","timestamp")
     Session.set("bl_full_featured_panel",true)
     Session.set("bl_panel_height_class","height50")
+    Session.set("bl_current_theme", "lb_theme_dark")
     
 
 #Filling Session keys
@@ -107,6 +114,13 @@ _.extend Template.logs_bootstrap,
       tg = evt.target.getAttribute("href")
       $(".tab-pane").hide()
       $(tg).show()
+
+    #switching themes
+    "click #lb_btn_change_theme": ->
+      if Session.get("bl_current_theme") is "lb_theme_dark"
+        Session.set("bl_current_theme", "lb_theme_light")
+      else
+        Session.set("bl_current_theme", "lb_theme_dark")
     
     #Turning the Observatory panel on or off
     #this is ugly but this is the only way it worked after 1hr of trying!!!
