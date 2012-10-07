@@ -145,6 +145,7 @@ _.extend Template.logs_bootstrap,
             Session.set("bl_full_featured_panel",false)
             Meteor.flush()
             $("#id_logs_bootstrap").show("slow")
+      Meteor.flush()
       
 
       
