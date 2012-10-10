@@ -113,8 +113,10 @@ _.extend Template.logs_bootstrap,
     #switching main tabs in the panel
     "click #lb_main_tab": (evt)->
       tg = evt.target.getAttribute("href")
-      $(".tab-pane").hide()
-      $(tg).show()
+      TLog.getLogger().warn("Clicked on " + tg)
+      if tg 
+        $(".tab-pane").hide()
+        $(tg).show()
 
     #switching themes
     "click #lb_btn_change_theme": ->
@@ -122,9 +124,14 @@ _.extend Template.logs_bootstrap,
         Session.set("bl_current_theme", "lb_theme_light")
       else
         Session.set("bl_current_theme", "lb_theme_dark")
+
+    #clearing the logs - DANGEROUS and insecure
+    #TODO: once auth arrives, make sure it's properly protected
+    "click #lb_btn_clear_logs": ->
+      alert "This is a demo app so no logs are in fact cleared! Install in your project and it will work properly :)"
+      TLog._clear()
     
-    #Turning the Observatory panel on or off
-    #this is ugly but this is the only way it worked after 1hr of trying!!!
+    #Switching modes of the observatory panel  
     "click #btn_toggle_logs": ->
 
       switch Session.get("bl_panel_height_class")

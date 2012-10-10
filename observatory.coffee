@@ -136,8 +136,8 @@ class TLog
       @_global_logs.find {}, sort: {timestamp: -1}
 
   #Ouch! This should be really protected once auth is figured out.
-  clear: ->
-    @_logs.remove {}
+  @_clear: ->
+    @_global_logs.remove {}
 
 
 
