@@ -128,7 +128,7 @@ _.extend Template.logs_bootstrap,
     #clearing the logs - DANGEROUS and insecure
     #TODO: once auth arrives, make sure it's properly protected
     "click #lb_btn_clear_logs": ->
-      alert "This is a demo app so no logs are in fact cleared! Install in your project and it will work properly :)"
+      #alert "This is a demo app so no logs are in fact cleared! Install in your project and it will work properly :)"
       TLog._clear()
     
     #Switching modes of the observatory panel  
