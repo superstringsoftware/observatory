@@ -113,7 +113,7 @@ _.extend Template.logs_bootstrap,
     #switching main tabs in the panel
     "click #lb_main_tab": (evt)->
       tg = evt.target.getAttribute("href")
-      TLog.getLogger().warn("Clicked on " + tg)
+      #TLog.getLogger().warn("Clicked on " + tg)
       if tg 
         $(".tab-pane").hide()
         $(tg).show()
