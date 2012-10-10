@@ -12,7 +12,7 @@ _.extend Template.logs_bootstrap,
 
 #helper returning the class that corresponds to needed height of the panel
   height: ->
-    Session.get("bl_panel_height_class","height50")
+    Session.get("bl_panel_height_class")
 
 #setting initial sort order for the logs  
   created: ->
@@ -126,7 +126,29 @@ _.extend Template.logs_bootstrap,
     #Turning the Observatory panel on or off
     #this is ugly but this is the only way it worked after 1hr of trying!!!
     "click #btn_toggle_logs": ->
-      
+
+      switch Session.get("bl_panel_height_class")
+        when "height50"
+          Session.set("bl_panel_height_class","height90")
+          Session.set("bl_full_featured_panel",true)
+        when "height90"
+          Session.set("bl_panel_height_class","")
+          Meteor.flush()
+          $("#id_logs_bootstrap").hide("fast")
+        when "height25"
+          Meteor.flush()
+          Session.set("bl_panel_height_class","height-fixed")
+          Session.set("bl_full_featured_panel",true)
+          Meteor.flush()
+        when "height-fixed"
+          Session.set("bl_panel_height_class","height50")
+          Session.set("bl_full_featured_panel",true)
+        when ""
+          Session.set("bl_panel_height_class","height25")
+          Session.set("bl_full_featured_panel",false)
+          Meteor.flush()
+          $("#id_logs_bootstrap").show("slow")
+      ###
       if Session.get("bl_panel_height_class") is "height50"
         Session.set("bl_panel_height_class","height90")
         Session.set("bl_full_featured_panel",true)
@@ -134,7 +156,7 @@ _.extend Template.logs_bootstrap,
         if Session.get("bl_panel_height_class") is "height90"
           Session.set("bl_panel_height_class","")
           Meteor.flush()
-          $("#id_logs_bootstrap").hide("slow")
+          $("#id_logs_bootstrap").hide("fast")
 
         else
           if Session.get("bl_panel_height_class") is "height25"
@@ -145,6 +167,7 @@ _.extend Template.logs_bootstrap,
             Session.set("bl_full_featured_panel",false)
             Meteor.flush()
             $("#id_logs_bootstrap").show("slow")
+      ###
       Meteor.flush()
       
 

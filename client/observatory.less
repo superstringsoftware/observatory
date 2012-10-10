@@ -279,18 +279,28 @@ tr.no_border,
 .height25 {
 	height: 150px;
 	display: none;
+	position: fixed;
 }
 
 .height25 .lb_scrollable {
 	height:100%;
+	
 }
 
 .height50 {
 	height: 50%;
+	position: fixed;
 }
 
 .height90 {
 	height: 90%;
+	position: fixed;
+}
+
+.height-fixed {
+	position: relative;
+	//bottom: 0;
+	height: 400px;
 }
 
 .observatory_panel {
@@ -301,9 +311,9 @@ tr.no_border,
 	min-width: 968px;
 	//height: 50%;
 	//clear: both;
-	position: fixed;
+	//position: fixed;
 	//top: 50px;
-	bottom: 0;
+	//bottom: 0;
 	//left: 0;
 	//display: none;
 	-moz-border-radius-topright: 20px;
@@ -319,6 +329,15 @@ tr.no_border,
 	-webkit-box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
      -moz-box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
           box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+
+    //position: fixed;
+    bottom: 0;
+}
+
+.observatory_panel_overlay {
+	position: fixed;
+	//bottom: 0;
+	
 }
 
 .observatory_panel a, .observatory_panel a:visited{
