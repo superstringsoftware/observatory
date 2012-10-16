@@ -36,7 +36,7 @@ class TLog
   @LOGLEVEL_VERBOSE = 4
   @LOGLEVEL_MAX = 5
 
-  @limit = 1000
+  @limit = 300
 
   @LOGLEVEL_NAMES = [
     "FATAL", "ERROR", "WARNING", "INFO", "VERBOSE", "MAX"
