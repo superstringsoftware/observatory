@@ -1,6 +1,6 @@
 What is it?
 -------------
-This is Observatory v0.1.7 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient and pretty logging and monitoring for [Meteor framework](http://meteor.com) application development. 
+This is Observatory v0.1.8 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient and pretty logging and monitoring for [Meteor framework](http://meteor.com) application development. 
 [See it in action!](http://observatory.meteor.com)
 
 What does it do?
@@ -77,13 +77,13 @@ We'd love to hear what you think, whether it's useful and which other features y
 
 Revision history
 -----------------
+####0.1.8
+Minor code clean up, ability to clear logs.
+
 ####0.1.7
 Some styling changes, module names support:
-
 * added 2 themes: dark and light, switchable on the fly.
-
 * added module names support to easier sort through logs.
-
 * some css cleanup, started restyling to get away from Bootstrap dependency (still dependent though so if you use css names that
 are the same as Twitter Bootstrap is using you may get weird effects in your app - will remove in a future version).
 
