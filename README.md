@@ -73,7 +73,8 @@ getLogger() or setOptions().
 
 Feedback
 ----------
-We'd love to hear what you think, whether it's useful and which other features you'd want to see -- so please submit issues here on github to share your thoughts and ideas!
+We'd love to hear what you think, whether it's useful and which other features you'd want to see -- so please submit issues here on github or [leave a comment on our blog](http://superstringsoftware.com) 
+to share your thoughts and ideas!
 
 Revision history
 -----------------
