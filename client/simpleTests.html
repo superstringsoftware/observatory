@@ -1,0 +1,17 @@
+<template name="simple_tests">
+    <table class="table">
+        <tbody>
+        {{#each testResults}}
+        <tr><td colspan="4"><h3>{{suiteName}}</h3></td></tr>
+        {{#each results}}
+        <tr class="{{testResultClass passed}}">
+            <td>&nbsp;</td>
+            <td style="width: 500px;"><span class="{{testResultClass1 passed}}">{{name}}</span></td>
+            <td style="width:50px;"><span class="{{testResultClass1 passed}}">{{testResultPassed passed}}</span></td>
+            <td><em><span style="color: #777;">{{message}}</span></em></td>
+        </tr>
+        {{/each}}
+        {{/each}}
+        </tbody>
+    </table>
+</template>

@@ -1,10 +1,14 @@
+###
+  # Server part commented out for now as we only support client side
 if Meteor.isServer
   require = __meteor_bootstrap__.require
   chai = require 'chai'
   chai.Assertion.includeStack = true
+###
 
 if Meteor.isClient
   chai.should()
+  expect = chai.expect
   chai.Assertion.includeStack = true
 
 #unit of tests, you do something like:
