@@ -14,7 +14,3 @@ describe "Test suite",->
     foo1.should.equal "bar"
   @it "this should fail", ->
     foo1.should.equal "bar1"
-
-describe "Another test suite that is good",->
-  @it "this should be ok",->
-    true.should.equal true
