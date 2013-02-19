@@ -14,6 +14,7 @@ _.extend Template.simple_tests,
     if p then "text-success" else "text-error"
 
 Template.simple_tests.events {
+  # processing client and common tests
   'click #runMTests': ->
     r = []
     suites = MTestFramework.suites
@@ -21,6 +22,13 @@ Template.simple_tests.events {
       r.push({suiteName: s.name, results: s.run()})
 
     Session.set "_mtest_results",r
+
+  'click #runServerMTests': ->
+    alert 'Clicked run server tests'
 }
+
+Meteor.startup ->
+  Session.set "_mtest_results",null
+
 
 

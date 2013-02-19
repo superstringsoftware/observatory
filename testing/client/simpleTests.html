@@ -1,9 +1,12 @@
 <template name="simple_tests">
-    <button class="btn btn-large btn-primary" type="button" id="runMTests">Run Tests</button>
+    <p>
+    <button class="btn btn-large btn-primary" type="button" id="runMTests">Run Client / Common Tests</button>
+    <button class="btn btn-large btn-primary" type="button" id="runServerMTests">Run Server Tests</button>
+    </p>
     <table class="table">
         <tbody>
         {{#each testResults}}
-        <tr><td colspan="4"><h3>{{suiteName}}</h3></td></tr>
+        <tr style="background-color: #f5f5f5;"><td colspan="4"><h4>{{suiteName}}</h4></td></tr>
         {{#each results}}
         <tr class="{{testResultClass passed}}">
             <td>&nbsp;</td>
