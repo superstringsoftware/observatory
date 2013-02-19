@@ -6,7 +6,27 @@
     <table class="table">
         <tbody>
         {{#each testServerResults}}
-        <tr style="background-color: #f5f5f5;"><td colspan="4"><h4>{{suiteName}}</h4></td></tr>
+        {{#if success}}
+        <tr style="background-color: #f5f5f5;">
+            <td colspan="4">
+                <h4>{{suiteName}}</h4>
+                <p>
+                    Executed {{testNumber}} tests,
+                    <span class="text-success">{{successful}} successfully</span>,
+                    <span class="text-error">{{failed}} failed.</span>
+                </p>
+            </td>
+        </tr>
+        {{else}}
+        <tr style="background-color: #f5f5f5;">
+            <td colspan="4">
+                <h4>{{suiteName}} - execution failed</h4>
+                <p class="text-error">
+                    {{message}}
+                </p>
+            </td>
+        </tr>
+        {{/if}}
         {{#each results}}
         <tr class="{{testResultClass passed}}">
             <td style="width: 40px"><span class="label label-inverse">server</span></td>
@@ -22,7 +42,27 @@
     <table class="table">
         <tbody>
         {{#each testResults}}
-        <tr style="background-color: #f5f5f5;"><td colspan="4"><h4>{{suiteName}}</h4></td></tr>
+        {{#if success}}
+        <tr style="background-color: #f5f5f5;">
+            <td colspan="4">
+                <h4>{{suiteName}}</h4>
+                <p>
+                    Executed {{testNumber}} tests,
+                    <span class="text-success">{{successful}} successfully</span>,
+                    <span class="text-error">{{failed}} failed.</span>
+                </p>
+            </td>
+        </tr>
+        {{else}}
+        <tr style="background-color: #f5f5f5;">
+            <td colspan="4">
+                <h4>{{suiteName}} - execution failed</h4>
+                <p class="text-error">
+                    {{message}}
+                </p>
+            </td>
+        </tr>
+        {{/if}}
         {{#each results}}
         <tr class="{{testResultClass passed}}">
             <td style="width: 40px"><span class="label">client</span></td>

@@ -25,7 +25,7 @@ Template.simple_tests.events {
     r = []
     suites = MTestFramework.suites
     for s in suites
-      r.push({suiteName: s.name, results: s.run()})
+      r.push(s.run())
 
     Session.set "_mtest_results",r
 

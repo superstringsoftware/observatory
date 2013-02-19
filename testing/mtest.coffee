@@ -12,7 +12,7 @@ if Meteor.isServer
       r = []
       suites = MTestFramework.suites
       for s in suites
-        r.push({suiteName: s.name, results: s.run()})
+        r.push(s.run())
       r
   }
 
@@ -32,28 +32,56 @@ if Meteor.isClient
 class MSuite
   constructor: (@name)->
     @results = []
+    @testNumber = 0
+    @successfulNumber = 0
+    @failedNumber = 0
 
   describe: (name,func)->
     @suite_function = func
 
   #simply a wrapper around assertion statements into a try-catch block
   it: (name, func)->
+    @testNumber++
     test_passed = true
+    @successfulNumber++
     msg = ''
     try
       func()
     catch error
       msg += error.message
       test_passed = false
+      @successfulNumber--
+      @failedNumber++
 
     result = {passed: test_passed, message: msg, name: name}
     @results.push(result)
 
 
   run: ->
-    @results = []
-    @suite_function()
-    @results
+    @testNumber = 0 #resetting number of tests (= number of it functions called)
+    @successfulNumber = 0
+    @failedNumber = 0
+    @results = [] #results of all tests ("it")
+    success = true
+    msg = ''
+    #wrapping the whole "describe" call into try-catch
+    try
+      @suite_function()
+      if @successfulNumber == 0
+        success = false
+        msg = "none of the tests completed"
+    catch err
+      msg = err.message
+      success = false
+    r =
+      suiteName: @name
+      results: @results
+      success: success
+      testNumber: @testNumber
+      failed: @failedNumber
+      successful: @successfulNumber
+      message: msg
+
 
 #static class that wraps previous 2 and allows for easier "describe" syntax
 class MTestFramework
