@@ -35,7 +35,7 @@ class MSuite
       msg += error.message
       test_passed = false
 
-    result = {passed: test_passed, message: msg, name: @name}
+    result = {passed: test_passed, message: msg, name: name}
     @results.push(result)
 
 
