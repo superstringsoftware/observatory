@@ -24,7 +24,10 @@ Template.simple_tests.events {
     Session.set "_mtest_results",r
 
   'click #runServerMTests': ->
-    alert 'Clicked run server tests'
+    #alert 'Clicked run server tests'
+    Meteor.call 'runMServerTests',(error,result)->
+      if !error
+        Session.set "_mtest_results",result
 }
 
 Meteor.startup ->

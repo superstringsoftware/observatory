@@ -1,10 +1,21 @@
-###
-  # Server part commented out for now as we only support client side
+# Server part commented out for now as we only support client side
 if Meteor.isServer
   require = __meteor_bootstrap__.require
   chai = require 'chai'
+  chai.should()
+  expect = chai.expect
   chai.Assertion.includeStack = true
-###
+
+  #defining remote Meteor method to be called from the client when we want to run server tests
+  Meteor.methods {
+    runMServerTests: ->
+      r = []
+      suites = MTestFramework.suites
+      for s in suites
+        r.push({suiteName: s.name, results: s.run()})
+      r
+  }
+
 
 if Meteor.isClient
   chai.should()
