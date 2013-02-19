@@ -1,8 +1,14 @@
 _.extend Template.simple_tests,
 
+  created: ->
+    Session.set "_mtest_results",null
+    Session.set "_mservertest_results",null
+
   testResults: ->
     Session.get "_mtest_results"
 
+  testServerResults: ->
+    Session.get "_mservertest_results"
 
   testResultClass: (p)->
     if p then "success" else "error"
@@ -27,11 +33,11 @@ Template.simple_tests.events {
     #alert 'Clicked run server tests'
     Meteor.call 'runMServerTests',(error,result)->
       if !error
-        Session.set "_mtest_results",result
+        Session.set "_mservertest_results",result
+      else
+        # need to indicate there's an error running server tests!!!
+        Session.set "_mservertest_results",null
 }
-
-Meteor.startup ->
-  Session.set "_mtest_results",null
 
 
 

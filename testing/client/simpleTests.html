@@ -1,15 +1,15 @@
 <template name="simple_tests">
     <p>
-    <button class="btn btn-large btn-primary" type="button" id="runMTests">Run Client / Common Tests</button>
-    <button class="btn btn-large btn-primary" type="button" id="runServerMTests">Run Server Tests</button>
+    <button class="btn btn-large" type="button" id="runMTests">Run Client Tests</button>
+    <button class="btn btn-large btn-inverse" type="button" id="runServerMTests">Run Server Tests</button>
     </p>
     <table class="table">
         <tbody>
-        {{#each testResults}}
+        {{#each testServerResults}}
         <tr style="background-color: #f5f5f5;"><td colspan="4"><h4>{{suiteName}}</h4></td></tr>
         {{#each results}}
         <tr class="{{testResultClass passed}}">
-            <td>&nbsp;</td>
+            <td style="width: 40px"><span class="label label-inverse">server</span></td>
             <td style="width: 500px;"><span class="{{testResultClass1 passed}}">{{name}}</span></td>
             <td style="width:50px;"><span class="{{testResultClass1 passed}}">{{testResultPassed passed}}</span></td>
             <td><em><span style="color: #777;">{{message}}</span></em></td>
@@ -18,4 +18,22 @@
         {{/each}}
         </tbody>
     </table>
+
+    <table class="table">
+        <tbody>
+        {{#each testResults}}
+        <tr style="background-color: #f5f5f5;"><td colspan="4"><h4>{{suiteName}}</h4></td></tr>
+        {{#each results}}
+        <tr class="{{testResultClass passed}}">
+            <td style="width: 40px"><span class="label">client</span></td>
+            <td style="width: 500px;"><span class="{{testResultClass1 passed}}">{{name}}</span></td>
+            <td style="width:50px;"><span class="{{testResultClass1 passed}}">{{testResultPassed passed}}</span></td>
+            <td><em><span style="color: #777;">{{message}}</span></em></td>
+        </tr>
+        {{/each}}
+        {{/each}}
+        </tbody>
+    </table>
+
+
 </template>
