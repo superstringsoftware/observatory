@@ -19,7 +19,7 @@ _.extend Template.simple_tests,
   testResultClass1: (p)->
     if p then "text-success" else "text-error"
 
-Template.simple_tests.events {
+Template.simple_tests.events
   # processing client and common tests
   'click #runMTests': ->
     r = []
@@ -37,7 +37,7 @@ Template.simple_tests.events {
       else
         # need to indicate there's an error running server tests!!!
         Session.set "_mservertest_results",null
-}
+
 
 
 
