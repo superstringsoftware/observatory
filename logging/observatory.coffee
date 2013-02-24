@@ -8,17 +8,6 @@ class TLog
 
   @_global_logs = new Meteor.Collection '_observatory_logs'
 
-  #very insecure, yes. For now this is the only dependency on auth branch so "?" let's us take care of this silently.
-  # TODO: make this configurable 
-  @_global_logs.allow? {
-    insert:
-      () -> true
-    update: ->
-      false
-    remove: ->
-      true
-  }
-
   # Get a logger with options
   #
   # @param [TLog enum] loglevel desired loglevel, one of TLog.LOGLEVEL_FATAL,TLog.LOGLEVEL_ERROR,TLog.LOGLEVEL_WARNING,TLog.LOGLEVEL_INFO,TLog.LOGLEVEL_VERBOSE
@@ -26,7 +15,7 @@ class TLog
   #
   @getLogger: (loglevel = TLog.LOGLEVEL_MAX, want_to_print = true)->    
     @_instance?=new TLog(loglevel,want_to_print, false)
-    @_instance.verbose("getLogger() called","TLog")
+    @_instance.insaneVerbose("getLogger() called","TLog")
     @_instance
 
   @LOGLEVEL_FATAL = 0
@@ -50,6 +39,17 @@ class TLog
     if Meteor.isServer
       Meteor.publish '_observatory_logs',()->
         TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
+      #very insecure, yes. For now this is the only dependency on auth branch so "?" let's us take care of this silently.
+      # TODO: make this configurable
+      TLog._global_logs.allow? {
+      insert: (uid)->
+        true
+      update: (uid)->
+        false
+      remove: (uid)->
+        true
+      }
+
     if Meteor.isClient
       Meteor.subscribe('_observatory_logs')
     @warn("You should use TLog.getLogger(loglevel, want_to_print) method instead of a constructor! Constructor calls may be removed 
@@ -81,6 +81,9 @@ class TLog
 
   verbose: (msg, module)->
     @_log(msg,TLog.LOGLEVEL_VERBOSE, module)
+
+  insaneVerbose: (msg, module)->
+    @_log(msg,TLog.LOGLEVEL_MAX, module)
 
   currentLogLevelName: ->
     TLog.LOGLEVEL_NAMES[@_currentLogLevel]
