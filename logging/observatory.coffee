@@ -23,15 +23,16 @@ class TLog
   @LOGLEVEL_WARNING = 2
   @LOGLEVEL_INFO = 3
   @LOGLEVEL_VERBOSE = 4
-  @LOGLEVEL_MAX = 5
+  @LOGLEVEL_DEBUG = 5
+  @LOGLEVEL_MAX = 6
 
   @limit = 300
 
   @LOGLEVEL_NAMES = [
-    "FATAL", "ERROR", "WARNING", "INFO", "VERBOSE", "MAX"
+    "FATAL", "ERROR", "WARNING", "INFO", "VERBOSE", "DEBUG", "MAX"
   ]
   @LOGLEVEL_NAMES_SHORT = [
-    "FTL", "ERR", "WRN", "INF", "VRB", "MAX"
+    "FTL", "ERR", "WRN", "INF", "VRB", "DBG","MAX"
   ]
 
   constructor: (@_currentLogLevel, @_printToConsole, show_warning = true)->
@@ -82,8 +83,34 @@ class TLog
   verbose: (msg, module)->
     @_log(msg,TLog.LOGLEVEL_VERBOSE, module)
 
+  debug: (msg, module)->
+    @_log(msg,TLog.LOGLEVEL_DEBUG, module)
+
   insaneVerbose: (msg, module)->
     @_log(msg,TLog.LOGLEVEL_MAX, module)
+
+  # takes a error and logs it with message and stack trace if available
+  trace: (error, message, module)->
+    m = "Error: " + error.message + " | StackTrace: " + error.stack?
+    msg = message + " | " + m if message
+    @_log(msg,TLog.LOGLEVEL_ERROR, module)
+
+  # inspects an object, stringifies it and prints out
+  dir: (obj, message, module)->
+    msg = if message then message else "Inspecting object:"
+    mnames = Inspect.methods(obj)
+    pnames = Inspect.properties(obj)
+    methods = []
+    props = []
+    for m in mnames
+      methods.push m
+    for p in pnames
+      props.push
+        name: p
+        value: obj[p]
+    @debug(msg, module)
+    @_log("Methods: " + JSON.stringify(methods),TLog.LOGLEVEL_DEBUG, module)
+    @_log("Properties: " + JSON.stringify(props),TLog.LOGLEVEL_DEBUG, module)
 
   currentLogLevelName: ->
     TLog.LOGLEVEL_NAMES[@_currentLogLevel]

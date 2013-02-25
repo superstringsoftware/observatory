@@ -1,10 +1,14 @@
 # Server part commented out for now as we only support client side
+
 if Meteor.isServer
-  require = __meteor_bootstrap__.require
-  chai = require 'chai'
-  chai.should()
-  expect = chai.expect
-  chai.Assertion.includeStack = true
+  try
+    require = __meteor_bootstrap__.require
+    chai = require 'chai'
+    chai.should()
+    expect = chai.expect
+    chai.Assertion.includeStack = true
+  catch err
+    TLog.getLogger().error(err.message) if TLog
 
   #defining remote Meteor method to be called from the client when we want to run server tests
   Meteor.methods {
