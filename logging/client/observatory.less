@@ -30,12 +30,11 @@
 @th_dark_clr_trigger_bg_hover: #111;
 @th_dark_clr_label_text: #eee;
 
-
-.lb_theme_dark { 
+.lb_theme_dark {
 	.lb_message {
 		color: @th_dark_clr_logs_main; 
 	}
-	.observatory_panel {
+	.observatory_panel, .observatory_panel_static {
 		color: @th_dark_clr_logs_main; 
 		background: @th_dark_panel_bg_color;
 		border:1px solid @th_dark_clr_panel_border;
@@ -65,7 +64,9 @@
 	.nav-tabs .active li a  {
 		background: @th_dark_clr_dark_grey
 	}
-	.observatory_panel a, .observatory_panel a:visited{
+	.observatory_panel a, .observatory_panel a:visited,
+    .observatory_panel_static a, .observatory_panel_static a:visited
+    {
 		color: @th_dark_clr_panel_links;
 		//border-bottom: 1px solid @th_light_clr_panel_links;
 	}
@@ -103,7 +104,7 @@
 	.lb_message {
 		color: @th_light_clr_logs_main; 
 	}
-	.observatory_panel {
+	.observatory_panel, .observatory_panel_static {
 		color: @th_light_clr_logs_main; 
 		background: @th_light_panel_bg_color;
 		border:1px solid @th_light_clr_panel_border;
@@ -136,7 +137,9 @@
 	.nav-tabs .active li a  {
 		background: @th_light_clr_dark_grey
 	}
-	.observatory_panel a, .observatory_panel a:visited{
+	.observatory_panel a, .observatory_panel a:visited,
+    .observatory_panel_static a, .observatory_panel_static a:visited
+    {
 		color: @th_light_clr_panel_links;
 		//border-bottom: 1px solid @th_light_clr_panel_links;
 	}
@@ -260,12 +263,6 @@ tr.no_border,
 
 //Tab functionality
 
-.lb_scrollable {
-	overflow: auto;
-	height: 90%;
-}
-
-
 #id_help_tab, #id_app_tab, #id_templates_tab {
 	display: none;
 }
@@ -278,7 +275,7 @@ tr.no_border,
 // Main panel styling. 
 .height25 {
 	height: 150px;
-	display: none;
+	//display: none;
 	position: fixed;
 }
 
@@ -298,9 +295,29 @@ tr.no_border,
 }
 
 .height-fixed {
-	position: relative;
-	//bottom: 0;
+	position: absolute;
+	bottom: 0;
 	height: 400px;
+}
+
+.lb_scrollable {
+  overflow: auto;
+  height: 90%;
+}
+
+.observatory_panel_static {
+  //overflow: scroll;
+  width: 90%;
+  left: 50%;
+  margin: 0 0 0 -47%;
+  min-width: 968px;
+
+  padding: 10px 10px 10px 40px;
+  z-index: 100000;
+
+  position: fixed;
+  height: 100%;
+  //bottom: 0;
 }
 
 .observatory_panel {
@@ -340,7 +357,9 @@ tr.no_border,
 	
 }
 
-.observatory_panel a, .observatory_panel a:visited{
+.observatory_panel a, .observatory_panel a:visited,
+.observatory_panel_static a, .observatory_panel_static a:visited
+{
 	margin: 0;
 	padding: 0;
 	text-decoration: none;

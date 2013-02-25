@@ -1,14 +1,17 @@
 <template name="logs_bootstrap">
   <div class="{{theme}}"><!-- theming support -->
-  <div id="id_logs_bootstrap" class="observatory_panel {{height}}">
+
+
+      <div id="id_logs_bootstrap" {{#if isDynamic}}class="observatory_panel {{height}}"{{else}}class="observatory_panel_static"{{/if}}>
 
   {{#if fullFeatured}}
   <ul class="nav nav-tabs" id="lb_main_tab">
         <li><a href="#id_logs_tab" id="id_logs_tab_btn">Logs</a></li>
-        <li><a href="#id_templates_tab" id="id_templates_tab_btn">Templates&amp;Events</a></li>
         <li><a href="#id_app_tab" id="id_app_tab_btn">Application Internals</a></li>
+        <li><a href="#id_templates_tab" id="id_templates_tab_btn">Tests</a></li>
         <li><a href="#id_help_tab" id="id_help_tab_btn">Help</a></li>
         <li><button class="btn btn-mini btn-info" type="button" id="lb_btn_change_theme">change theme</button></li>
+       <!-- <li><button class="btn btn-mini btn-info" type="button" id="lb_btn_switch_dynamic">toggle full page</button></li> -->
         <li><button class="btn btn-danger btn-mini" id="lb_btn_clear_logs" type="button">clear logs</button></li>
       </ul>
 
@@ -37,11 +40,14 @@
       </div>
 
       <!-- templates & events tab -->
-      <div id="id_templates_tab" class="tab-pane" style="height: 100%;" >
+      <div id="id_app_tab" class="tab-pane" style="height: 100%;" >
         
         <!-- template -->
       <div class="lb_scrollable" id="id_templates_div">
-        <table class="table table-condensed">
+          <a href="#tableTemplates">Templates &amp; Events</a>
+          <a href="#tableSession">Session</a>
+
+         <table class="table table-condensed" id="tableTemplates">
           <thead>
           <tr class="no_border">
             <th class="no_border"><a href="#">Templates</a></th>
@@ -61,37 +67,41 @@
             {{/each}}
           </tbody>
           </table>
+
+          <table class="table table-condensed" id="tableSession">
+              <thead>
+              <tr>
+
+                  <th colspan="2"><a href="#">Session</a></th>
+              </tr>
+              </thead>
+              <tbody>
+              {{#each session_keys}}
+              <tr class="no_border">
+                  <td class="no_border lb_yellow">{{key}}:</td><td class="no_border">{{value}}</td>
+              </tr>
+              {{/each}}
+              </tbody>
+          </table>
         </div>
 
         <div class="lb_console" class="lb_scrollable">
-          <pre id="lb_code_console">
+          <div class="lb_scrollable" style="height: 90%; overflow: scroll;">
+          <pre id="lb_code_console" class="prettyprint">
           &nbsp;
           </pre>
+          </div>
         </div>
 
       </div>
 
 
 <!-- application internals tab -->
-      <div id="id_app_tab" class="tab-pane" style="height: 100%;" >
+      <div id="id_templates_tab" class="tab-pane" style="height: 100%;" >
         
           <!-- session -->
       <div class="lb_scrollable" id="id_session_div">
-        <table class="table table-condensed">
-          <thead>
-          <tr>
-            
-            <th colspan="2"><a href="#">Session</a></th>
-          </tr>
-          </thead>
-          <tbody>
-            {{#each session_keys}}
-            <tr class="no_border">
-              <td class="no_border lb_yellow">{{key}}:</td><td class="no_border">{{value}}</td>
-            </tr>  
-            {{/each}}
-          </tbody>
-          </table>
+
         </div>
 
       </div>
