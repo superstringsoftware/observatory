@@ -143,8 +143,8 @@ _.extend Template.logs_bootstrap,
   created: ->
     Session.set("bl_sort_desc", true)
     Session.set("bl_sort_by","timestamp")
-    Session.set("bl_full_featured_panel",true)
-    Session.set("bl_panel_height_class","height50")
+    Session.set("bl_full_featured_panel",false)
+    Session.set("bl_panel_height_class","height25")
     Session.set("bl_current_theme", "lb_theme_dark")
     Session.set "bl_is_dynamic", true
     Session.set "bl_is_visible", true
