@@ -47,18 +47,24 @@ Template.logs_bootstrap.events
         Session.set("bl_panel_height_class","height90")
         Session.set("bl_full_featured_panel",true)
       when "height90"
-        Session.set "bl_is_dynamic", true
         Session.set("bl_panel_height_class","")
-        Meteor.flush()
+        #Meteor.flush()
+        #$("#id_logs_bootstrap").addClass("lb_hidden")
+        #console.dir $("#id_logs_bootstrap")
         $("#id_logs_bootstrap").hide("fast")
+        Session.set "bl_is_visible", false
+
       when "height25"
-        Meteor.flush()
+        #Meteor.flush()
         Session.set("bl_panel_height_class","height50")
         Session.set("bl_full_featured_panel",true)
       when ""
+        Session.set "bl_is_dynamic", true
         Session.set("bl_panel_height_class","height25")
         Session.set("bl_full_featured_panel",false)
-        Meteor.flush()
+        Session.set "bl_is_visible", true
+        #Meteor.flush()
+        $("#id_logs_bootstrap").removeClass("lb_hidden")
         $("#id_logs_bootstrap").show("slow")
     ###
     if Session.get("bl_panel_height_class") is "height50"
@@ -115,6 +121,9 @@ Template.logs_bootstrap.events
 #Twitter Bootstrap formatted template
 _.extend Template.logs_bootstrap,
 
+  isHidden: ->
+    return !(Session.get "bl_is_visible")
+
   isDynamic: ->
     return Session.get "bl_is_dynamic"
 #helper to display either full panel or trimmed down version (e.g., just the logs)
@@ -138,6 +147,7 @@ _.extend Template.logs_bootstrap,
     Session.set("bl_panel_height_class","height50")
     Session.set("bl_current_theme", "lb_theme_dark")
     Session.set "bl_is_dynamic", true
+    Session.set "bl_is_visible", true
 
     
 
