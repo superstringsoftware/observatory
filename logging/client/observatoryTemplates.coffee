@@ -144,10 +144,11 @@ _.extend Template.logs_bootstrap,
     Session.set("bl_sort_desc", true)
     Session.set("bl_sort_by","timestamp")
     Session.set("bl_full_featured_panel",false)
-    Session.set("bl_panel_height_class","height25")
+    Session.set("bl_panel_height_class","")
     Session.set("bl_current_theme", "lb_theme_dark")
-    Session.set "bl_is_dynamic", true
-    Session.set "bl_is_visible", true
+    Session.set "bl_is_dynamic", false  # defaults for hidden. for showing: change height_class to height25, dynamic & visible - to true
+    Session.set "bl_is_visible", false
+
 
     
 
