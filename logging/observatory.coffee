@@ -16,6 +16,7 @@ class TLog
   @getLogger: (loglevel = TLog.LOGLEVEL_MAX, want_to_print = true)->    
     @_instance?=new TLog(loglevel,want_to_print, false)
     @_instance.insaneVerbose("getLogger() called","TLog")
+    @_instance.setOptions loglevel, want_to_print
     @_instance
 
   @LOGLEVEL_FATAL = 0
@@ -42,7 +43,7 @@ class TLog
         TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
       #very insecure, yes. For now this is the only dependency on auth branch so "?" let's us take care of this silently.
       # TODO: make this configurable
-      TLog._global_logs.allow? {
+      TLog._global_logs.allow {
       insert: (uid)->
         true
       update: (uid)->
@@ -63,7 +64,7 @@ class TLog
   # @param [Bool] whether to print to the console
   #
   setOptions: (loglevel, want_to_print = true) ->
-    if (loglevel>=0) and (loglevel<=3)
+    if (loglevel>=0) and (loglevel<=TLog.LOGLEVEL_MAX)
       @_currentLogLevel = loglevel
     @_printToConsole = want_to_print
 
@@ -119,7 +120,7 @@ class TLog
     @_logs.find({}).count()
 
   #internal method doing the logging
-  _log: (msg, loglevel = 3, mdl) ->
+  _log: (msg, loglevel = TLog.LOGLEVEL_INFO, mdl) ->
 
     if loglevel <= @_currentLogLevel
       srv = false
