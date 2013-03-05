@@ -92,7 +92,13 @@ class TLog
 
   # takes a error and logs it with message and stack trace if available
   trace: (error, message, module)->
-    m = "Error: " + error.message + " | StackTrace: " + error.stack?
+    m = "Error: "
+    if error.message
+      m = m + error.message
+    if error.trace
+      m = m + " StackTrace: " + error.stack
+    if error.reason?
+      m = m + " Code: " + error.error + " Reason: " + error.reason
     msg = message + " | " + m if message
     @_log(msg,TLog.LOGLEVEL_ERROR, module)
 
