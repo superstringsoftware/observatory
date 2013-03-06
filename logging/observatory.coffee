@@ -13,9 +13,9 @@ class TLog
   # @param [TLog enum] loglevel desired loglevel, one of TLog.LOGLEVEL_FATAL,TLog.LOGLEVEL_ERROR,TLog.LOGLEVEL_WARNING,TLog.LOGLEVEL_INFO,TLog.LOGLEVEL_VERBOSE
   # @param [Bool] want_to_print if true, log messages will be printed to the console as well
   #
-  @getLogger: (loglevel = TLog.LOGLEVEL_INFO, want_to_print = true)->
-    @_instance?=new TLog(loglevel,want_to_print, false)
-    @_instance.insaneVerbose("getLogger() called","TLog")
+  @getLogger: (loglevel = TLog.LOGLEVEL_INFO, want_to_print = true, log_user = false)->
+    @_instance?=new TLog(loglevel,want_to_print, log_user, false)
+    #@_instance.insaneVerbose("getLogger() called","TLog")
     @_instance.setOptions loglevel, want_to_print
     @_instance
 
@@ -36,21 +36,18 @@ class TLog
     "FTL", "ERR", "WRN", "INF", "VRB", "DBG","MAX"
   ]
 
-  constructor: (@_currentLogLevel, @_printToConsole, show_warning = true)->
+  constructor: (@_currentLogLevel, @_printToConsole, @_log_user = false, show_warning = true)->
     @_logs = TLog._global_logs
     if Meteor.isServer
-      Meteor.publish '_observatory_logs',()->
+      Meteor.publish '_observatory_logs',->
         TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
       #very insecure, yes. For now this is the only dependency on auth branch so "?" let's us take care of this silently.
       # TODO: make this configurable
-      TLog._global_logs.allow {
-      insert: (uid)->
-        true
-      update: (uid)->
-        false
-      remove: (uid)->
-        true
-      }
+      TLog._global_logs.allow
+        insert: (uid)->
+          true
+        update: (uid)->
+          false
 
     if Meteor.isClient
       Meteor.subscribe('_observatory_logs')
@@ -58,15 +55,22 @@ class TLog
       in the next versions of the package.") if show_warning
 
 
+  # function to set who is allowed to remove the logs from the database
+  allowRemove: (func)->
+    TLog._global_logs.allow
+      remove: (uid)=>
+        if func then func uid else true
+
   # Set options for a logger
   #
   # @param [TLog enum] loglevel desired (see getLogger())
   # @param [Bool] whether to print to the console
   #
-  setOptions: (loglevel, want_to_print = true) ->
+  setOptions: (loglevel, want_to_print = true, log_user = false) ->
     if (loglevel>=0) and (loglevel<=TLog.LOGLEVEL_MAX)
       @_currentLogLevel = loglevel
     @_printToConsole = want_to_print
+    @_log_user = log_user
 
   # Main logging methods:
   fatal: (msg, module)->
@@ -132,7 +136,12 @@ class TLog
       srv = false
       if Meteor.is_server 
         srv = true
-      
+
+      uid = null
+      if @_log_user
+        try
+          uid = Meteor.userId()
+        catch err
       module = mdl
       timestamp = new Date()
       ts = @_ps(TLog._convertDate(timestamp)) + @_ps(TLog._convertTime(timestamp))
@@ -148,6 +157,7 @@ class TLog
         timestamp_text: ts
         timestamp: timestamp.getTime()
         full_message: full_message
+        uid: uid
 
       console.log(full_message) if @_printToConsole
 

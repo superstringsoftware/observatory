@@ -1,3 +1,5 @@
+#Session.get "bl_default_panel" - "hidden" or "half"
+
 Template.logs_bootstrap.events
   #Trying to make "~" work but it's not working...
   ###
@@ -40,7 +42,6 @@ Template.logs_bootstrap.events
 
   #Switching modes of the observatory panel
   "click #btn_toggle_logs": ->
-
     switch Session.get("bl_panel_height_class")
       when "height50"
         Session.set "bl_is_dynamic", false
@@ -48,14 +49,9 @@ Template.logs_bootstrap.events
         Session.set("bl_full_featured_panel",true)
       when "height90"
         Session.set("bl_panel_height_class","")
-        #Meteor.flush()
-        #$("#id_logs_bootstrap").addClass("lb_hidden")
-        #console.dir $("#id_logs_bootstrap")
         $("#id_logs_bootstrap").hide("fast")
         Session.set "bl_is_visible", false
-
       when "height25"
-        #Meteor.flush()
         Session.set("bl_panel_height_class","height50")
         Session.set("bl_full_featured_panel",true)
       when ""
@@ -63,29 +59,9 @@ Template.logs_bootstrap.events
         Session.set("bl_panel_height_class","height25")
         Session.set("bl_full_featured_panel",false)
         Session.set "bl_is_visible", true
-        #Meteor.flush()
         $("#id_logs_bootstrap").removeClass("lb_hidden")
         $("#id_logs_bootstrap").show("slow")
-    ###
-    if Session.get("bl_panel_height_class") is "height50"
-      Session.set("bl_panel_height_class","height90")
-      Session.set("bl_full_featured_panel",true)
-    else
-      if Session.get("bl_panel_height_class") is "height90"
-        Session.set("bl_panel_height_class","")
-        Meteor.flush()
-        $("#id_logs_bootstrap").hide("fast")
 
-      else
-        if Session.get("bl_panel_height_class") is "height25"
-          Session.set("bl_panel_height_class","height50")
-          Session.set("bl_full_featured_panel",true)
-        else
-          Session.set("bl_panel_height_class","height25")
-          Session.set("bl_full_featured_panel",false)
-          Meteor.flush()
-          $("#id_logs_bootstrap").show("slow")
-    ###
     Meteor.flush()
 
 
@@ -121,6 +97,27 @@ Template.logs_bootstrap.events
 #Twitter Bootstrap formatted template
 _.extend Template.logs_bootstrap,
 
+  # setting default panel status - hidden or 50% of the screen
+  setDefault: (option)->
+    switch option
+      when "hidden"
+        Session.setDefault "bl_sort_desc", true
+        Session.setDefault "bl_sort_by","timestamp"
+        Session.setDefault "bl_full_featured_panel",false
+        Session.setDefault "bl_panel_height_class",""
+        Session.setDefault "bl_current_theme", "lb_theme_dark"
+        Session.setDefault "bl_is_dynamic", false  # defaults for hidden. for showing: change height_class to height25, dynamic & visible - to true
+        Session.setDefault "bl_is_visible", false
+      when "half"
+        Session.setDefault "bl_sort_desc", true
+        Session.setDefault "bl_sort_by","timestamp"
+        Session.setDefault "bl_full_featured_panel",false
+        Session.setDefault "bl_panel_height_class","height25"
+        Session.setDefault "bl_current_theme", "lb_theme_dark"
+        Session.setDefault "bl_is_dynamic", true
+        Session.setDefault "bl_is_visible", true
+
+
   isHidden: ->
     return !(Session.get "bl_is_visible")
 
@@ -141,16 +138,8 @@ _.extend Template.logs_bootstrap,
 
 #setting initial sort order for the logs  
   created: ->
-    Session.set("bl_sort_desc", true)
-    Session.set("bl_sort_by","timestamp")
-    Session.set("bl_full_featured_panel",false)
-    Session.set("bl_panel_height_class","")
-    Session.set("bl_current_theme", "lb_theme_dark")
-    Session.set "bl_is_dynamic", false  # defaults for hidden. for showing: change height_class to height25, dynamic & visible - to true
-    Session.set "bl_is_visible", false
-
-
-    
+    def = Session.get "bl_default_panel"
+    if def? then Template.logs_bootstrap.setDefault def else Template.logs_bootstrap.setDefault "hidden"
 
 #Filling Session keys
   session_keys: ->
