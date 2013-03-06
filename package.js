@@ -19,6 +19,6 @@ Package.on_use(function (api) {
 
   api.add_files('logging/observatory.coffee','server');
   api.add_files('logging/lib/inspect.js','server');
-  api.add_files('testing/mtests.coffee','server');
+  api.add_files('testing/mtest.coffee','server');
   api.add_files('testing/sampleTests.coffee','server');
 });
