@@ -3,7 +3,7 @@
   "description": "Powerful, yet easy to use, logging and monitoring package. See a demo app at http://observatoryjs.com",
   "homepage": "https://github.com/jhoxray/observatory",
   "author": "J Ho XRay <jho.xray@gmail.com>",
-  "version": "0.1.97",   
+  "version": "0.1.99",
   "git": "https://github.com/jhoxray/observatory.git",
   "packages": {
     
