@@ -1,5 +1,5 @@
 #common tests - COMMENTED OUT for usage in devel
-###
+
 describe "Common test suite - run on both client and server",->
   foo1="bar"
   @it "this should pass", ->
@@ -26,4 +26,3 @@ if Meteor.isServer
       foo1.should.equal "bar"
     @it "this should fail", ->
       foo1.should.equal "bar1"
-###

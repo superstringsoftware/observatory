@@ -67,7 +67,7 @@ Session.set "bl_default_panel", "hidden" # or "half"
 ```
 
 Everything else is done automagically, as always is the case with Meteor. See how it's done in [the sample app](https://github.com/jhoxray/telescope) and how it looks in the 
-[live demo](http://observatory.meteor.com).
+[live demo](http://observatoryjs.com).
 
 
 API
