@@ -3,7 +3,12 @@ Package.describe({
 });
 
 Package.on_use(function (api) {
-  api.use(['coffeescript', 'bootstrap', 'underscore', 'templating','less'], 'client');
+  api.use(['coffeescript', 'bootstrap', 'underscore','templating','less'], 'client');
+
+  api.add_files('logging/observatory.coffee','server');
+  api.add_files('logging/lib/inspect.js','server');
+  api.add_files('testing/client/lib/chai.js','client');
+
 
   api.add_files([
   	'logging/observatory.coffee',
@@ -13,12 +18,10 @@ Package.on_use(function (api) {
     'logging/client/observatory.less',
     'testing/mtest.coffee',
     'testing/sampleTests.coffee',
-    'testing/client/mtestsTemplates.coffee',
-    'testing/client/lib/chai.js'
+    'testing/client/simpleTests.html',
+    'testing/client/mtestsTemplates.coffee'
   ], 'client');
 
-  api.add_files('logging/observatory.coffee','server');
-  api.add_files('logging/lib/inspect.js','server');
   api.add_files('testing/mtest.coffee','server');
   api.add_files('testing/sampleTests.coffee','server');
 });
