@@ -9,9 +9,11 @@ Template.logs_bootstrap.events
   ###
 
   #showing the source code for the chosen event
-  "mouseenter .lb_template_events_list": (evt)->
+  "mouseenter .lb_template_events_list": (evt, templ)->
     func = Template[evt.target.getAttribute("templateName")]._tmpl_data.events[evt.target.getAttribute("eventName")]
-    $("#lb_code_console").text(func.toString())
+    templ.myCodeMirror.setValue func.toString()
+
+  #$("#lb_code_console").text(func.toString())
 
   #switching main tabs in the panel
   "click #lb_main_tab": (evt)->
@@ -123,23 +125,32 @@ _.extend Template.logs_bootstrap,
 
   isDynamic: ->
     return Session.get "bl_is_dynamic"
-#helper to display either full panel or trimmed down version (e.g., just the logs)
+  #helper to display either full panel or trimmed down version (e.g., just the logs)
   fullFeatured: ->
     Session.get("bl_full_featured_panel")
 
-#returning current theme class
+  #returning current theme class
   theme: ->
     Session.get("bl_current_theme")
     #"lb_theme_light"
 
-#helper returning the class that corresponds to needed height of the panel
+  #helper returning the class that corresponds to needed height of the panel
   height: ->
     Session.get("bl_panel_height_class")
 
-#setting initial sort order for the logs  
+  #setting initial sort order for the logs
   created: ->
     def = Session.get "bl_default_panel"
     if def? then Template.logs_bootstrap.setDefault def else Template.logs_bootstrap.setDefault "hidden"
+
+  rendered: ->
+    @myCodeMirror = CodeMirror document.getElementById("lb_code_console"),
+                               value: ""
+                               mode:  "javascript"
+                               theme: "ambiance"
+                               readOnly: true
+
+
 
 #Filling Session keys
   session_keys: ->
