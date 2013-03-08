@@ -8,8 +8,6 @@ Package.on_use(function (api) {
   api.add_files('logging/observatory.coffee','server');
   api.add_files('logging/lib/inspect.js','server');
   api.add_files('testing/client/lib/chai.js','client');
-  api.add_files('lib/client/prismjs/prism.js','client');
-  api.add_files('lib/client/prismjs/prism.css','client');
 
 
   api.add_files([
