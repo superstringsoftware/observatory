@@ -1,3 +1,4 @@
+try {
 Package.describe({
   summary: "Powerful, yet easy to use, logging and monitoring package"
 });
@@ -29,3 +30,7 @@ Package.on_use(function (api) {
   api.add_files('testing/mtest.coffee','server');
   api.add_files('testing/sampleTests.coffee','server');
 });
+}
+catch (err) {
+  console.log("Error while trying to load a package: " + err.message);
+};

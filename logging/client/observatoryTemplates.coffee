@@ -254,6 +254,6 @@ _.extend Template.observatoryjsLogsTab,
       when TLog.LOGLEVEL_WARNING then cl = "warning"
 
 # very basic template
-_.extend Template.logs_simple,
+_.extend Template.observatoryjsLogsSimple,
   log_messages: ->
     TLog._getLogs()

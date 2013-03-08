@@ -6,6 +6,7 @@
                     <li><a href="#" data-target="observatoryjsLogsTab" id="id_logs_tab_btn">Logs</a></li>
                     <li><a href="#" data-target="observatoryjsInternalsTab" id="id_app_tab_btn">Application Internals</a></li>
                     <!-- <li><a href="#id_templates_tab" id="id_templates_tab_btn">Tests</a></li> -->
+                    <!-- <li><a href="#" data-target="observatoryjsLogsSimple" id="id_export_tab_btn">Export</a></li> -->
                     <li><a href="#" data-target="observatoryjsHelpTab" id="id_help_tab_btn">Help</a></li>
                     <li><button class="btn btn-mini btn-info" type="button" id="lb_btn_change_theme">change theme</button></li>
                    <!-- <li><button class="btn btn-mini btn-info" type="button" id="lb_btn_switch_dynamic">toggle full page</button></li> -->
@@ -150,7 +151,7 @@
 </template>
 
 
-<template name="logs_simple">
+<template name="observatoryjsLogsSimple">
 
 {{#each log_messages}}
 {{full_message}}<br/>
