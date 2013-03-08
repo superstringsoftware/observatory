@@ -1,5 +1,8 @@
-#Session.get "bl_default_panel" - "hidden" or "half"
+Meteor.startup ->
+  Handlebars.registerHelper "observatoryjsRender", (name, options) ->
+    new Handlebars.SafeString(Template[name](options)) if Template[name]
 
+#Session.get "bl_default_panel" - "hidden" or "half"
 Template.logs_bootstrap.events
   #Trying to make "~" work but it's not working...
   ###
@@ -8,26 +11,12 @@ Template.logs_bootstrap.events
     console.log("key pressed: " + evt.which)
   ###
 
-  #showing the source code for the chosen event
-  "mouseenter .lb_template_events_list": (evt, templ)->
-    func = Template[evt.target.getAttribute("templateName")]._tmpl_data.events[evt.target.getAttribute("eventName")]
-    templ.myCodeMirror.setValue func.toString()
-
-  #$("#lb_code_console").text(func.toString())
-
   #switching main tabs in the panel
   "click #lb_main_tab": (evt)->
-    tg = evt.target.getAttribute("href")
+    tg = evt.target.getAttribute("data-target")
     #TLog.getLogger().warn("Clicked on " + tg)
-    if tg
-      $(".tab-pane").hide()
-      $(tg).show()
+    Session.set "observatoryjs-currentRender", tg if tg
 
-  ###
-  "click #lb_btn_switch_dynamic": ->
-    s = if Session.get "bl_is_dynamic" then false else true
-    Session.set "bl_is_dynamic", s
-  ###
 
   #switching themes
   "click #lb_btn_change_theme": ->
@@ -67,37 +56,26 @@ Template.logs_bootstrap.events
     Meteor.flush()
 
 
-
-
-  #Sort functions go below;
-  #TODO: put them all in one and optimize
-  "click #lbh_timestamp": ->
-    #TLog._getLogger().verbose("clicked on timestamp")
-    Session.set("bl_sort_by","timestamp")
-    sort_desc = Session.get("bl_sort_desc")
-    if sort_desc then Session.set("bl_sort_desc",false) else Session.set("bl_sort_desc",true)
-
-  "click #lbh_module": ->
-    #TLog._getLogger().verbose("clicked on severity")
-    Session.set("bl_sort_by","module")
-    sort_desc = Session.get("bl_sort_desc")
-    if sort_desc then Session.set("bl_sort_desc",false) else Session.set("bl_sort_desc",true)
-
-  "click #lbh_severity": ->
-    #TLog._getLogger().verbose("clicked on severity")
-    Session.set("bl_sort_by","severity")
-    sort_desc = Session.get("bl_sort_desc")
-    if sort_desc then Session.set("bl_sort_desc",false) else Session.set("bl_sort_desc",true)
-
-  "click #lbh_source": ->
-    #TLog._getLogger().verbose("clicked on source")
-    Session.set("bl_sort_by","source")
-    sort_desc = Session.get("bl_sort_desc")
-    if sort_desc then Session.set("bl_sort_desc",false) else Session.set("bl_sort_desc",true)
-
-
 #Twitter Bootstrap formatted template
 _.extend Template.logs_bootstrap,
+   #setting initial sort order for the logs
+  created: ->
+   def = Session.get "bl_default_panel"
+   if def? then Template.logs_bootstrap.setDefault def else Template.logs_bootstrap.setDefault "hidden"
+   #Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
+
+
+  rendered: ->
+   Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
+
+
+  observatoryjsRenderCurrent: ->
+    tmpl = Session.get "observatoryjs-currentRender"
+    console.log "Called render current with " + tmpl
+    if Template[tmpl]
+      new Handlebars.SafeString(Template[tmpl]())
+    else
+      new Handlebars.SafeString(Template["observatoryjsLogsTab"]())
 
   # setting default panel status - hidden or 50% of the screen
   setDefault: (option)->
@@ -138,26 +116,36 @@ _.extend Template.logs_bootstrap,
   height: ->
     Session.get("bl_panel_height_class")
 
-  #setting initial sort order for the logs
-  created: ->
-    def = Session.get "bl_default_panel"
-    if def? then Template.logs_bootstrap.setDefault def else Template.logs_bootstrap.setDefault "hidden"
-    @myCodeMirror = null
 
+
+######################################################################################################################
+# Template handling application internals
+# HELPERS
+######################################################################################################################
+Template.observatoryjsInternalsTab.events
+#showing the source code for the chosen event
+  "mouseenter .lb_template_events_list": (evt, templ)->
+    #Meteor.flush()
+    #console.log evt.target
+    func = Template[evt.target.getAttribute("templateName")]._tmpl_data.events[evt.target.getAttribute("eventName")]
+    #console.dir templ
+    templ.myCodeMirror.setValue func.toString()
+    #Meteor.flush()
+    #console.log func.toString()
+
+_.extend Template.observatoryjsInternalsTab,
 
   rendered: ->
+    @myCodeMirror = null
     if not @myCodeMirror?
       @myCodeMirror = CodeMirror document.getElementById("lb_code_console"),
-                               value: ""
-                               mode:  "javascript"
-                               theme: "ambiance"
-                               readOnly: true
-    #else
-      #@myCodeMirror.setValue ""
+        value: ""
+        mode:  "javascript"
+        theme: "ambiance"
+        readOnly: true
+      Meteor.flush()
 
-
-
-#Filling Session keys
+  #Filling Session keys
   session_keys: ->
     rt = new Array()
     i = 0
@@ -166,24 +154,60 @@ _.extend Template.logs_bootstrap,
       i++
     rt
 
-#Templates
+  #Templates
   templates: ->
     rt = Inspect.methods(Template)
     rt.sort()
     rt
 
-#events for a given template
+  #events for a given template
   template_events: (tmpl)->
-    
+
     rt = []
     i = 0
     for tt of Template[tmpl]._tmpl_data.events
-      
+
       rt.push({_id:"id_event_no_"+i,name:tt})
       i++
     rt.sort()
     rt
 
+######################################################################################################################
+# Template handling log display
+# EVENTS
+######################################################################################################################
+Template.observatoryjsLogsTab.events
+  #Sort functions go below;
+  #TODO: put them all in one and optimize
+  "click #lbh_timestamp": ->
+    #TLog._getLogger().verbose("clicked on timestamp")
+    Session.set("bl_sort_by","timestamp")
+    sort_desc = Session.get("bl_sort_desc")
+    if sort_desc then Session.set("bl_sort_desc",false) else Session.set("bl_sort_desc",true)
+
+  "click #lbh_module": ->
+    #TLog._getLogger().verbose("clicked on severity")
+    Session.set("bl_sort_by","module")
+    sort_desc = Session.get("bl_sort_desc")
+    if sort_desc then Session.set("bl_sort_desc",false) else Session.set("bl_sort_desc",true)
+
+  "click #lbh_severity": ->
+    #TLog._getLogger().verbose("clicked on severity")
+    Session.set("bl_sort_by","severity")
+    sort_desc = Session.get("bl_sort_desc")
+    if sort_desc then Session.set("bl_sort_desc",false) else Session.set("bl_sort_desc",true)
+
+  "click #lbh_source": ->
+    #TLog._getLogger().verbose("clicked on source")
+    Session.set("bl_sort_by","source")
+    sort_desc = Session.get("bl_sort_desc")
+    if sort_desc then Session.set("bl_sort_desc",false) else Session.set("bl_sort_desc",true)
+
+######################################################################################################################
+# Template handling log display
+# HELPERS
+######################################################################################################################
+_.extend Template.observatoryjsLogsTab,
 #filling relevant log messages based on the current sort parameters
   log_messages: ->
     sort_order = if Session.get("bl_sort_desc") then -1 else 1
@@ -197,7 +221,7 @@ _.extend Template.logs_bootstrap,
 #helper to get log level / severity names
   loglevel_names: (i)->
       TLog.LOGLEVEL_NAMES[i]
-    
+
 
 #timestamp formatting helper for the display
   format_timestamp: (ts)->
@@ -223,7 +247,7 @@ _.extend Template.logs_bootstrap,
 #apllying class to the whole log row based on loglevel
   lb_loglevel_row_decoration: ->
     # Turning OFF for now as this is needed for the "light" scheme
-    
+
     switch @loglevel
       when TLog.LOGLEVEL_FATAL then cl = "error"
       when TLog.LOGLEVEL_ERROR then cl = "error"
