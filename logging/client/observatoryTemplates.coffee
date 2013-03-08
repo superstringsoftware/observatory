@@ -142,13 +142,18 @@ _.extend Template.logs_bootstrap,
   created: ->
     def = Session.get "bl_default_panel"
     if def? then Template.logs_bootstrap.setDefault def else Template.logs_bootstrap.setDefault "hidden"
+    @myCodeMirror = null
+
 
   rendered: ->
-    @myCodeMirror = CodeMirror document.getElementById("lb_code_console"),
+    if not @myCodeMirror?
+      @myCodeMirror = CodeMirror document.getElementById("lb_code_console"),
                                value: ""
                                mode:  "javascript"
                                theme: "ambiance"
                                readOnly: true
+    #else
+      #@myCodeMirror.setValue ""
 
 
 
