@@ -110,7 +110,7 @@ _.extend Template.logs_bootstrap,
     Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
     # handling key presses to toggle session and the panel
     $('body').on 'keydown', (evt)->
-      console.dir evt
+      #console.dir evt
       evt.stopImmediatePropagation()
       #console.log 'key pressed: ' + evt.which
       if evt.which == 192 and not $(evt.target).is "input"
