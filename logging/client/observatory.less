@@ -245,7 +245,7 @@ tr.no_border,
 }
 
 #id_session_div {
-	width: 300px;
+	width: 500px;
 }
 
 #id_templates_div {
@@ -298,7 +298,7 @@ tr.no_border,
 }
 
 .observatory_panel_static {
-  //overflow: scroll;
+//overflow: scroll;
   width: 90%;
   left: 50%;
   margin: 0 0 0 -47%;
@@ -309,7 +309,19 @@ tr.no_border,
 
   position: fixed;
   height: 100%;
-  //bottom: 0;
+//bottom: 0;
+}
+
+
+.observatory_panel_static_left {
+  width: 25%;
+  min-width: 300px;
+  max-width: 500px;
+  z-index: 100000;
+  position: fixed;
+  height: 100%;
+  left: 0;
+  top: 40px;
 }
 
 .lb_hidden {
@@ -366,13 +378,13 @@ tr.no_border,
 a.observatory_trigger{
 	position: fixed;
 	text-decoration: none;
-	bottom: 0px; left: 0;
 	font-size: 16px;
 	letter-spacing:-1px;
 	font-family: verdana, helvetica, arial, sans-serif;
 	
 	padding: 4px 8px 4px 4px;
 	font-weight: 700;
+    width: 20px;
 
 	-moz-border-radius-topright: 6px;
 	-webkit-border-top-right-radius: 6px;
@@ -385,4 +397,25 @@ a.observatory_trigger{
 	display: block;
 }
 
+#btn_toggle_logs {
+  bottom: 0px; left: 0;
+}
+
+#btn_toggle_session {
+  bottom: 30px; left: 0;
+}
+
+#lb_session_popup {
+  position: fixed;
+  top: 2px;
+  right: 0;
+  width: 240px;
+  height: 75%;
+  background: #fff;
+  z-index: 100000;
+  border: 1px #555 solid;
+  overflow: scroll;
+  opacity: 0.9;
+  display: none;
+}
 

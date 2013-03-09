@@ -15,6 +15,7 @@ Package.on_use(function (api) {
   api.add_files([
       'client/codemirror/theme/ambiance.css',
       'client/codemirror/theme/solarized.css'],'client');
+
     /*
     'client/codemirror/theme/blackboard.css',
       'client/codemirror/theme/cobalt.css',

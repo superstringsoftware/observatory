@@ -11,13 +11,6 @@ Meteor.startup ->
 ############################################################################################################
 #Session.get "bl_default_panel" - "hidden" or "half"
 Template.logs_bootstrap.events
-  #Trying to make "~" work but it's not working...
-  ###
-  "keydown": (evt)->
-    #$("#id_logs_bootstrap").toggle("fast")
-    console.log("key pressed: " + evt.which)
-  ###
-
   #switching main tabs in the panel
   "click #lb_main_tab": (evt)->
     tg = evt.target.getAttribute("data-target")
@@ -40,29 +33,12 @@ Template.logs_bootstrap.events
     #alert "This is a demo app so no logs are in fact cleared! Install in your project and it will work properly :)"
     TLog._clear()
 
-  #Switching modes of the observatory panel
-  "click #btn_toggle_logs": ->
-    switch Session.get("bl_panel_height_class")
-      when "height50"
-        Session.set "bl_is_dynamic", false
-        Session.set("bl_panel_height_class","height90")
-        Session.set("bl_full_featured_panel",true)
-      when "height90"
-        Session.set("bl_panel_height_class","")
-        $("#id_logs_bootstrap").hide("fast")
-        Session.set "bl_is_visible", false
-      when "height25"
-        Session.set("bl_panel_height_class","height50")
-        Session.set("bl_full_featured_panel",true)
-      when ""
-        Session.set "bl_is_dynamic", true
-        Session.set("bl_panel_height_class","height25")
-        Session.set("bl_full_featured_panel",false)
-        Session.set "bl_is_visible", true
-        $("#id_logs_bootstrap").removeClass("lb_hidden")
-        $("#id_logs_bootstrap").show("slow")
+  "click #btn_toggle_session": ->
+    $("#lb_session_popup").toggle()
 
-    Meteor.flush()
+  #Switching modes of the observatory panel
+  "click #btn_toggle_logs": (evt, tmpl)->
+    Template.logs_bootstrap.toggleLogs()
 
 ############################################################################################################
 # HELPERS
@@ -71,7 +47,6 @@ Template.logs_bootstrap.events
 Template.logs_bootstrap.helpers
   observatoryjsRenderCurrent: ->
     tmpl = Session.get "observatoryjs-currentRender"
-    console.log "Called render current with " + tmpl
     if Template[tmpl]
       new Handlebars.SafeString(Template[tmpl]())
     else
@@ -101,6 +76,29 @@ Template.logs_bootstrap.helpers
 ############################################################################################################
 #Twitter Bootstrap formatted template
 _.extend Template.logs_bootstrap,
+  toggleLogs: ->
+    switch Session.get("bl_panel_height_class")
+      when "height50"
+        Session.set "bl_is_dynamic", false
+        Session.set("bl_panel_height_class","height90")
+        Session.set("bl_full_featured_panel",true)
+      when "height90"
+        Session.set("bl_panel_height_class","")
+        $("#id_logs_bootstrap").hide("fast")
+        Session.set "bl_is_visible", false
+      when "height25"
+        Session.set("bl_panel_height_class","height50")
+        Session.set("bl_full_featured_panel",true)
+      when ""
+        Session.set "bl_is_dynamic", true
+        Session.set("bl_panel_height_class","height25")
+        Session.set("bl_full_featured_panel",false)
+        Session.set "bl_is_visible", true
+        $("#id_logs_bootstrap").removeClass("lb_hidden")
+        $("#id_logs_bootstrap").show("slow")
+
+    Meteor.flush()
+
    #setting initial sort order for the logs
   created: ->
     def = Session.get "bl_default_panel"
@@ -110,6 +108,14 @@ _.extend Template.logs_bootstrap,
 
   rendered: ->
     Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
+    $('body').on 'keypress', (evt)->
+      console.dir evt.target
+      evt.stopImmediatePropagation()
+      console.log 'key pressed: ' + evt.which
+      Template.logs_bootstrap.toggleLogs() if evt.which == 96 and not $(evt.target).is "input"
+
+
+
 
   # setting default panel status - hidden or 50% of the screen
   setDefault: (option)->
@@ -192,15 +198,6 @@ Template.observatoryjsInternalsTab.helpers
   selectedTemplateName: ->
     Session.get "bl_selected_template_name"
 
-  #Filling Session keys
-  session_keys: ->
-    rt = new Array()
-    i = 0
-    for key of Session.keys
-      rt[i] = {"key": key, "value":Session.get(key)}
-      i++
-    rt
-
   #Templates
   templates: ->
     rt = Inspect.methods(Template)
@@ -214,7 +211,6 @@ Template.observatoryjsInternalsTab.helpers
     Template.observatoryjsInternalsTab.getMethodMap "helpers",Session.get "bl_selected_template_name"
 
 
-
 ######################################################################################################################
 # Template handling application internals
 # OTHER
@@ -222,7 +218,10 @@ Template.observatoryjsInternalsTab.helpers
 _.extend Template.observatoryjsInternalsTab,
 
   rendered: ->
-    $("#selTemplateNames").val(Session.get "bl_selected_template_name")
+    $("#selTemplateNames").val Session.get "bl_selected_template_name"
+    Session.set "bl_selected_template_name", $("#selTemplateNames").val()
+    #tmp = $("#selTemplateNames").val()
+    #console.log tmp + " and " + Session.get "bl_selected_template_name"
     @myCodeMirror = null
     if not @myCodeMirror?
       @myCodeMirror = CodeMirror document.getElementById("lb_code_console"),
@@ -235,6 +234,18 @@ _.extend Template.observatoryjsInternalsTab,
   getMethodMap: (type, tmpl)->
     rt = []
     rt.push tt for tt of Template[tmpl]?._tmpl_data[type]
+    rt.sort()
+
+
+######################################################################################################################
+# Template handling Session
+# HELPERS
+######################################################################################################################
+Template.observatoryjsSession.helpers
+  #Filling Session keys
+  session_keys: ->
+    rt = []
+    rt.push {"key": key, "value": JSON.stringify Session.get(key)} for key of Session.keys
     rt.sort()
 
 
