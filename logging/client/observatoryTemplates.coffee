@@ -1,3 +1,4 @@
+_tlog = TLog.getLogger()
 ###
 Meteor.startup ->
   Handlebars.registerHelper "observatoryjsRender", (name, options) ->
@@ -136,20 +137,44 @@ _.extend Template.logs_bootstrap,
 Template.observatoryjsInternalsTab.events
 #showing the source code for the chosen event
   "mouseenter .lb_template_events_list": (evt, templ)->
-    #Meteor.flush()
-    #console.log evt.target
-    func = Template[evt.target.getAttribute("templateName")]._tmpl_data.events[evt.target.getAttribute("eventName")]
+    selTmpl = Template[evt.target.getAttribute("templateName")]
+    method = evt.target.getAttribute("methodName")
+    #console.log "Entered: " + evt.target.getAttribute("templateName") + " w/ method: " + method
+    if method in ["created","rendered","destroyed"]
+      func = selTmpl[method]
+      strFunc = "// Template." + evt.target.getAttribute("templateName") + "." + method + ":\n" + func
+      #_tlog.debug "Method is a key callback:\n" + strFunc
+    else
+      func = selTmpl._tmpl_data.events[method]
+      if func
+        strFunc = "// EVENT: " + method + ":\n" + func
+        #_tlog.debug "Method is an event:\n" + strFunc
+      else
+        func = selTmpl._tmpl_data.helpers[method]
+        strFunc = "// HELPER: " + method + ":\n" + func
+        #_tlog.debug "Method is a helper:\n" + strFunc
     #console.dir templ
-    templ.myCodeMirror.setValue func.toString()
-    #Meteor.flush()
+    #console.log "Setting codemirror field with " + strFunc
+    templ.myCodeMirror.setValue strFunc
+    templ.myCodeMirror.refresh()
+    #console.dir templ.myCodeMirror.doc.children
+
     #console.log func.toString()
+
+  "change #selTemplateNames": (evt)->
+    _tlog.debug $(evt.target).val()
+    Session.set "bl_selected_template_name", $(evt.target).val()
+
 
 ######################################################################################################################
 # Template handling application internals
 # HELPERS
 ######################################################################################################################
 Template.observatoryjsInternalsTab.helpers
-#Filling Session keys
+  selectedTemplateName: ->
+    Session.get "bl_selected_template_name"
+
+  #Filling Session keys
   session_keys: ->
     rt = new Array()
     i = 0
@@ -164,17 +189,13 @@ Template.observatoryjsInternalsTab.helpers
     rt.sort()
     rt
 
-  #events for a given template
-  template_events: (tmpl)->
+  currentTemplateEvents: ->
+    Template.observatoryjsInternalsTab.getMethodMap "events",Session.get "bl_selected_template_name"
 
-    rt = []
-    i = 0
-    for tt of Template[tmpl]._tmpl_data.events
+  currentTemplateHelpers: ->
+    Template.observatoryjsInternalsTab.getMethodMap "helpers",Session.get "bl_selected_template_name"
 
-      rt.push({_id:"id_event_no_"+i,name:tt})
-      i++
-    rt.sort()
-    rt
+
 
 ######################################################################################################################
 # Template handling application internals
@@ -183,6 +204,7 @@ Template.observatoryjsInternalsTab.helpers
 _.extend Template.observatoryjsInternalsTab,
 
   rendered: ->
+    $("#selTemplateNames").val(Session.get "bl_selected_template_name")
     @myCodeMirror = null
     if not @myCodeMirror?
       @myCodeMirror = CodeMirror document.getElementById("lb_code_console"),
@@ -191,6 +213,13 @@ _.extend Template.observatoryjsInternalsTab,
         theme: "ambiance"
         readOnly: true
       Meteor.flush()
+
+  getMethodMap: (type, tmpl)->
+    rt = []
+    rt.push tt for tt of Template[tmpl]?._tmpl_data[type]
+    rt.sort()
+
+
 
 ######################################################################################################################
 # Template handling log display
