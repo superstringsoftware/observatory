@@ -135,7 +135,17 @@ _.extend Template.logs_bootstrap,
 # EVENTS
 ######################################################################################################################
 Template.observatoryjsInternalsTab.events
-#showing the source code for the chosen event
+  "mouseleave .lb_template_events_list": (evt, templ)->
+    selTmpl = Template[evt.target.getAttribute("templateName")]
+    method = evt.target.getAttribute("methodName")
+    func = selTmpl._tmpl_data.events[method]
+    if func
+      events = method.split ','
+      for e in events
+        k = e.split ' '
+        $(k[1]).removeClass "lb_highlight_element"
+
+  #showing the source code for the chosen event
   "mouseenter .lb_template_events_list": (evt, templ)->
     selTmpl = Template[evt.target.getAttribute("templateName")]
     method = evt.target.getAttribute("methodName")
@@ -149,6 +159,10 @@ Template.observatoryjsInternalsTab.events
       if func
         strFunc = "// EVENT: " + method + ":\n" + func
         #_tlog.debug "Method is an event:\n" + strFunc
+        events = method.split ','
+        for e in events
+          k = e.split ' '
+          $(k[1]).addClass "lb_highlight_element"
       else
         func = selTmpl._tmpl_data.helpers[method]
         strFunc = "// HELPER: " + method + ":\n" + func
@@ -211,7 +225,7 @@ _.extend Template.observatoryjsInternalsTab,
       @myCodeMirror = CodeMirror document.getElementById("lb_code_console"),
         value: ""
         mode:  "javascript"
-        theme: "ambiance"
+        theme: "ambiance" #"solarized" - light #"neat" - light #"elegant" - light #"eclipse" - light #"blackboard" #"ambiance"
         readOnly: true
       Meteor.flush()
 

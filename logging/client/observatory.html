@@ -68,9 +68,6 @@
 
         <!-- application internals tab -->
         <div class="lb_scrollable" id="id_templates_div">
-            <a href="#tableTemplates">Templates &amp; Events</a>
-            <a href="#tableSession">Session</a><br/>
-
             <select id="selTemplateNames">
                 {{#each templates}}
                 <option value="{{this}}">{{this}}</option>
@@ -80,23 +77,31 @@
             <table>
                 <tbody>
                 <tr>
-                    <th colspan="6">main callbacks</th>
+                    <th>main callbacks</th>
                 </tr>
                 <tr>
-                    <td colspan="2"><a href="#" class="lb_template_events_list" templateName="{{selectedTemplateName}}" methodName="created">created</a></td>
-                    <td colspan="2"><a href="#" class="lb_template_events_list" templateName="{{selectedTemplateName}}" methodName="rendered">rendered</a></td>
-                    <td colspan="2"><a href="#" class="lb_template_events_list" templateName="{{selectedTemplateName}}" methodName="destroyed">destroyed</a></td>
+                    <td><a href="#" class="lb_template_events_list" templateName="{{selectedTemplateName}}" methodName="created">created</a></td>
                 </tr>
                 <tr>
-                    <th colspan="3">events</th>
-                    <th colspan="3">helpers</th>
+                    <td><a href="#" class="lb_template_events_list" templateName="{{selectedTemplateName}}" methodName="rendered">rendered</a></td>
                 </tr>
                 <tr>
-                    <td colspan="3">
+                    <td><a href="#" class="lb_template_events_list" templateName="{{selectedTemplateName}}" methodName="destroyed">destroyed</a></td>
+                </tr>
+                <tr>
+                    <th>events</th>
+                </tr>
+                <tr>
+                    <td>
                         {{#each currentTemplateEvents}}
                         <a href="#" class="lb_template_events_list" templateName="{{selectedTemplateName}}" methodName="{{this}}">{{this}}</a><br/>
                         {{/each}}
                     </td>
+                </tr>
+                <tr>
+                    <th>helpers</th>
+                </tr>
+                <tr>
                     <td colspan="3">
                         {{#each currentTemplateHelpers}}
                         <a href="#" class="lb_template_events_list" templateName="{{selectedTemplateName}}" methodName="{{this}}">{{this}}</a><br/>
@@ -105,30 +110,30 @@
                 </tr>
                 </tbody>
             </table>
-
-
-            <table class="table table-condensed" id="tableSession">
-                <thead>
-                <tr>
-
-                    <th colspan="2"><a href="#">Session</a></th>
-                </tr>
-                </thead>
-                <tbody>
-                {{#each session_keys}}
-                <tr class="no_border">
-                    <td class="no_border lb_yellow">{{key}}:</td><td class="no_border">{{value}}</td>
-                </tr>
-                {{/each}}
-                </tbody>
-            </table>
         </div>
 
         <div id="lb_code_console">
         </div>
     </div>
+</template>
 
 
+<template name="observatoryjsSession">
+    <table class="table table-condensed" id="tableSession">
+        <thead>
+        <tr>
+
+            <th colspan="2"><a href="#">Session</a></th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each session_keys}}
+        <tr class="no_border">
+            <td class="no_border lb_yellow">{{key}}:</td><td class="no_border">{{value}}</td>
+        </tr>
+        {{/each}}
+        </tbody>
+    </table>
 </template>
 
 
