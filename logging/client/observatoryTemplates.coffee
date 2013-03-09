@@ -108,11 +108,16 @@ _.extend Template.logs_bootstrap,
 
   rendered: ->
     Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
-    $('body').on 'keypress', (evt)->
-      console.dir evt.target
+    # handling key presses to toggle session and the panel
+    $('body').on 'keydown', (evt)->
+      console.dir evt
       evt.stopImmediatePropagation()
-      console.log 'key pressed: ' + evt.which
-      Template.logs_bootstrap.toggleLogs() if evt.which == 96 and not $(evt.target).is "input"
+      #console.log 'key pressed: ' + evt.which
+      if evt.which == 192 and not $(evt.target).is "input"
+        if evt.ctrlKey
+          Template.logs_bootstrap.toggleLogs()
+        else
+          $("#lb_session_popup").toggle()
 
 
 
