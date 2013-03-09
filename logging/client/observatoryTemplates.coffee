@@ -1,7 +1,13 @@
+###
 Meteor.startup ->
   Handlebars.registerHelper "observatoryjsRender", (name, options) ->
     new Handlebars.SafeString(Template[name](options)) if Template[name]
+###
 
+############################################################################################################
+# EVENTS
+# Main Observatory Panel Template
+############################################################################################################
 #Session.get "bl_default_panel" - "hidden" or "half"
 Template.logs_bootstrap.events
   #Trying to make "~" work but it's not working...
@@ -55,7 +61,41 @@ Template.logs_bootstrap.events
 
     Meteor.flush()
 
+############################################################################################################
+# HELPERS
+# Main Observatory Panel Template
+############################################################################################################
+Template.logs_bootstrap.helpers
+  observatoryjsRenderCurrent: ->
+    tmpl = Session.get "observatoryjs-currentRender"
+    console.log "Called render current with " + tmpl
+    if Template[tmpl]
+      new Handlebars.SafeString(Template[tmpl]())
+    else
+      new Handlebars.SafeString(Template["observatoryjsLogsTab"]())
 
+  isHidden: ->
+    return !(Session.get "bl_is_visible")
+
+  isDynamic: ->
+    return Session.get "bl_is_dynamic"
+  #helper to display either full panel or trimmed down version (e.g., just the logs)
+  fullFeatured: ->
+    Session.get("bl_full_featured_panel")
+
+  #returning current theme class
+  theme: ->
+    Session.get("bl_current_theme")
+  #"lb_theme_light"
+
+  #helper returning the class that corresponds to needed height of the panel
+  height: ->
+    Session.get("bl_panel_height_class")
+
+############################################################################################################
+# OTHER
+# Main Observatory Panel Template
+############################################################################################################
 #Twitter Bootstrap formatted template
 _.extend Template.logs_bootstrap,
    #setting initial sort order for the logs
@@ -64,18 +104,8 @@ _.extend Template.logs_bootstrap,
    if def? then Template.logs_bootstrap.setDefault def else Template.logs_bootstrap.setDefault "hidden"
    #Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
 
-
   rendered: ->
    Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
-
-
-  observatoryjsRenderCurrent: ->
-    tmpl = Session.get "observatoryjs-currentRender"
-    console.log "Called render current with " + tmpl
-    if Template[tmpl]
-      new Handlebars.SafeString(Template[tmpl]())
-    else
-      new Handlebars.SafeString(Template["observatoryjsLogsTab"]())
 
   # setting default panel status - hidden or 50% of the screen
   setDefault: (option)->
@@ -98,29 +128,10 @@ _.extend Template.logs_bootstrap,
         Session.setDefault "bl_is_visible", true
 
 
-  isHidden: ->
-    return !(Session.get "bl_is_visible")
-
-  isDynamic: ->
-    return Session.get "bl_is_dynamic"
-  #helper to display either full panel or trimmed down version (e.g., just the logs)
-  fullFeatured: ->
-    Session.get("bl_full_featured_panel")
-
-  #returning current theme class
-  theme: ->
-    Session.get("bl_current_theme")
-    #"lb_theme_light"
-
-  #helper returning the class that corresponds to needed height of the panel
-  height: ->
-    Session.get("bl_panel_height_class")
-
-
 
 ######################################################################################################################
 # Template handling application internals
-# HELPERS
+# EVENTS
 ######################################################################################################################
 Template.observatoryjsInternalsTab.events
 #showing the source code for the chosen event
@@ -133,19 +144,12 @@ Template.observatoryjsInternalsTab.events
     #Meteor.flush()
     #console.log func.toString()
 
-_.extend Template.observatoryjsInternalsTab,
-
-  rendered: ->
-    @myCodeMirror = null
-    if not @myCodeMirror?
-      @myCodeMirror = CodeMirror document.getElementById("lb_code_console"),
-        value: ""
-        mode:  "javascript"
-        theme: "ambiance"
-        readOnly: true
-      Meteor.flush()
-
-  #Filling Session keys
+######################################################################################################################
+# Template handling application internals
+# HELPERS
+######################################################################################################################
+Template.observatoryjsInternalsTab.helpers
+#Filling Session keys
   session_keys: ->
     rt = new Array()
     i = 0
@@ -171,6 +175,22 @@ _.extend Template.observatoryjsInternalsTab,
       i++
     rt.sort()
     rt
+
+######################################################################################################################
+# Template handling application internals
+# OTHER
+######################################################################################################################
+_.extend Template.observatoryjsInternalsTab,
+
+  rendered: ->
+    @myCodeMirror = null
+    if not @myCodeMirror?
+      @myCodeMirror = CodeMirror document.getElementById("lb_code_console"),
+        value: ""
+        mode:  "javascript"
+        theme: "ambiance"
+        readOnly: true
+      Meteor.flush()
 
 ######################################################################################################################
 # Template handling log display
@@ -207,7 +227,7 @@ Template.observatoryjsLogsTab.events
 # Template handling log display
 # HELPERS
 ######################################################################################################################
-_.extend Template.observatoryjsLogsTab,
+Template.observatoryjsLogsTab.helpers
 #filling relevant log messages based on the current sort parameters
   log_messages: ->
     sort_order = if Session.get("bl_sort_desc") then -1 else 1
@@ -221,7 +241,6 @@ _.extend Template.observatoryjsLogsTab,
 #helper to get log level / severity names
   loglevel_names: (i)->
       TLog.LOGLEVEL_NAMES[i]
-
 
 #timestamp formatting helper for the display
   format_timestamp: (ts)->
