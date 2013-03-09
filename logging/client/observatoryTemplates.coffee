@@ -29,8 +29,10 @@ Template.logs_bootstrap.events
   "click #lb_btn_change_theme": ->
     if Session.get("bl_current_theme") is "lb_theme_dark"
       Session.set("bl_current_theme", "lb_theme_light")
+      Session.set("bl_current_codemirror_theme", "solarized")
     else
       Session.set("bl_current_theme", "lb_theme_dark")
+      Session.set("bl_current_codemirror_theme", "ambiance")
 
   #clearing the logs - DANGEROUS and insecure
   #TODO: once auth arrives, make sure it's properly protected
@@ -101,12 +103,13 @@ Template.logs_bootstrap.helpers
 _.extend Template.logs_bootstrap,
    #setting initial sort order for the logs
   created: ->
-   def = Session.get "bl_default_panel"
-   if def? then Template.logs_bootstrap.setDefault def else Template.logs_bootstrap.setDefault "hidden"
-   #Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
+    def = Session.get "bl_default_panel"
+    if def? then Template.logs_bootstrap.setDefault def else Template.logs_bootstrap.setDefault "hidden"
+    Session.setDefault "bl_current_codemirror_theme", "ambiance"
+    #Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
 
   rendered: ->
-   Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
+    Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
 
   # setting default panel status - hidden or 50% of the screen
   setDefault: (option)->
@@ -225,7 +228,7 @@ _.extend Template.observatoryjsInternalsTab,
       @myCodeMirror = CodeMirror document.getElementById("lb_code_console"),
         value: ""
         mode:  "javascript"
-        theme: "ambiance" #"solarized" - light #"neat" - light #"elegant" - light #"eclipse" - light #"blackboard" #"ambiance"
+        theme: Session.get "bl_current_codemirror_theme"
         readOnly: true
       Meteor.flush()
 
