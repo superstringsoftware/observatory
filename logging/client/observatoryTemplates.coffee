@@ -156,8 +156,9 @@ Template.observatoryjsInternalsTab.events
     #console.dir templ
     #console.log "Setting codemirror field with " + strFunc
     templ.myCodeMirror.setValue strFunc
-    templ.myCodeMirror.refresh()
+    #templ.myCodeMirror.refresh()
     #console.dir templ.myCodeMirror.doc.children
+    #$("#lb_code_console").html strFunc
 
     #console.log func.toString()
 
