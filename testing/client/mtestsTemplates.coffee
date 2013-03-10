@@ -10,13 +10,13 @@ _.extend Template.simple_tests,
   testServerResults: ->
     Session.get "_mservertest_results"
 
-  testResultClass: (p)->
+  testResultClass1: (p)->
     if p then "success" else "error"
 
   testResultPassed: (p)->
     if p then "PASSED" else "FAILED:"
 
-  testResultClass1: (p)->
+  testResultClass: (p)->
     if p then "text-success" else "text-error"
 
 Template.simple_tests.events
