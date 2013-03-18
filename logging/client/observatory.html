@@ -34,6 +34,7 @@
                 <thead>
                 <tr class="lb_header">
                     <th id="lbh_timestamp" class="lb_timestamp"><a href="#">timestamp</a></th>
+                    <th id="lbh_user" class="lb_user"><a href="#">user</a></th>
                     <th id="lbh_source" class="lb_server"><a href="#">src</a></th>
                     <th id="lbh_module" class="lb_module"><a href="#">module</a></th>
                     <th id="lbh_severity" class="lb_loglevel"><a href="#">severity</a></th>
@@ -44,6 +45,7 @@
                 {{#each log_messages}}
                 <tr class="{{lb_loglevel_row_decoration}} no_border">
                     <td class="lb_timestamp">{{format_timestamp timestamp}}</td>
+                    <td class="lb_user">{{getUser uid}}</td>
                     {{#if isServer}}
                     <td class="lb_server"><span class="label label-inverse">server</span></td>
                     {{else}}

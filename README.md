@@ -32,7 +32,7 @@ TL = TLog.getLogger(TLog.LOGLEVEL_MAX,true)
 if you want to set logs removal permission, call allowRemove with allow function as an argument - it gets passed to
 Collection.allow({remove: ...}) call. If you call allowRemove with no arguments, it simply sets "true" so use with care.
 ```coffeescript
-TL.allowRemove (uid)->
+TLog.allowRemove (uid)->
     if Meteor.users.findOne(uid) == "admin"
         true
     else
@@ -94,6 +94,23 @@ class TLog
 ```
 Log levels work in a very straightforward way: TLog will record any message which log level is <= current log level set when calling 
 getLogger() or setOptions().
+
+If you are into internals type of person, Observatory logs all info to the "_observatory_logs"
+Meteor collection. Every document has the following fields:
+```coffeescript
+@_logs.insert
+    isServer: srv # boolean, whether called on the server or on the client
+    message: msg # message provided to any of the logging methods
+    module: module # module name provided to any of the logging methods
+    loglevel: loglevel # loglevel with which the message is logged
+    timestamp_text: ts # textual representation of the timestamp
+    timestamp: timestamp # timestamp as a Date()
+    full_message: full_message # full textual log message (useful for quick export etc)
+    uid: uid # currently logged in user id (if log_user option set to true)
+```
+This should be enough if you want to manipulate your logs in any way you want that Observatory
+does not provide out of the box.
+
 
 Feedback
 ----------

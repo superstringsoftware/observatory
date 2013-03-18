@@ -16,7 +16,7 @@ class TLog
   @getLogger: (loglevel = TLog.LOGLEVEL_INFO, want_to_print = true, log_user = false)->
     @_instance?=new TLog(loglevel,want_to_print, log_user, false)
     #@_instance.insaneVerbose("getLogger() called","TLog")
-    @_instance.setOptions loglevel, want_to_print
+    @_instance.setOptions loglevel, want_to_print, log_user
     @_instance
 
   @LOGLEVEL_FATAL = 0

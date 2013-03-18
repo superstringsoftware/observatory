@@ -312,6 +312,19 @@ Template.observatoryjsLogsTab.helpers
     d = new Date(ts)
     TLog._convertTime(d)
 
+  getUser: (uid)->
+    user = ""
+    if uid
+      u = Meteor.users.findOne(uid)
+      if u.username
+        user = u.username
+      else
+        if u.emails[0]
+          user = u.emails[0]
+        else
+          user = uid
+    user
+
 
 #applying class to labels showing loglevel / severity
   lb_loglevel_decoration: ->
