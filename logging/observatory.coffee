@@ -56,7 +56,7 @@ class TLog
 
 
   # function to set who is allowed to remove the logs from the database
-  allowRemove: (func)->
+  @allowRemove: (func)=>
     TLog._global_logs.allow
       remove: (uid)=>
         if func then func uid else true
@@ -109,19 +109,20 @@ class TLog
   # inspects an object, stringifies it and prints out
   dir: (obj, message, module)->
     msg = if message then message else "Inspecting object:"
-    mnames = Inspect.methods(obj)
-    pnames = Inspect.properties(obj)
-    methods = []
-    props = []
-    for m in mnames
-      methods.push m
-    for p in pnames
-      props.push
-        name: p
-        value: obj[p]
-    @debug(msg, module)
-    @_log("Methods: " + JSON.stringify(methods),TLog.LOGLEVEL_DEBUG, module)
-    @_log("Properties: " + JSON.stringify(props),TLog.LOGLEVEL_DEBUG, module)
+    if obj?
+      mnames = Inspect.methods(obj)
+      pnames = Inspect.properties(obj)
+      methods = []
+      props = []
+      for m in mnames
+        methods.push m
+      for p in pnames
+        props.push
+          name: p
+          value: obj[p]
+      @debug(msg, module)
+      @_log("Methods: " + JSON.stringify(methods),TLog.LOGLEVEL_DEBUG, module)
+      @_log("Properties: " + JSON.stringify(props),TLog.LOGLEVEL_DEBUG, module)
 
   currentLogLevelName: ->
     TLog.LOGLEVEL_NAMES[@_currentLogLevel]
