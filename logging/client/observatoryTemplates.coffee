@@ -34,7 +34,15 @@ Template.logs_bootstrap.events
     TLog._clear()
 
   "click #btn_toggle_session": ->
-    $("#lb_session_popup").toggle()
+    w = Session.get "bl_current_session_width"
+    switch w
+      when "lb_invisible"
+        Session.set "bl_current_session_width", "lb_width25"
+      when "lb_width25"
+        Session.set "bl_current_session_width", "lb_width50"
+      when "lb_width50"
+        Session.set "bl_current_session_width", "lb_invisible"
+
 
   #Switching modes of the observatory panel
   "click #btn_toggle_logs": (evt, tmpl)->
@@ -104,6 +112,7 @@ _.extend Template.logs_bootstrap,
     def = Session.get "bl_default_panel"
     if def? then Template.logs_bootstrap.setDefault def else Template.logs_bootstrap.setDefault "hidden"
     Session.setDefault "bl_current_codemirror_theme", "ambiance"
+    Session.setDefault "bl_current_session_width", "lb_invisible"
     #Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
 
   rendered: ->
@@ -117,7 +126,14 @@ _.extend Template.logs_bootstrap,
         if evt.ctrlKey
           Template.logs_bootstrap.toggleLogs()
         else
-          $("#lb_session_popup").toggle()
+          w = Session.get "bl_current_session_width"
+          switch w
+            when "lb_invisible"
+              Session.set "bl_current_session_width", "lb_width25"
+            when "lb_width25"
+              Session.set "bl_current_session_width", "lb_width50"
+            when "lb_width50"
+              Session.set "bl_current_session_width", "lb_invisible"
 
 
 
@@ -247,6 +263,11 @@ _.extend Template.observatoryjsInternalsTab,
 # HELPERS
 ######################################################################################################################
 Template.observatoryjsSession.helpers
+  sessionWidth: ->
+    Session.get("bl_current_session_width")
+  #returning current theme class
+  theme: ->
+    Session.get("bl_current_theme")
   #Filling Session keys
   session_keys: ->
     rt = []
@@ -316,11 +337,11 @@ Template.observatoryjsLogsTab.helpers
     user = ""
     if uid
       u = Meteor.users.findOne(uid)
-      if u.username
+      if u and u.username
         user = u.username
       else
-        if u.emails[0]
-          user = u.emails[0]
+        if u and u.emails[0]
+          user = u.emails[0].address
         else
           user = uid
     user

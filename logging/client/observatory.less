@@ -13,6 +13,62 @@
 @red:#cc1111;
 @clr_msg_warning: #999911;
 
+
+// Border Radius
+.border-radius(@radius) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
+}
+
+// Single Corner Border Radius
+.border-top-left-radius(@radius) {
+  -webkit-border-top-left-radius: @radius;
+  -moz-border-radius-topleft: @radius;
+  border-top-left-radius: @radius;
+}
+.border-top-right-radius(@radius) {
+  -webkit-border-top-right-radius: @radius;
+  -moz-border-radius-topright: @radius;
+  border-top-right-radius: @radius;
+}
+.border-bottom-right-radius(@radius) {
+  -webkit-border-bottom-right-radius: @radius;
+  -moz-border-radius-bottomright: @radius;
+  border-bottom-right-radius: @radius;
+}
+.border-bottom-left-radius(@radius) {
+  -webkit-border-bottom-left-radius: @radius;
+  -moz-border-radius-bottomleft: @radius;
+  border-bottom-left-radius: @radius;
+}
+
+// Single Side Border Radius
+.border-top-radius(@radius) {
+  .border-top-right-radius(@radius);
+  .border-top-left-radius(@radius);
+}
+.border-right-radius(@radius) {
+  .border-top-right-radius(@radius);
+  .border-bottom-right-radius(@radius);
+}
+.border-bottom-radius(@radius) {
+  .border-bottom-right-radius(@radius);
+  .border-bottom-left-radius(@radius);
+}
+.border-left-radius(@radius) {
+  .border-top-left-radius(@radius);
+  .border-bottom-left-radius(@radius);
+}
+
+// Drop shadows
+.box-shadow(@shadow) {
+  -webkit-box-shadow: @shadow;
+  -moz-box-shadow: @shadow;
+  box-shadow: @shadow;
+}
+
+
 // ****************** new theming approach ********************
 
 // ------------------ dark ----------------------
@@ -31,6 +87,22 @@
 @th_dark_clr_label_text: #eee;
 
 .lb_theme_dark {
+    #lb_session_popup {
+      background: #000;
+      border: 1px #555 solid;
+      color: #ccc;
+    }
+
+
+    #lb_session_popup td {
+      border-bottom: 1px solid #333;
+      border-top: 1px solid #333;
+    }
+
+    .sessionKey {
+      color: @th_dark_clr_panel_links;
+    }
+
     .lb_timestamp,
     .lb_user {
       color: #eee;
@@ -104,7 +176,13 @@
 @th_light_clr_label_text: #eee;
 
 
-.lb_theme_light { 
+.lb_theme_light {
+
+    #lb_session_popup {
+      background: #eee;
+      border: 1px #777 solid;
+      //color: #ccc;
+    }
 	.lb_message {
 		color: @th_light_clr_logs_main; 
 	}
@@ -413,13 +491,20 @@ a.observatory_trigger{
   position: fixed;
   top: 2px;
   right: 0;
-  width: 240px;
-  height: 75%;
-  background: #fff;
+  //width: 300px;
+  height: 85%;
   z-index: 100000;
-  border: 1px #555 solid;
   overflow: scroll;
   opacity: 0.9;
-  display: none;
+  //display: none;
+  .border-left-radius(8px)
+}
+
+.lb_width25 {
+  width: 20%;
+}
+
+.lb_width50 {
+  width: 45%;
 }
 
