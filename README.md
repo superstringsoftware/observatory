@@ -38,7 +38,8 @@ TLog.allowRemove (uid)->
     else
         false
 ```
-and then when you want to log a message of a certain log level:
+
+When you want to log a message of a certain log level:
 ```coffeescript
 TL.fatal("your message","optional module name")
 TL.error("your message","optional module name")
@@ -109,7 +110,11 @@ Meteor collection. Every document has the following fields:
     uid: uid # currently logged in user id (if log_user option set to true)
 ```
 This should be enough if you want to manipulate your logs in any way you want that Observatory
-does not provide out of the box.
+does not provide out of the box. Access the "_observatory_logs" collection directly via
+```coffeescript
+col = TLog._global_logs
+```
+and then all the usual Meteor Collection API is applicable.
 
 
 Feedback
