@@ -137,6 +137,7 @@ First minor release with "real" Meteor (auth, users, ui improvements).
 * Session as a separate panel
 * Unit testing moved to a [separate package](https://github.com/superstringsoftware/observatory-testing)
 * Keyboard based control of the panels ("~" and "ctrl + ~")
+* Setting default panel states via Session
 
 ####0.1.9: March 6, 2013
 Update to support Meteor 0.5.7:
