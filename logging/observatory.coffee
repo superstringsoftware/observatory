@@ -135,7 +135,7 @@ class TLog
 
     if loglevel <= @_currentLogLevel
       srv = false
-      if Meteor.is_server 
+      if Meteor.isServer
         srv = true
 
       uid = null
@@ -144,7 +144,7 @@ class TLog
           uid = Meteor.userId()
         catch err
       module = mdl
-      timestamp = new Date()
+      timestamp = new Date Date.now()
       ts = @_ps(TLog._convertDate(timestamp)) + @_ps(TLog._convertTime(timestamp))
       full_message = if srv then ts + "[SERVER]" else ts + "[CLIENT]"
       full_message+= if module then @_ps module else "[]"
@@ -156,7 +156,7 @@ class TLog
         module: module
         loglevel: loglevel
         timestamp_text: ts
-        timestamp: timestamp.getTime()
+        timestamp: timestamp
         full_message: full_message
         uid: uid
 
