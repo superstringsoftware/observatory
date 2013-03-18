@@ -307,8 +307,11 @@ Template.observatoryjsLogsTab.helpers
 
 #timestamp formatting helper for the display
   format_timestamp: (ts)->
+    #console.log "Formatting date: " + ts
+    #ts
     d = new Date(ts)
     TLog._convertTime(d)
+
 
 #applying class to labels showing loglevel / severity
   lb_loglevel_decoration: ->
