@@ -1,20 +1,22 @@
 What is it?
 -------------
-This is Observatory v0.1.9 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient and pretty logging and monitoring for [Meteor framework](http://meteor.com) application development.
-[See it in action!](http://observatoryjs.com/). This version added 2 new logging methods for tracing errors and quick-n-dirty object inspection,
-as well as more configuration options for the Observatory Panel and experimental unit testing support.
+This is Observatory v0.2.0 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient
+and pretty logging and monitoring for [Meteor framework](http://meteor.com) application development.
+[See it in action!](http://observatoryjs.com/).
 
 What does it do?
 ------------------
 * Easy logging with different log levels with corresponding methods for message output, optional 
-logging to console, pretty output of both Client and Server logs right in the browser.
+logging to console, pretty output of both Client and Server logs right in the browser, optional logging of
+the currently logged-in user for additional control.
 
 * Monitoring of your application internals: currently, Templates with all events and a Session object; more to come.
 
 * 2 visual styles: "dark" for additional terminal coolness and "light" that may be easier on the eyes. Adding a new theme is pretty
 easy even now and will be even easier soon - just look at observatory.less and theme() helper in observatoryTemplates.coffee.
 
-* [experimental] Testing support for your Meteor app with BDD / TDD like syntax. This is currently in alpha.
+* [experimental] Testing support for your Meteor app with BDD / TDD like syntax. This is currently in alpha and moved to a
+[separate package](https://github.com/superstringsoftware/observatory-testing)
 
 Installation
 -----------------
@@ -26,10 +28,13 @@ Usage
 ---------
 Somewhere in the common code of your meteor app call:
 ```coffeescript
-TL = TLog.getLogger(TLog.LOGLEVEL_MAX,true)
+TL = TLog.getLogger(TLog.LOGLEVEL_MAX,true, true)
 #for other options, see API section below
 ```
-if you want to set logs removal permission, call allowRemove with allow function as an argument - it gets passed to
+This will get you a logger that will log everything, will also output to the console (second parameter) and
+will log current user (third parameter).
+
+If you want to set logs removal permission, call allowRemove with allow function as an argument - it gets passed to
 Collection.allow({remove: ...}) call. If you call allowRemove with no arguments, it simply sets "true" so use with care.
 ```coffeescript
 TLog.allowRemove (uid)->
@@ -124,6 +129,15 @@ to share your thoughts and ideas!
 
 Revision history
 -----------------
+####0.2.0: March 18, 2013
+First minor release with "real" Meteor (auth, users, ui improvements).
+* Properly logging currently logged-in user
+* Works with Meteor 0.5.9
+* Code highlighting in the Templates Internals
+* Session as a separate panel
+* Unit testing moved to a [separate package](https://github.com/superstringsoftware/observatory-testing)
+* Keyboard based control of the panels ("~" and "ctrl + ~")
+
 ####0.1.9: March 6, 2013
 Update to support Meteor 0.5.7:
 * New logging methods (debug, trace, dir)
