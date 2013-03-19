@@ -13,10 +13,10 @@ class TLog
   # @param [TLog enum] loglevel desired loglevel, one of TLog.LOGLEVEL_FATAL,TLog.LOGLEVEL_ERROR,TLog.LOGLEVEL_WARNING,TLog.LOGLEVEL_INFO,TLog.LOGLEVEL_VERBOSE
   # @param [Bool] want_to_print if true, log messages will be printed to the console as well
   #
-  @getLogger: (loglevel = TLog.LOGLEVEL_INFO, want_to_print = true, log_user = false)->
-    @_instance?=new TLog(loglevel,want_to_print, log_user, false)
+  @getLogger:->
+    @_instance?=new TLog TLog.LOGLEVEL_DEBUG, true, true, false
     #@_instance.insaneVerbose("getLogger() called","TLog")
-    @_instance.setOptions loglevel, want_to_print, log_user
+    #@_instance.setOptions loglevel, want_to_print, log_user
     @_instance
 
   @LOGLEVEL_FATAL = 0
@@ -36,12 +36,11 @@ class TLog
     "FTL", "ERR", "WRN", "INF", "VRB", "DBG","MAX"
   ]
 
-  constructor: (@_currentLogLevel, @_printToConsole, @_log_user = false, show_warning = true)->
+  constructor: (@_currentLogLevel, @_printToConsole, @_log_user = true, show_warning = true)->
     @_logs = TLog._global_logs
     if Meteor.isServer
       Meteor.publish '_observatory_logs',->
         TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
-      #very insecure, yes. For now this is the only dependency on auth branch so "?" let's us take care of this silently.
       # TODO: make this configurable
       TLog._global_logs.allow
         insert: (uid)->
@@ -53,24 +52,30 @@ class TLog
       Meteor.subscribe('_observatory_logs')
     @warn("You should use TLog.getLogger(loglevel, want_to_print) method instead of a constructor! Constructor calls may be removed 
       in the next versions of the package.") if show_warning
+    @verbose "Creating logger with level #{TLog.LOGLEVEL_NAMES[@_currentLogLevel]}, print to console: #{@_printToConsole}, log user: #{@_log_user}", "Observatory"
 
 
   # function to set who is allowed to remove the logs from the database
   @allowRemove: (func)=>
-    TLog._global_logs.allow
-      remove: (uid)=>
-        if func then func uid else true
+    tl = TLog.getLogger()
+    if Meteor.isServer
+      TLog._global_logs.allow
+        remove: (uid)=>
+          tl.warn "Setting allowRemove on the logger to #{func}", "Observatory"
+          if func then func uid else true
+    else tl.warn "Tried to set remove permissions to #{func} on the client", "Observatory"
 
   # Set options for a logger
   #
   # @param [TLog enum] loglevel desired (see getLogger())
   # @param [Bool] whether to print to the console
   #
-  setOptions: (loglevel, want_to_print = true, log_user = false) ->
+  setOptions: (loglevel, want_to_print = true, log_user = true) ->
     if (loglevel>=0) and (loglevel<=TLog.LOGLEVEL_MAX)
       @_currentLogLevel = loglevel
     @_printToConsole = want_to_print
     @_log_user = log_user
+    @verbose "Setting log options with level #{TLog.LOGLEVEL_NAMES[@_currentLogLevel]}, print to console: #{@_printToConsole}, log user: #{@_log_user}", "Observatory"
 
   # Main logging methods:
   fatal: (msg, module)->
@@ -121,8 +126,8 @@ class TLog
           name: p
           value: obj[p]
       @debug(msg, module)
-      @_log("Methods: " + JSON.stringify(methods),TLog.LOGLEVEL_DEBUG, module)
-      @_log("Properties: " + JSON.stringify(props),TLog.LOGLEVEL_DEBUG, module)
+      @_log("Methods: " + EJSON.stringify(methods),TLog.LOGLEVEL_DEBUG, module)
+      @_log("Properties: " + EJSON.stringify(props),TLog.LOGLEVEL_DEBUG, module)
 
   currentLogLevelName: ->
     TLog.LOGLEVEL_NAMES[@_currentLogLevel]
