@@ -168,7 +168,7 @@ Template.observatoryjsInternalsTab.events
   "mouseleave .lb_template_events_list": (evt, templ)->
     selTmpl = Template[evt.target.getAttribute("templateName")]
     method = evt.target.getAttribute("methodName")
-    func = selTmpl._tmpl_data.events[method]
+    func = selTmpl._tmpl_data.events?[method]
     if func
       events = method.split ','
       for e in events
@@ -185,7 +185,7 @@ Template.observatoryjsInternalsTab.events
       strFunc = "// Template." + evt.target.getAttribute("templateName") + "." + method + ":\n" + func
       #_tlog.debug "Method is a key callback:\n" + strFunc
     else
-      func = selTmpl._tmpl_data.events[method]
+      func = selTmpl._tmpl_data.events?[method]
       if func
         strFunc = "// EVENT: " + method + ":\n" + func
         #_tlog.debug "Method is an event:\n" + strFunc
@@ -194,7 +194,7 @@ Template.observatoryjsInternalsTab.events
           k = e.split ' '
           $(k[1]).addClass "lb_highlight_element"
       else
-        func = selTmpl._tmpl_data.helpers[method]
+        func = selTmpl._tmpl_data.helpers?[method]
         strFunc = "// HELPER: " + method + ":\n" + func
         #_tlog.debug "Method is a helper:\n" + strFunc
     #console.dir templ
@@ -250,7 +250,7 @@ _.extend Template.observatoryjsInternalsTab,
         mode:  "javascript"
         theme: Session.get "bl_current_codemirror_theme"
         readOnly: true
-      Meteor.flush()
+      #Meteor.flush()
 
   getMethodMap: (type, tmpl)->
     rt = []

@@ -1,4 +1,4 @@
-# Class that hanles all the logging logic 
+# Class that handles all the logging logic
 #
 # @example Getting a logger that will print only WARNING and more severe messages both to db and console:
 #     TL = TLog.getLogger(TLog.LOGLEVEL_WARNING, true)
@@ -144,9 +144,18 @@ class TLog
         srv = true
 
       uid = null
+      user = ''
       if @_log_user
         try
           uid = Meteor.userId()
+          u = Meteor.users.findOne(uid) # TODO: check how it affects performance!
+          if u and u.username
+            user = u.username
+          else
+            if u and u.emails[0]
+              user = u.emails[0].address
+            else
+              user = uid
         catch err
       module = mdl
       timestamp = new Date Date.now()
@@ -154,6 +163,7 @@ class TLog
       full_message = if srv then ts + "[SERVER]" else ts + "[CLIENT]"
       full_message+= if module then @_ps module else "[]"
       full_message+= @_ps(TLog.LOGLEVEL_NAMES[loglevel]) #TODO: RANGE CHECK!!!
+      full_message+= "[#{user}]"
       full_message+= ' ' + msg
       @_logs.insert
         isServer: srv
@@ -193,4 +203,5 @@ class TLog
     @_global_logs.remove {}
 
 
-
+(exports ? this).TLog = TLog
+#global.TLog = TLog
