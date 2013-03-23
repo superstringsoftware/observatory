@@ -16,7 +16,7 @@
                       {{#if connected}}
                       <span style="color: #2c2;">connected</span>
                       {{else}}
-                      <span style="color: #c22;">disconnected</span>
+                      <span style="color: #c22;">disconnected:</span>{{reason}} ({{retryCount}})
                       | status: {{status}}
                       {{/if}}
                       {{/with}}
@@ -28,7 +28,7 @@
                     {{#if connected}}
                     <span style="color: #2c2;">connected</span>
                     {{else}}
-                    <span style="color: #c22;">disconnected</span>
+                    <span style="color: #c22;">disconnected:</span>{{reason}} ({{retryCount}})
                     | status: {{status}}
                     {{/if}}
                     {{/with}}

@@ -107,6 +107,9 @@ _.extend Template.logs_bootstrap,
 
     Meteor.flush()
 
+  destroyed: ->
+    #Meteor.clearInterval @_handle
+
    #setting initial sort order for the logs
   created: ->
     def = Session.get "bl_default_panel"
@@ -115,16 +118,13 @@ _.extend Template.logs_bootstrap,
     Session.setDefault "bl_current_session_width", "lb_invisible"
     #Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
 
-    Meteor.setInterval ->
+    # checking connection status
+    # TODO: there's public API to handle this which is also reactive, move there!
+    Deps.autorun ->
       #_tlog.debug "Calling function that polls connection status (supposedly)..."
-      status = Template.logs_bootstrap._connectionStatus = TLog._global_logs._manager._stream.current_status
-      Session.set "observatoryjs.ConnectionStatus", status
-      #Deps.flush()
-    , 5000
+      Session.set "observatoryjs.ConnectionStatus", Meteor.status()
 
 
-
-    Template.logs_bootstrap._subscriptions = TLog._global_logs._manager._subscriptions
 
   rendered: ->
     Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
@@ -248,6 +248,15 @@ Template.observatoryjsInternalsTab.helpers
 # OTHER
 ######################################################################################################################
 _.extend Template.observatoryjsInternalsTab,
+  destroyed: ->
+    Meteor.clearInterval @_handle
+
+  created: ->
+    @_handle = Meteor.setInterval ->
+      console.log "Polling subscription states"
+      @_subscriptions = TLog._global_logs._manager._subscriptions
+      Session.set "observatoryjs.CurrentSubscriptions", @_subscriptions
+    , 3000
 
   rendered: ->
     $("#selTemplateNames").val Session.get "bl_selected_template_name"
