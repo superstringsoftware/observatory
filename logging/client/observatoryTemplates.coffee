@@ -1,9 +1,9 @@
 _tlog = TLog.getLogger()
-###
+
 Meteor.startup ->
-  Handlebars.registerHelper "observatoryjsRender", (name, options) ->
-    new Handlebars.SafeString(Template[name](options)) if Template[name]
-###
+  Handlebars.registerHelper "getSession", (name) ->
+    Session.get name
+
 
 ############################################################################################################
 # EVENTS
@@ -114,6 +114,17 @@ _.extend Template.logs_bootstrap,
     Session.setDefault "bl_current_codemirror_theme", "ambiance"
     Session.setDefault "bl_current_session_width", "lb_invisible"
     #Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
+
+    Meteor.setInterval ->
+      #_tlog.debug "Calling function that polls connection status (supposedly)..."
+      status = Template.logs_bootstrap._connectionStatus = TLog._global_logs._manager._stream.current_status
+      Session.set "observatoryjs.ConnectionStatus", status
+      #Deps.flush()
+    , 5000
+
+
+
+    Template.logs_bootstrap._subscriptions = TLog._global_logs._manager._subscriptions
 
   rendered: ->
     Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
