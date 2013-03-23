@@ -152,7 +152,7 @@ class TLog
           if u and u.username
             user = u.username
           else
-            if u and u.emails[0]
+            if u and u.emails and u.emails[0]
               user = u.emails[0].address
             else
               user = uid
