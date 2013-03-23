@@ -261,6 +261,7 @@ _.extend Template.observatoryjsInternalsTab,
     , 5000
 
   rendered: ->
+    console.dir $("body").children().last()
     $("#selTemplateNames").val Session.get "bl_selected_template_name"
     Session.set "bl_selected_template_name", $("#selTemplateNames").val()
     #tmp = $("#selTemplateNames").val()
