@@ -119,7 +119,6 @@ _.extend Template.logs_bootstrap,
     #Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
 
     # checking connection status
-    # TODO: there's public API to handle this which is also reactive, move there!
     Deps.autorun ->
       #_tlog.debug "Calling function that polls connection status (supposedly)..."
       Session.set "observatoryjs.ConnectionStatus", Meteor.status()
@@ -252,11 +251,14 @@ _.extend Template.observatoryjsInternalsTab,
     Meteor.clearInterval @_handle
 
   created: ->
-    @_handle = Meteor.setInterval ->
-      console.log "Polling subscription states"
-      @_subscriptions = TLog._global_logs._manager._subscriptions
+    # monitoring state of collections and subscriptions
+    # TODO: style it
+    # TODO: create collection monitoring area
+    @_handle = Meteor.setInterval =>
+      @_subscriptions = (v for k,v of TLog._global_logs._manager._subscriptions)
+      @_collections = Meteor._LocalCollectionDriver.collections
       Session.set "observatoryjs.CurrentSubscriptions", @_subscriptions
-    , 3000
+    , 5000
 
   rendered: ->
     $("#selTemplateNames").val Session.get "bl_selected_template_name"

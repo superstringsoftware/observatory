@@ -138,6 +138,11 @@
                 </tr>
                 </tbody>
             </table>
+            <div>
+                {{#each getSession "observatoryjs.CurrentSubscriptions"}}
+                {{name}}: {{inactive}}: {{ready}} <br/>
+                {{/each}}
+            </div>
         </div>
 
         <div id="lb_code_console">
