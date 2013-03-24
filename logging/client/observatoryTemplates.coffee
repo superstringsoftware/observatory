@@ -374,7 +374,8 @@ Template.observatoryjsLogsTab.helpers
     d = new Date(ts)
     TLog._convertTime(d)
 
-  getUser: (uid)->
+  getUser: (log)->
+    uid = log.uid
     user = ""
     if uid
       u = Meteor.users.findOne(uid)
@@ -385,6 +386,7 @@ Template.observatoryjsLogsTab.helpers
           user = u.emails[0].address
         else
           user = uid
+    else if log.ip then user = log.ip
     user
 
 

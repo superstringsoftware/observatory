@@ -1,6 +1,6 @@
 #!
 # Copyright(c) 2013 Superstring Software
-# Based on Sencha Labs logger
+# Loosely based on Sencha Labs logger with most of bells and whistles thrown away
 #
 
 Observatory = if Observatory? then Observatory else {}
@@ -40,7 +40,7 @@ _.extend Observatory,
         timestamp: new Date
         responseTime: new Date - req._startTime
 
-      console.dir obj
+      #console.dir obj
       TLog.addToLogsBuffer obj
     next()
 
