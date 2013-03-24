@@ -1,9 +1,18 @@
+# Hooking into connect logger:
+
+
+
 # Class that handles all the logging logic
 #
 # @example Getting a logger that will print only WARNING and more severe messages both to db and console:
 #     TL = TLog.getLogger(TLog.LOGLEVEL_WARNING, true)
 #
 class TLog
+  @_connectLogsBuffer = []
+
+  @addToLogsBuffer: (obj)->
+    @_connectLogsBuffer.push obj
+
   @_instance = undefined
 
   @_global_logs = new Meteor.Collection '_observatory_logs'
@@ -39,6 +48,8 @@ class TLog
   constructor: (@_currentLogLevel, @_printToConsole, @_log_user = true, show_warning = true)->
     @_logs = TLog._global_logs
     if Meteor.isServer
+      # Hooking into connect middleware
+      __meteor_bootstrap__.app.use Observatory.logger #TLog.useragent
       Meteor.publish '_observatory_logs',->
         TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
       # TODO: make this configurable
@@ -135,8 +146,26 @@ class TLog
   logCount: ->
     @_logs.find({}).count()
 
+
+  # need this because we can only insert() inside the Fiber, so need to do it outside of core Node
+  # modules
+  _logNodeMessage: (timestamp, msg, loglevel, mdl)->
+    ts = @_ps(TLog._convertDate(timestamp)) + @_ps(TLog._convertTime(timestamp))
+    @_logs.insert
+      isServer: true
+      message: msg
+      module: mdl
+      loglevel: loglevel
+      timestamp_text: ts
+      timestamp: timestamp
+      uid: null
+
   #internal method doing the logging
   _log: (msg, loglevel = TLog.LOGLEVEL_INFO, mdl) ->
+    # flushing connect middleware buffer
+    if Meteor.isServer and @_currentLogLevel >= TLog.LOGLEVEL_VERBOSE and TLog._connectLogsBuffer.length > 0
+      @_logNodeMessage b.timestamp, b.message, TLog.LOGLEVEL_VERBOSE, "connect" for b in TLog._connectLogsBuffer
+      TLog._connectLogsBuffer = []
 
     if loglevel <= @_currentLogLevel
       srv = false

@@ -7,6 +7,7 @@ Package.on_use(function (api) {
   api.use(['coffeescript', 'bootstrap', 'underscore','templating','less'], 'client');
 
   api.add_files('logging/observatory.coffee','server');
+  api.add_files('monitoring/server/connectHook.coffee','server');
   api.add_files('logging/lib/inspect.coffee','server');
   api.add_files('client/codemirror/codemirror.js','client');
   api.add_files('client/codemirror/javascript.js','client');
