@@ -7,7 +7,7 @@ Package.on_use(function (api) {
   api.use(['coffeescript', 'bootstrap', 'underscore','templating','less'], 'client');
 
   api.add_files('logging/observatory.coffee','server');
-  api.add_files('logging/lib/inspect.js','server');
+  api.add_files('logging/lib/inspect.coffee','server');
   api.add_files('client/codemirror/codemirror.js','client');
   api.add_files('client/codemirror/javascript.js','client');
   api.add_files('client/codemirror/codemirror.css','client');
@@ -35,7 +35,7 @@ Package.on_use(function (api) {
 
   api.add_files([
   	'logging/observatory.coffee',
-    'logging/lib/inspect.js',
+    'logging/lib/inspect.coffee',
     'logging/client/observatory.html',
     'logging/client/observatoryTemplates.coffee',
     'logging/client/observatory.less',
