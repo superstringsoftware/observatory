@@ -11,8 +11,30 @@
                     <li><button class="btn btn-mini btn-info" type="button" id="lb_btn_change_theme">change theme</button></li>
                    <!-- <li><button class="btn btn-mini btn-info" type="button" id="lb_btn_switch_dynamic">toggle full page</button></li> -->
                     <li><button class="btn btn-danger btn-mini" id="lb_btn_clear_logs" type="button">clear logs</button></li>
+                  <div id="lb_status_line" class="pull-right">
+                      {{#with getSession "observatoryjs.ConnectionStatus"}}
+                      {{#if connected}}
+                      <span style="color: #2c2;">connected</span>
+                      {{else}}
+                      <span style="color: #c22;">disconnected:</span>{{reason}} ({{retryCount}})
+                      | status: {{status}}
+                      {{/if}}
+                      {{/with}}
+                  </div>
               </ul>
+               {{else}}
+                <div id="lb_status_line">
+                    {{#with getSession "observatoryjs.ConnectionStatus"}}
+                    {{#if connected}}
+                    <span style="color: #2c2;">connected</span>
+                    {{else}}
+                    <span style="color: #c22;">disconnected:</span>{{reason}} ({{retryCount}})
+                    | status: {{status}}
+                    {{/if}}
+                    {{/with}}
+                </div>
               {{/if}}
+
         {{{observatoryjsRenderCurrent}}}
         </div>
         <a class="observatory_trigger" href="#" id="btn_toggle_logs">O!</a>
@@ -116,6 +138,11 @@
                 </tr>
                 </tbody>
             </table>
+            <div>
+                {{#each getSession "observatoryjs.CurrentSubscriptions"}}
+                {{name}}: {{inactive}}: {{ready}} <br/>
+                {{/each}}
+            </div>
         </div>
 
         <div id="lb_code_console">
