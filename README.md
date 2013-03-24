@@ -6,4 +6,4 @@ Observatory: Apollo. Lightweight but versatile logger for Meteor applications, p
 
 This is a small meteorite package, installed as mrt add observatory-apollo - in case you don't want all the great features 
 full Observatory Suite provides and would just like to use the logger. This is for expert users, we highly recommend
-you checkout (full Observatory suite)[http://observatoryjs.com].
+you checkout [full Observatory suite](http://observatoryjs.com).
