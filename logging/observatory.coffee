@@ -14,8 +14,8 @@ class TLog
     if TLog._connectLogsBuffer.length > 0
       tl = TLog.getLogger()
       for l in TLog._connectLogsBuffer
-        msg = "#{l.method} #{l.url} via HTTP/#{l.httpVersion} -- #{l.status} -- UA: [#{l.userAgent}]"
-        fullMsg = msg + " -- referrer: #{l.referrer?}"
+        msg = "#{l.method} #{l.url}: #{l.status} in #{l.responseTime} ms\n#{l.userAgent}\n#{l.responseHeader}"
+        fullMsg = msg + "\nreferrer: #{l.referrer?}"
         loglevel = TLog.LOGLEVEL_VERBOSE
         if l.status >= 500 then loglevel = TLog.LOGLEVEL_FATAL
         else if l.status >= 400 then loglevel = TLog.LOGLEVEL_ERROR

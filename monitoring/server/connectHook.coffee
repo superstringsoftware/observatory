@@ -14,6 +14,7 @@ _.extend Observatory,
 
     req._startTime = new Date
     end = res.end
+
     res.end = (chunk, encoding) ->
       res.end = end
       res.end chunk, encoding
@@ -35,6 +36,7 @@ _.extend Observatory,
         httpVersion: req.httpVersionMajor + "." + req.httpVersionMinor
         userAgent: req.headers["user-agent"]
         #contentLength: parseInt(res.getHeader('Content-Length'), 10)
+        responseHeader: res._header
         timestamp: new Date
         responseTime: new Date - req._startTime
 
