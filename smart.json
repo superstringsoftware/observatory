@@ -1,10 +1,10 @@
 {
     "name": "observatory-apollo",
     "description": "Observatory: Apollo. Lightweight but versatile logger, part of Observatory suite (http://observatoryjs.com)",
-    "homepage": "https://github.com/jhoxray/observatory",
+    "homepage": "http://observatoryjs.com",
     "author": "Superstring Software, J 'XRay' Ho <jho.xray@gmail.com>",
     "version": "0.2.0",
-    "git": "https://github.com/jhoxray/observatory.git",
+    "git": "https://github.com/superstringsoftware/observatory-apollo.git",
     "packages": {
 
     }
