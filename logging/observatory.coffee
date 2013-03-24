@@ -1,7 +1,3 @@
-# Hooking into connect logger:
-
-
-
 # Class that handles all the logging logic
 #
 # @example Getting a logger that will print only WARNING and more severe messages both to db and console:
@@ -9,12 +5,38 @@
 #
 class TLog
   @_connectLogsBuffer = []
+  @_log_http = true
 
   @addToLogsBuffer: (obj)->
     @_connectLogsBuffer.push obj
 
-  @_instance = undefined
+  @checkConnectLogsBuffer: ->
+    if TLog._connectLogsBuffer.length > 0
+      tl = TLog.getLogger()
+      for l in TLog._connectLogsBuffer
+        msg = "#{l.method} #{l.url} via HTTP/#{l.httpVersion} -- #{l.status} -- UA: [#{l.userAgent}]"
+        fullMsg = msg + " -- referrer: #{l.referrer?}"
+        loglevel = TLog.LOGLEVEL_VERBOSE
+        if l.status >= 500 then loglevel = TLog.LOGLEVEL_FATAL
+        else if l.status >= 400 then loglevel = TLog.LOGLEVEL_ERROR
+        else if l.status >= 300 then loglevel = TLog.LOGLEVEL_WARNING
 
+        options =
+          isServer: true
+          message: msg
+          full_message: fullMsg
+          module: "HTTP"
+          timestamp: l.timestamp
+          ip: l.remoteAddress
+          elapsedTime: l.responseTime # e.g., response time for http or method running time for profiling functions
+
+        # recording the result
+        tl._lowLevelLog loglevel, options, l
+
+      TLog._connectLogsBuffer = []
+
+
+  @_instance = undefined
   @_global_logs = new Meteor.Collection '_observatory_logs'
 
   # Get a logger with options
@@ -24,8 +46,6 @@ class TLog
   #
   @getLogger:->
     @_instance?=new TLog TLog.LOGLEVEL_DEBUG, true, true, false
-    #@_instance.insaneVerbose("getLogger() called","TLog")
-    #@_instance.setOptions loglevel, want_to_print, log_user
     @_instance
 
   @LOGLEVEL_FATAL = 0
@@ -81,12 +101,13 @@ class TLog
   # @param [TLog enum] loglevel desired (see getLogger())
   # @param [Bool] whether to print to the console
   #
-  setOptions: (loglevel, want_to_print = true, log_user = true) ->
+  setOptions: (loglevel, want_to_print = true, log_user = true, log_http = true) ->
     if (loglevel>=0) and (loglevel<=TLog.LOGLEVEL_MAX)
       @_currentLogLevel = loglevel
     @_printToConsole = want_to_print
     @_log_user = log_user
-    @verbose "Setting log options with level #{TLog.LOGLEVEL_NAMES[@_currentLogLevel]}, print to console: #{@_printToConsole}, log user: #{@_log_user}", "Observatory"
+    TLog._log_http = log_http
+    @verbose "Setting log options with level #{TLog.LOGLEVEL_NAMES[@_currentLogLevel]}, print to console: #{@_printToConsole}, log user: #{@_log_user}, http logging: #{TLog._log_http}", "Observatory"
 
   # Main logging methods:
   fatal: (msg, module)->
@@ -147,26 +168,27 @@ class TLog
     @_logs.find({}).count()
 
 
-  # need this because we can only insert() inside the Fiber, so need to do it outside of core Node
-  # modules
-  _logNodeMessage: (timestamp, msg, loglevel, mdl)->
-    ts = @_ps(TLog._convertDate(timestamp)) + @_ps(TLog._convertTime(timestamp))
+  # low level full logging convenience
+  _lowLevelLog: (loglevel, options, customOptions)->
+    return if loglevel >= @_currentLogLevel
+
+    ts = if options.timestamp_text then options.timestamp_text else @_ps(TLog._convertDate(options.timestamp)) + @_ps(TLog._convertTime(options.timestamp))
+
     @_logs.insert
-      isServer: true
-      message: msg
-      module: mdl
+      isServer: options.isServer or false
+      message: options.message
+      full_message: options.fullMessage
+      module: options.module
       loglevel: loglevel
       timestamp_text: ts
-      timestamp: timestamp
-      uid: null
+      timestamp: options.timestamp
+      uid: options.uid # user id or null
+      ip: options.ip # IP address or null
+      elapsedTime: options.elapsedTime # e.g., response time for http or method running time for profiling functions
+      customOptions: customOptions # anything else EJSONable that you want to store
 
-  #internal method doing the logging
+  # normal Meteor logging
   _log: (msg, loglevel = TLog.LOGLEVEL_INFO, mdl) ->
-    # flushing connect middleware buffer
-    if Meteor.isServer and @_currentLogLevel >= TLog.LOGLEVEL_VERBOSE and TLog._connectLogsBuffer.length > 0
-      @_logNodeMessage b.timestamp, b.message, TLog.LOGLEVEL_VERBOSE, "connect" for b in TLog._connectLogsBuffer
-      TLog._connectLogsBuffer = []
-
     if loglevel <= @_currentLogLevel
       srv = false
       if Meteor.isServer
@@ -186,24 +208,26 @@ class TLog
             else
               user = uid
         catch err
+
       module = mdl
-      timestamp = new Date Date.now()
+      timestamp = new Date
       ts = @_ps(TLog._convertDate(timestamp)) + @_ps(TLog._convertTime(timestamp))
       full_message = if srv then ts + "[SERVER]" else ts + "[CLIENT]"
       full_message+= if module then @_ps module else "[]"
       full_message+= @_ps(TLog.LOGLEVEL_NAMES[loglevel]) #TODO: RANGE CHECK!!!
       full_message+= "[#{user}]"
       full_message+= ' ' + msg
-      @_logs.insert
+
+      options =
         isServer: srv
         message: msg
-        module: module
-        loglevel: loglevel
-        timestamp_text: ts
+        module: mdl
         timestamp: timestamp
+        timestamp_text: ts
         full_message: full_message
         uid: uid
 
+      @_lowLevelLog loglevel, options
       console.log(full_message) if @_printToConsole
 
   _convertTimestamp: (timestamp)->
@@ -230,6 +254,14 @@ class TLog
   #Ouch! This should be really protected once auth is figured out.
   @_clear: ->
     @_global_logs.remove {}
+
+
+# Starting the cycle of watching http logs buffer
+if Meteor.isServer
+  Meteor.startup ->
+    Meteor.setInterval ->
+      TLog.checkConnectLogsBuffer()
+    , 5000
 
 
 (exports ? this).TLog = TLog

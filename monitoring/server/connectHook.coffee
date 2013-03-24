@@ -8,6 +8,10 @@ Observatory = if Observatory? then Observatory else {}
 _.extend Observatory,
 
   logger: (req, res, next) ->
+    if not TLog._log_http
+      next()
+      return
+
     req._startTime = new Date
     end = res.end
     res.end = (chunk, encoding) ->
@@ -30,6 +34,7 @@ _.extend Observatory,
         status: res.statusCode
         httpVersion: req.httpVersionMajor + "." + req.httpVersionMinor
         userAgent: req.headers["user-agent"]
+        #contentLength: parseInt(res.getHeader('Content-Length'), 10)
         timestamp: new Date
         responseTime: new Date - req._startTime
 
