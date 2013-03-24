@@ -90,10 +90,12 @@ _.extend Template.logs_bootstrap,
         Session.set "bl_is_dynamic", false
         Session.set("bl_panel_height_class","height90")
         Session.set("bl_full_featured_panel",true)
+
       when "height90"
         Session.set("bl_panel_height_class","")
         $("#id_logs_bootstrap").hide("fast")
         Session.set "bl_is_visible", false
+
       when "height25"
         Session.set("bl_panel_height_class","height50")
         Session.set("bl_full_featured_panel",true)
@@ -105,13 +107,27 @@ _.extend Template.logs_bootstrap,
         $("#id_logs_bootstrap").removeClass("lb_hidden")
         $("#id_logs_bootstrap").show("slow")
 
-    Meteor.flush()
+
+    #console.log "Setting margin-bottom of the last element to #{tt} px"
+    #console.dir $("body").children().last()
+    Deps.flush()
+
+    if Session.equals "bl_is_visible", true
+      tt = $('#id_logs_bootstrap').outerHeight()
+      #console.dir "Current height is #{tt}"
+      $("body").children().last().css('margin-bottom', tt + 20)
+    else
+      $("body").children().last().css('margin-bottom', 0) #Template.logs_bootstrap.originalMainMargin)
+
+
 
   destroyed: ->
     #Meteor.clearInterval @_handle
 
    #setting initial sort order for the logs
   created: ->
+    #Template.logs_bootstrap.originalMainMargin = $("body").children().last().css('margin-bottom')
+    #console.log "Remembering margin as #{Template.logs_bootstrap.originalMainMargin}"
     def = Session.get "bl_default_panel"
     if def? then Template.logs_bootstrap.setDefault def else Template.logs_bootstrap.setDefault "hidden"
     Session.setDefault "bl_current_codemirror_theme", "ambiance"
@@ -126,6 +142,7 @@ _.extend Template.logs_bootstrap,
 
 
   rendered: ->
+    # setting whatever last elements bottom marging is to manipulate in observatory panel size changes
     Session.setDefault "observatoryjs-currentRender", "observatoryjsLogsTab"
     # handling key presses to toggle session and the panel
     $('body').on 'keydown', (evt)->
@@ -144,6 +161,8 @@ _.extend Template.logs_bootstrap,
               Session.set "bl_current_session_width", "lb_width50"
             when "lb_width50"
               Session.set "bl_current_session_width", "lb_invisible"
+
+
 
 
 
@@ -261,7 +280,6 @@ _.extend Template.observatoryjsInternalsTab,
     , 5000
 
   rendered: ->
-    console.dir $("body").children().last()
     $("#selTemplateNames").val Session.get "bl_selected_template_name"
     Session.set "bl_selected_template_name", $("#selTemplateNames").val()
     #tmp = $("#selTemplateNames").val()
