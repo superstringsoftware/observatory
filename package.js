@@ -8,6 +8,7 @@ Package.on_use(function (api) {
 
   api.add_files('logging/observatory.coffee','server');
   api.add_files('monitoring/server/connectHook.coffee','server');
+  api.add_files('monitoring/server/monitoringHooks.coffee','server');
   api.add_files('logging/lib/inspect.coffee','server');
   api.add_files('client/codemirror/codemirror.js','client');
   api.add_files('client/codemirror/javascript.js','client');
@@ -37,6 +38,8 @@ Package.on_use(function (api) {
   api.add_files([
   	'logging/observatory.coffee',
     'logging/lib/inspect.coffee',
+    'monitoring/client/monitoring.html',
+    'monitoring/client/monitoringClient.coffee',
     'logging/client/observatory.html',
     'logging/client/observatoryTemplates.coffee',
     'logging/client/observatory.less',
