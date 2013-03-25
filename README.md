@@ -133,7 +133,7 @@ Revision history
 -----------------
 ####0.2.1: March 25, 2013
 * Added http requests logging via connect middleware hook
-* Changed UI behavior so that Observatory modifies last child of <body> to be able to scroll main site content up
+* Changed UI behavior so that Observatory modifies last child of &lt;body&gt; to be able to scroll main site content up
 * Preparation for Meteor 0.6.0 in terms of variables scoping
 * Internal package restructuring - moved core logger etc to a separate package (to be released separately soon)
 
