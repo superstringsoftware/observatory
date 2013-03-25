@@ -136,6 +136,7 @@ Revision history
 * Changed UI behavior so that Observatory modifies last child of <body> to be able to scroll main site content up
 * Preparation for Meteor 0.6.0 in terms of variables scoping
 * Internal package restructuring - moved core logger etc to a separate package (to be released separately soon)
+
 ####0.2.0: March 18, 2013
 First minor release with "real" Meteor (auth, users, ui improvements).
 * Properly logging currently logged-in user
