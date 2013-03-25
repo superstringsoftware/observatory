@@ -3,14 +3,11 @@
   "description": "Powerful, yet easy to use, logging and monitoring package. See a demo app at http://observatoryjs.com",
   "homepage": "https://github.com/jhoxray/observatory",
   "author": "J Ho XRay <jho.xray@gmail.com>",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "git": "https://github.com/jhoxray/observatory.git",
   "packages": {
     "observatory-apollo": {
         "path": "../observatory-apollo"
-    },
-      "observatory-jupiter": {
-          "path": "../observatory-jupiter"
-      }
+    }
   }
 }
