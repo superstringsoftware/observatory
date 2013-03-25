@@ -59,5 +59,4 @@ _.extend Observatory,
   _tokenRes: (req, res, field) ->
     (res._headers or {})[field.toLowerCase()]
 
-
 (exports ? this).Observatory = Observatory

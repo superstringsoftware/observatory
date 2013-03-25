@@ -170,8 +170,9 @@ class TLog
 
 
   # low level full logging convenience
+  # DOES NOT check current level to allow logging monitoring etc functions
   _lowLevelLog: (loglevel, options, customOptions)->
-    return if loglevel >= @_currentLogLevel
+    #return if loglevel >= @_currentLogLevel
 
     ts = if options.timestamp_text then options.timestamp_text else @_ps(TLog._convertDate(options.timestamp)) + @_ps(TLog._convertTime(options.timestamp))
 

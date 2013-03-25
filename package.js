@@ -8,6 +8,8 @@ try {
 
         api.add_files('TLog.coffee',['client','server']);
         api.add_files('connectHook.coffee','server');
+        api.add_files('monitoringHooks.coffee','server');
+        api.add_files('Monitor.coffee','server');
 
     });
 }
