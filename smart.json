@@ -7,7 +7,7 @@
   "git": "https://github.com/jhoxray/observatory.git",
   "packages": {
     "observatory-apollo": {
-        "path": "../observatory-apollo"
+        "git": "https://github.com/superstringsoftware/observatory-apollo.git"
     }
   }
 }

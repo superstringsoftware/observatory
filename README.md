@@ -1,6 +1,6 @@
 What is it?
 -------------
-This is Observatory v0.2.0 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient
+This is Observatory v0.2.1 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient
 and pretty logging and monitoring for [Meteor framework](http://meteor.com) application development.
 [See it in action!](http://observatoryjs.com/).
 
@@ -10,9 +10,11 @@ What does it do?
 logging to console, pretty output of both Client and Server logs right in the browser, optional logging of
 the currently logged-in user for additional control.
 
-* Monitoring of your application internals: currently, Templates with all events and a Session object; more to come.
+* NEW! Logging of http requests (yes, with client-side IP address - an infamous topic among Meteor devs :))
 
-* 2 visual styles: "dark" for additional terminal coolness and "light" that may be easier on the eyes. Adding a new theme is pretty
+* Monitoring of your application internals: currently, Templates with all events and a Session object; much more to come.
+
+* 2 visual styles: "dark" for additional "terminal" coolness and "light" that may be easier on the eyes. Adding a new theme is pretty
 easy even now and will be even easier soon - just look at observatory.less and theme() helper in observatoryTemplates.coffee.
 
 * [experimental] Testing support for your Meteor app with BDD / TDD like syntax. This is currently in alpha and moved to a
@@ -28,11 +30,11 @@ Usage
 ---------
 Somewhere in the common code of your meteor app call:
 ```coffeescript
-TL = TLog.getLogger(TLog.LOGLEVEL_MAX,true, true)
+TL = TLog.getLogger(TLog.LOGLEVEL_MAX,true, true, true)
 #for other options, see API section below
 ```
-This will get you a logger that will log everything, will also output to the console (second parameter) and
-will log current user (third parameter).
+This will get you a logger that will log everything, will also output to the console (second parameter),
+will log current user (third parameter) and http requests (last parameter).
 
 If you want to set logs removal permission, call allowRemove with allow function as an argument - it gets passed to
 Collection.allow({remove: ...}) call. If you call allowRemove with no arguments, it simply sets "true" so use with care.
@@ -129,6 +131,11 @@ to share your thoughts and ideas!
 
 Revision history
 -----------------
+####0.2.1: March 25, 2013
+* Added http requests logging via connect middleware hook
+* Changed UI behavior so that Observatory modifies last child of <body> to be able to scroll main site content up
+* Preparation for Meteor 0.6.0 in terms of variables scoping
+* Internal package restructuring - moved core logger etc to a separate package (to be released separately soon)
 ####0.2.0: March 18, 2013
 First minor release with "real" Meteor (auth, users, ui improvements).
 * Properly logging currently logged-in user
