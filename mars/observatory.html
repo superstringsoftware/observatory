@@ -67,7 +67,7 @@
                 {{#each log_messages}}
                 <tr class="{{lb_loglevel_row_decoration}} no_border">
                     <td class="lb_timestamp">{{format_timestamp timestamp}}</td>
-                    <td class="lb_user">{{getUser uid}}</td>
+                    <td class="lb_user">{{getUser this}}</td>
                     {{#if isServer}}
                     <td class="lb_server"><span class="label label-inverse">server</span></td>
                     {{else}}
@@ -183,7 +183,7 @@
     <!-- help tab -->
     <div id="id_help_tab" class="tab-pane" style="height:100%;">
         <div class="lb_scrollable">
-            <p>For details, please see <a href="http://observatoryjs.com/">Observatory web page</a>. This is version 0.2.0.
+            <p>For details, please see <a href="http://observatoryjs.com/">Observatory web page</a>. This is version 0.2.1.
                 This package provides
                 powerful logging, inspection and monitoring for your <a href="http://meteor.com">Meteor framework</a> applications.
                 Observatory panel is controlled by pressing the "O!" button in the bottom-left corner of the page or "ctrl + ~" key:
