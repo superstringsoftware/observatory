@@ -3,36 +3,42 @@ if Meteor.isServer
   Mocha = require 'mocha'
   fs = require("fs")
   path = require("path")
+  chai = require("chai")
 
+  Meteor.startup ->
+    runServerTests()
 
-Meteor.methods
-    runServerTests: ->
-      console.log "runServerTests: ->"
-      mocha = new Mocha({
-                        ui: 'bdd',
-                        reporter: 'spec'
-                        });
-      console.dir mocha
+  runServerTests = ->
+    console.log "runServerTests: ->"
+    #console.dir mocha
 
+    mocha = new Mocha({ui: 'bdd', reporter: 'spec'});
+    fs.readdirSync("tests").filter((file) ->
+      file.substr(-3) is ".js"
+    ).forEach (file) ->
 
-      fs.readdirSync("tests").filter((file) ->
-        file.substr(-3) is ".js"
-      ).forEach (file) ->
+      # Use the method "addFile" to add the file to mocha
+      mocha.addFile path.join("tests", file)
 
-        # Use the method "addFile" to add the file to mocha
-        mocha.addFile path.join("tests", file)
-
-
-      # Now, you can run the tests.
-      mocha.run (failures) ->
-        console.dir failures
-
+    # Now, you can run the tests.
+    res = mocha.run()
+    #console.dir res
+    res
 
 
 
+  Meteor.methods
+    runServerTests: runServerTests
+
+
+
+
+###
 if Meteor.isClient
   Template.tests.events
    'click #btnTest': ->
      console.log "'click #btnTest': ->"
      Meteor.call 'runServerTests', (err,res)->
        console.dir res
+
+###

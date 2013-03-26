@@ -8,11 +8,17 @@
     "basePackages": {
       "observatory-apollo": {
         "path": ".."
+      },
+      "mocha-web": {
+        "path": "../../meteor-mocha-web"
       }
     },
     "packages": {
       "observatory-apollo": {
         "path": ".."
+      },
+      "mocha-web": {
+        "path": "../../meteor-mocha-web"
       }
     }
   }

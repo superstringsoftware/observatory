@@ -6,6 +6,9 @@
   "packages": {
       "observatory-apollo": {
           "path": "../"
+      },
+      "mocha-web": {
+          "path": "../../meteor-mocha-web"
       }
   }
 }

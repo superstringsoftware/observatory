@@ -1,1 +1,2 @@
-METEOR_MOCHA_TEST_DIRS="mtests" mrt
+coffee -c tests/*.coffee
+mrt
