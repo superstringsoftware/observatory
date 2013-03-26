@@ -4,6 +4,8 @@ if Meteor.isServer
   fs = require("fs")
   path = require("path")
   chai = require("chai")
+  tty = require('tty')
+  console.log tty.isatty(1)
 
   Meteor.startup ->
     runServerTests()
@@ -13,6 +15,8 @@ if Meteor.isServer
     #console.dir mocha
 
     mocha = new Mocha({ui: 'bdd', reporter: 'spec'});
+    Mocha.reporters.Base.useColors = true
+    
     fs.readdirSync("tests").filter((file) ->
       file.substr(-3) is ".js"
     ).forEach (file) ->
