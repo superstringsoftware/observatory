@@ -6,10 +6,10 @@ try {
     Package.on_use(function (api) {
         api.use(['coffeescript', 'underscore'], ['client','server']);
 
-        api.add_files('TLog.coffee',['client','server']);
-        api.add_files('connectHook.coffee','server');
-        api.add_files('monitoringHooks.coffee','server');
-        api.add_files('Monitor.coffee','server');
+        api.add_files('lib/TLog.coffee',['client','server']);
+        api.add_files('lib/connectHook.coffee','server');
+        api.add_files('lib/monitoringHooks.coffee','server');
+        api.add_files('lib/Monitor.coffee','server');
 
     });
 }
