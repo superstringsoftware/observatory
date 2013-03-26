@@ -1,7 +1,7 @@
 _tlog = TLog.getLogger()
 
 Meteor.startup ->
-  Handlebars.registerHelper "bl_getSession", (name) ->
+  Handlebars.registerHelper "blGetSession", (name) ->
     Session.get name
 
 
