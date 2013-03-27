@@ -5,5 +5,5 @@
 
 preserve-inputs
 observatory-apollo
-mocha-web
+observatory-testing
 coffeescript

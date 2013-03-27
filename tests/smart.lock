@@ -9,7 +9,7 @@
       "observatory-apollo": {
         "path": ".."
       },
-      "mocha-web": {
+      "observatory-testing": {
         "path": "../../observatory-testing"
       }
     },
@@ -17,7 +17,7 @@
       "observatory-apollo": {
         "path": ".."
       },
-      "mocha-web": {
+      "observatory-testing": {
         "path": "../../observatory-testing"
       }
     }
