@@ -10,7 +10,7 @@
         "path": ".."
       },
       "mocha-web": {
-        "path": "../../meteor-mocha-web"
+        "path": "../../observatory-testing"
       }
     },
     "packages": {
@@ -18,7 +18,7 @@
         "path": ".."
       },
       "mocha-web": {
-        "path": "../../meteor-mocha-web"
+        "path": "../../observatory-testing"
       }
     }
   }
