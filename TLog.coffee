@@ -46,7 +46,7 @@ class TLog
   # @param [Bool] want_to_print if true, log messages will be printed to the console as well
   #
   @getLogger:->
-    @_instance?=new TLog TLog.LOGLEVEL_DEBUG, true, true, false
+    @_instance?=new TLog TLog.LOGLEVEL_DEBUG, false, true, false
     @_instance
 
   @LOGLEVEL_FATAL = 0
@@ -171,15 +171,15 @@ class TLog
 
   # low level full logging convenience
   # DOES NOT check current level to allow logging monitoring etc functions
-  _lowLevelLog: (loglevel, options, customOptions)->
+  _lowLevelLog: (loglevel, options, customOptions, fn)->
     #return if loglevel >= @_currentLogLevel
 
     ts = if options.timestamp_text then options.timestamp_text else @_ps(TLog._convertDate(options.timestamp)) + @_ps(TLog._convertTime(options.timestamp))
 
-    @_logs.insert
+    obj =
       isServer: options.isServer or false
       message: options.message
-      full_message: options.fullMessage
+      full_message: options.full_message
       module: options.module
       loglevel: loglevel
       timestamp_text: ts
@@ -188,6 +188,10 @@ class TLog
       ip: options.ip # IP address or null
       elapsedTime: options.elapsedTime # e.g., response time for http or method running time for profiling functions
       customOptions: customOptions # anything else EJSONable that you want to store
+
+    if fn
+      @_logs.insert obj, fn # calling this with callback is only useful for testing
+    else @_logs.insert
 
   # normal Meteor logging
   _log: (msg, loglevel = TLog.LOGLEVEL_INFO, mdl) ->

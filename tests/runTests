@@ -1,2 +1,2 @@
-coffee -c tests/*.coffee
+coffee -w -c tests/*.coffee &
 mrt

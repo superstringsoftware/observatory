@@ -15,7 +15,7 @@ Meteor.userIP = (uid)->
 
 # Ok, we can register handler for every new connecting socket, we can analyze all current meteor sessions
 Meteor.default_server.stream_server.register (socket)->
-  console.log "SOCKET Connect! ----------------------------->"
+  #console.log "SOCKET Connect! ----------------------------->"
   #console.dir socket
   #console.log "METEOR SESSION: ----------------------------->"
   #Meteor.userIP()
