@@ -28,7 +28,7 @@ class TLog
           full_message: fullMsg
           module: "HTTP"
           timestamp: l.timestamp
-          ip: l.remoteAddress
+          ip: l.forwardedFor #l.remoteAddress
           elapsedTime: l.responseTime # e.g., response time for http or method running time for profiling functions
 
         # recording the result
