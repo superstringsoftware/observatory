@@ -30,7 +30,8 @@ Usage
 ---------
 Somewhere in the common code of your meteor app call:
 ```coffeescript
-TL = TLog.getLogger(TLog.LOGLEVEL_MAX,true, true, true)
+logger = TLog.getLogger()
+logger.setOptions(TLog.LOGLEVEL_MAX,true, true, true)
 #for other options, see API section below
 ```
 This will get you a logger that will log everything, will also output to the console (second parameter),
@@ -38,6 +39,8 @@ will log current user (third parameter) and http requests (last parameter).
 
 If you want to set logs removal permission, call allowRemove with allow function as an argument - it gets passed to
 Collection.allow({remove: ...}) call. If you call allowRemove with no arguments, it simply sets "true" so use with care.
+Usual Meteor restrictions on the client apply, so if you really want to clear logs you have to call `TLog._clear()` on
+the server.
 ```coffeescript
 TLog.allowRemove (uid)->
     if Meteor.users.findOne(uid) == "admin"
@@ -61,7 +64,8 @@ TL.trace(error, "your message", "optional module name")
 # inspecting objects
 TL.dir(object, "your message", "optional module name")
 ```
-To actually display the logs and use monitoring capabilities, plugin "logs_bootstrap" template anywhere in your Handlebars templates. Preferably right before closing body tag:
+To actually display the logs and use monitoring capabilities, plugin "logs_bootstrap" template anywhere in your Handlebars
+templates right before closing body tag:
 ```html
 <body>
   ...
@@ -74,8 +78,9 @@ To set the default panel to either hidden or half a screen, set the session vari
 Session.set "bl_default_panel", "hidden" # or "half"
 ```
 
-Everything else is done automagically, as always is the case with Meteor. See how it's done in [the sample app](https://github.com/jhoxray/telescope) and how it looks in the 
-[live demo](http://observatoryjs.com).
+Everything else is done automagically, as always is the case with Meteor. See the code for 
+[the sample app](https://github.com/jhoxray/telescope) and  
+[check it out live](http://observatoryjs.com).
 
 
 API
@@ -100,8 +105,8 @@ class TLog
   #to change log level and console printing, use:
   setOptions: (loglevel, want_to_print = true, log_user = false)
 ```
-Log levels work in a very straightforward way: TLog will record any message which log level is <= current log level set when calling 
-getLogger() or setOptions().
+Log levels work in a very straightforward way: TLog will record any message which log level is <= current log level 
+set in `setOptions()`.
 
 If you are into internals type of person, Observatory logs all info to the "_observatory_logs"
 Meteor collection. Every document has the following fields:
@@ -115,6 +120,9 @@ Meteor collection. Every document has the following fields:
     timestamp: timestamp # timestamp as a Date()
     full_message: full_message # full textual log message (useful for quick export etc)
     uid: uid # currently logged in user id (if log_user option set to true)
+    ip: ip # IP address of the client in case it's an http request (working on logging socks requests too)
+    elapsedTime: time # time in ms, e.g. response time for http request, or method running time for profiling calls
+    customOptions: obj # any EJSONable object; currently cannot be set from public API but is filled when logging http calls
 ```
 This should be enough if you want to manipulate your logs in any way you want that Observatory
 does not provide out of the box. Access the "_observatory_logs" collection directly via
