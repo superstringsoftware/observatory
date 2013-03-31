@@ -1,3 +1,11 @@
+# stub for testing, if we are in the test env Meteor won't be defined
+###
+if not Meteor? and require?
+  {Meteor, EJSON} = require './unit-tests/MeteorStubs.coffee'
+  Observatory = Observatory or= {logger: -> console.log "Observatory.logger called"}
+  __meteor_bootstrap__ = Meteor.__meteor_bootstrap__
+###
+
 #(exports ? this).TLog = TLog
 # Class that handles all the logging logic
 #
@@ -67,6 +75,7 @@ class TLog
   ]
 
   constructor: (@_currentLogLevel, @_printToConsole, @_log_user = true, show_warning = true)->
+    if TLog._instance? then throw new Error "Attempted to create another instance of the TLog"
     @_logs = TLog._global_logs
     if Meteor.isServer
       # Hooking into connect middleware
@@ -191,50 +200,61 @@ class TLog
 
     if fn
       @_logs.insert obj, fn # calling this with callback is only useful for testing
-    else @_logs.insert
+    else @_logs.insert obj
 
-  # normal Meteor logging
-  _log: (msg, loglevel = TLog.LOGLEVEL_INFO, mdl) ->
-    if loglevel <= @_currentLogLevel
-      srv = false
-      if Meteor.isServer
-        srv = true
+  # helper method to format a message from standard API methods
+  
+  # helper method to get userId
+  # TODO: think how to get to it if we are in publish()
+  # TODO: Needs testing!
+  _checkUser: ->
+    user = ''
+    try
+      uid = if this.userId? then this.userId else Meteor.userId()
+      u = Meteor.users.findOne(uid) # TODO: check how it affects performance!
+      if u and u.username
+        user = u.username
+      else
+        if u and u.emails and u.emails[0]
+          user = u.emails[0].address
+        else
+          user = uid
+    catch err
+    {user: user, uid: uid}
 
-      uid = null
-      user = ''
-      if @_log_user
-        try
-          uid = Meteor.userId()
-          u = Meteor.users.findOne(uid) # TODO: check how it affects performance!
-          if u and u.username
-            user = u.username
-          else
-            if u and u.emails and u.emails[0]
-              user = u.emails[0].address
-            else
-              user = uid
-        catch err
-
-      module = mdl
-      timestamp = new Date
-      ts = @_ps(TLog._convertDate(timestamp)) + @_ps(TLog._convertTime(timestamp))
-      full_message = if srv then ts + "[SERVER]" else ts + "[CLIENT]"
-      full_message+= if module then @_ps module else "[]"
-      full_message+= @_ps(TLog.LOGLEVEL_NAMES[loglevel]) #TODO: RANGE CHECK!!!
-      full_message+= "[#{user}]"
-      full_message+= ' ' + msg
-
-      options =
+  # prepare options object for logging
+  _prepareLogOptions: (msg, loglevel, module)->
+    srv = Meteor.isServer
+    {user, uid} = @_checkUser() if @_log_user
+    options =
         isServer: srv
         message: msg
-        module: mdl
-        timestamp: timestamp
-        timestamp_text: ts
-        full_message: full_message
+        module: module
+        timestamp: new Date
         uid: uid
+        user: user
+        loglevel: loglevel
+    options
 
+  # format message for logging based on the options object
+  # TODO: add colorization for HTML or ANSI
+  _formatLogMessage: (o, colorize = false)->
+    ts = @_ps(TLog._convertDate(o.timestamp)) + @_ps(TLog._convertTime(o.timestamp))
+    full_message = ts + if o.isServer then "[SERVER]" else "[CLIENT]"
+    full_message+= if o.module then @_ps o.module else "[]"
+    full_message+= @_ps(TLog.LOGLEVEL_NAMES[o.loglevel]) #TODO: RANGE CHECK!!!
+    full_message+= "[#{o.user}]"
+    full_message+= " #{o.message}"
+    full_message
+
+  # normal Meteor logging
+  # NOTE! --> killing timestamp text storage, formatting should be done during the presentation time
+  _log: (msg, loglevel = TLog.LOGLEVEL_INFO, mdl) ->
+    if loglevel <= @_currentLogLevel
+      options = @_prepareLogOptions msg, loglevel, mdl
+      options.full_message = @_formatLogMessage options
       @_lowLevelLog loglevel, options
-      console.log(full_message) if @_printToConsole
+      console.log(options.full_message) if @_printToConsole
 
   _convertTimestamp: (timestamp)->
     st = timestamp.getUTCDate() + '/' + timestamp.getUTCMonth() + '/'+timestamp.getUTCFullYear() + ' ' +
@@ -289,6 +309,6 @@ Inspect =
       properties.push prop  if typeof testObj[prop] isnt Inspect.TYPE_FUNCTION and typeof Inspect[prop] isnt Inspect.TYPE_FUNCTION
     properties
 
-#global.TLog = TLog
+module?.exports?.TLog = TLog
 (exports ? this).TLog = TLog
 (exports ? this).Inspect = Inspect
