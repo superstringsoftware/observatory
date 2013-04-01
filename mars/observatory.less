@@ -161,6 +161,14 @@
 	.lb_table-striped .label {
 		color: @th_dark_clr_label_text;
 	}
+
+  .oi_property_list_item.selected {
+    background-color: #444;
+  }
+
+  .oi_property_view {
+    border-color: #aaa;
+  }
 }
 
 
@@ -258,6 +266,14 @@
 		color: @tb_red;
 		font-weight: bold;
 	}
+
+  .oi_property_list_item.selected {
+    background-color: #ddd;
+  }
+
+  .oi_property_view {
+    border-color: black;
+  }
 }
 // ************************* end of themes ***************************
 
@@ -528,3 +544,68 @@ a.observatory_trigger{
   right: 10px;
 }
 
+
+
+.oi_wrapper {
+  height: 100%;
+  
+  .oi_selector_wrapper {
+    width: 100%;
+    margin-bottom: 10px;
+  
+    .oi_object_selector {
+      float: left;
+      margin-bottom: 0;
+    }
+    
+    ul.oi_breadcrumb {
+      float: left;
+      margin: 0;
+      padding: 5px 15px;
+      list-style: none;
+      
+      li {
+        float: left;
+        padding-left: 5px;
+        
+        a {
+          text-decoration: none;
+          padding-right: 5px;
+        }
+      }
+    }
+  }
+  
+  .oi_inner_wrapper {
+    height: 70%;
+    font-size: 16px;
+  
+    .oi_list_wrapper {
+      float: left;
+      width: 400px;
+      height: 100%;
+      overflow-y: auto;
+      position: relative;
+      
+      .oi_property_symbol {
+        vertical-align: middle;
+        padding-right: 5px;
+      }
+      
+      .oi_property_list_item {
+        padding: 0 9px;
+        cursor: pointer;
+      }
+    }
+    
+    .oi_property_view {
+      border-left-width: 1px;
+      border-left-style: dashed;
+      border-top-width: 1px;
+      border-top-style: dashed;
+      margin-left: 420px;
+      height: 100%;
+      padding: 10px 0 0 10px;
+    }
+  }
+}

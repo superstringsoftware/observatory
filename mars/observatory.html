@@ -5,6 +5,7 @@
               <ul class="nav nav-tabs" id="lb_main_tab">
                     <li><a href="#" data-target="observatoryjsLogsTab" id="id_logs_tab_btn">Logs</a></li>
                     <li><a href="#" data-target="observatoryjsInternalsTab" id="id_app_tab_btn">Templates Inspection</a></li>
+                    <li><a href="#" data-target="observatoryjsObjectInspector" id="id_objins_tab_btn">Object Inspector</a></li>
                     <!-- <li><a href="#id_templates_tab" id="id_templates_tab_btn">Tests</a></li> -->
                     <!-- <li><a href="#" data-target="observatoryjsLogsSimple" id="id_export_tab_btn">Export</a></li> -->
                     <li><a href="#" data-target="observatoryjsHelpTab" id="id_help_tab_btn">Help</a></li>
@@ -147,6 +148,55 @@
 
         <div id="lb_code_console">
         </div>
+    </div>
+</template>
+
+
+
+<template name="observatoryjsObjectInspector">
+    <div class="tab-pane oi_wrapper">
+      <div class="oi_selector_wrapper clearfix">
+        {{#constant}}
+        <select class="oi_object_selector">
+          {{#each objectList}}
+          <option value="{{this}}">{{this}}</option>
+          {{/each}}
+        </select>
+        {{/constant}}
+        <ul class="oi_breadcrumb">
+          {{#each breadcrumbsItems}}
+          <li><a href="#" data-index="{{this.k}}">{{this.v}}</a><span class="divider">></span></li>
+          {{/each}}
+          <li class="active">{{breadcrumbsLast}}</li>
+        </ul>
+      </div>
+      <div class="oi_inner_wrapper">
+        <div class="oi_list_wrapper">
+          <table>
+            {{#each infoLastObject.p}}
+            <tr class="oi_property_list">
+              <td class="oi_property_symbol">
+                <span class="label label-info">p</span>
+                {{#if this.o}}
+                <span class="label label-warning">o</span>
+                {{/if}}
+              </td>
+              <td class="oi_property_type">{{#unless this.o}}<span class="label label-success">{{itemType this.it this.i}}</span>{{/unless}}</td>
+              <td class="oi_property_list_item">{{this.i}}</td>
+            </tr>
+            {{/each}}
+            {{#each infoLastObject.f}}
+            <tr>
+              <td class="oi_property_symbol"><span class="label label-important">f</span></td>
+              <td class="oi_property_type"></td>
+              <td class="oi_property_list_item">{{this.i}}</td>
+            </tr>
+            {{/each}}
+          </table>
+        </div>
+        <div class="oi_property_view">
+        </div>
+      </div>     
     </div>
 </template>
 
