@@ -597,15 +597,27 @@ a.observatory_trigger{
         cursor: pointer;
       }
     }
-    
-    .oi_property_view {
-      border-left-width: 1px;
-      border-left-style: dashed;
-      border-top-width: 1px;
-      border-top-style: dashed;
-      margin-left: 420px;
-      height: 100%;
-      padding: 10px 0 0 10px;
+  }
+}
+
+#oi_property_view {
+  border-left-width: 1px;
+  border-left-style: dashed;
+  border-top-width: 1px;
+  border-top-style: dashed;
+  margin-left: 420px;
+  height: 100%;
+  padding: 10px 0 0 10px;
+
+  .CodeMirror {
+    height: 100%;
+  }
+}
+
+.height50 {
+  #oi_property_view {
+    .CodeMirror {
+      height: 90%;
     }
   }
 }

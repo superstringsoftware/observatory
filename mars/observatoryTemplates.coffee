@@ -342,7 +342,16 @@ _.extend Template.observatoryjsObjectInspector,
   objectList: ->
     ['Template','Session']
 
-
+  rendered: ->
+    @myCodeMirror = null
+    if not @myCodeMirror?
+      @myCodeMirror = CodeMirror(document.getElementById("oi_property_view"),
+        value: ""
+        mode:  "javascript"
+        theme: Session.get("bl_current_codemirror_theme")
+        readOnly: true
+      )
+ 
 Session.set('object_inspector_breadcrumbs', [Template.observatoryjsObjectInspector.objectList()[0]])
 
 Template.aaa = [1,2,3]
@@ -377,11 +386,10 @@ Template.observatoryjsObjectInspector.helpers
 
 Template.observatoryjsObjectInspector.events
   'mouseenter .oi_property_list_item': (e,t) ->
+    $('.oi_property_list_item').removeClass('selected')
     $(e.target).addClass('selected')
-    $(t.find('.oi_property_view')).text(if this.o then "" else this.it[this.i].toString()) if this.o?
-  'mouseleave .oi_property_list_item': (e,t) ->
-    $(e.target).removeClass('selected')
-    $(t.find('.oi_property_view')).text('')
+    t.myCodeMirror.setValue(if this.o then "" else this.it[this.i].toString())
+    true
   'click .oi_property_list_item': () ->
     if typeof(this) == 'object' and this.o
       br = Session.get('object_inspector_breadcrumbs')
