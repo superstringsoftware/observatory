@@ -15,7 +15,10 @@ Package.on_use(function (api) {
   api.add_files([
     'mars/observatory.html',
     'mars/observatoryTemplates.coffee',
-    'mars/observatory.less'
+    'mars/observatory.less',
+    'mars/objinspector.html',
+    'mars/objinspector.coffee',
+    'mars/objinspector.less'
     ], 'client');
 
 });

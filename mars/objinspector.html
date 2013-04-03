@@ -1,0 +1,46 @@
+<template name="observatoryjsObjectInspector">
+    <div class="tab-pane oi_wrapper">
+      <div class="oi_selector_wrapper clearfix">
+        {{#constant}}
+        <select class="oi_object_selector">
+          {{#each objectList}}
+          <option value="{{this}}">{{this}}</option>
+          {{/each}}
+        </select>
+        {{/constant}}
+        <ul class="oi_breadcrumb">
+          {{#each breadcrumbsItems}}
+          <li><a href="#" data-index="{{this.k}}">{{this.v}}</a><span class="divider">></span></li>
+          {{/each}}
+          <li class="active">{{breadcrumbsLast}}</li>
+        </ul>
+      </div>
+      <div class="oi_inner_wrapper">
+        <div class="oi_list_wrapper">
+          <table>
+            {{#each infoLastObject.p}}
+            <tr class="oi_property_list">
+              <td class="oi_property_symbol">
+                <span class="label label-info">p</span>
+                {{#if this.o}}
+                <span class="label label-warning">o</span>
+                {{/if}}
+              </td>
+              <td class="oi_property_type">{{#unless this.o}}<span class="label label-success">{{itemType this.it this.i}}</span>{{/unless}}</td>
+              <td class="oi_property_list_item">{{this.i}}</td>
+            </tr>
+            {{/each}}
+            {{#each infoLastObject.f}}
+            <tr>
+              <td class="oi_property_symbol"><span class="label label-important">f</span></td>
+              <td class="oi_property_type"></td>
+              <td class="oi_property_list_item">{{this.i}}</td>
+            </tr>
+            {{/each}}
+          </table>
+        </div>
+        <div id="oi_property_view">
+        </div>
+      </div>     
+    </div>
+</template>
