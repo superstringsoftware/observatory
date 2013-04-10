@@ -37,6 +37,7 @@ _.extend Template.observatoryjsObjectInspector,
             t: @getType(obj[itemName])
             o: @isObject(obj[itemName])
             v: if @isObject(obj[itemName]) then undefined else "" + obj[itemName]
+
     info
   
   beginItem: ->
@@ -117,7 +118,7 @@ Template.observatoryjsObjectInspector.events
   'click .oi_breadcrumb a': (e) ->
     br = Session.get('oi_breadcrumbs')
     i = parseInt($(e.target).data('index'))
-    Session.set('oi_breadcrumbs', br.slice(0,i+1))
+    Session.set('oi_breadcrumbs', br.slice(0,i + 2))
     Template.observatoryjsObjectInspector.setObjectInfo()
     true
   
