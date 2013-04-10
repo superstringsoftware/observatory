@@ -25,7 +25,7 @@ _.extend Template.observatoryjsObjectInspector,
       obj = obj[i]
     
     info = { p: [], f: [] }
-    for itemName of obj
+    for itemName in _.keys(obj).sort()
       if _.has(obj, itemName)
         if _.isFunction(obj[itemName])
           info.f.push
