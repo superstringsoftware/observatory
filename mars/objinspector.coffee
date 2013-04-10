@@ -1,6 +1,6 @@
 
 ######################################################################################################################
-# Object Isspector
+# Object Inspector
 ######################################################################################################################
 
 #
@@ -8,15 +8,6 @@
 #
 
 _.extend Template.observatoryjsObjectInspector, 
-  lastObject: (context) ->
-    b = Session.get('object_inspector_breadcrumbs')
-    if b
-      obj = window[b[0]]
-      for i in Session.get('object_inspector_breadcrumbs').slice(1)
-        obj = obj[i] if obj[i]?
-      obj
-    else
-      {}
 
   isObject: (vl) ->
     if _.isObject(vl)
@@ -24,24 +15,46 @@ _.extend Template.observatoryjsObjectInspector,
     else
       false
 
-  itemType: (vl) ->
-    unless @isObject(vl)
-      if _.isObject(vl) then /function\s*(.+)\s*\(/.exec(vl.constructor.toString())[1] else typeof(vl)
+  getType: (vl) ->
+    if _.isObject(vl) then /function\s*(.+)\s*\(/.exec(vl.constructor.toString())[1] else typeof(vl)
 
-  objectInfo: (obj) ->
+  objectInfo: (ar) ->
+    obj = if Meteor.isClient then window else global
+    for i in ar
+      break unless obj[i]?
+      obj = obj[i]
+    
     info = { p: [], f: [] }
     for itemName of obj
       if _.has(obj, itemName)
         if _.isFunction(obj[itemName])
-          info.f.push({ i: itemName, it: obj })
+          info.f.push
+            i: itemName
+            v: obj[itemName].toString()
         else
-          info.p.push({ i: itemName, it: obj, o: @isObject(obj[itemName]) })
-    info.f.sort()
-    info.p.sort()
+          info.p.push
+            i: itemName
+            t: @getType(obj[itemName])
+            o: @isObject(obj[itemName])
+            v: if @isObject(obj[itemName]) then undefined else "" + obj[itemName]
     info
+  
+  beginItem: ->
+    ol = Session.get('oi_object_list')
+    if _.isArray(ol) and ol.length > 0 then [ol[0][0],ol[0][1]] else []
 
-  objectList: ->
-    ['Template','Session']
+  setObjectInfo: ->
+    b = Session.get('oi_breadcrumbs')
+    i = _.find Session.get('oi_object_list'), (item) ->
+          b[1] == item[1] and b[0] == item[0]
+    if i
+      objectPath = i.slice(2).concat(b.slice(2))
+      if i[0] == 'c'
+        Session.set('oi_object_info', Template.observatoryjsObjectInspector.objectInfo(objectPath))
+      else
+        Meteor.call 'oiObjectInfo', objectPath, (e,r) ->
+          Session.set('oi_object_info', r)
+    true
 
   rendered: ->
     @myCodeMirror = null
@@ -52,27 +65,35 @@ _.extend Template.observatoryjsObjectInspector,
         theme: Session.get("bl_current_codemirror_theme")
         readOnly: true
       )
- 
-Session.set('object_inspector_breadcrumbs', [Template.observatoryjsObjectInspector.objectList()[0]])
+      true
+
+  created: ->
+    Session.set('oi_object_info', {})
+    Session.set('oi_breadcrumbs', Template.observatoryjsObjectInspector.beginItem())
+    Template.observatoryjsObjectInspector.setObjectInfo()
 
 #
 # HELPERS
 #
 
 Template.observatoryjsObjectInspector.helpers
-  itemType: (it,i) ->
-    Template.observatoryjsObjectInspector.itemType(it[i])
+  getType: (it,i) ->
+    Template.observatoryjsObjectInspector.getType(it[i])
+  
   objectList: ->
-    Template.observatoryjsObjectInspector.objectList
-  infoLastObject: ->
-    obj = Template.observatoryjsObjectInspector
-    obj.objectInfo(obj.lastObject(window))
+    _.map Session.get('oi_object_list'), (item) ->
+      { t: item[0] + ':' + item[1], n: item[1] }
+
+  infoObject: ->
+    Session.get('oi_object_info')
+      
   breadcrumbsItems: ->
-    br = Session.get('object_inspector_breadcrumbs')
-    { k: k, v: v } for v,k in br.slice(0,-1)
+    br = Session.get('oi_breadcrumbs')
+    if _.isArray(br) and br.length > 0 then {k:k,v:v} for k,v of _.initial(br).slice(1) else []
+  
   breadcrumbsLast: ->
-    br = Session.get('object_inspector_breadcrumbs')
-    if br then br.pop() else ''
+    br = Session.get('oi_breadcrumbs')
+    if _.isArray(br) and br.length > 0 then _.last(br) else ''
 
 #
 # EVENTS
@@ -82,19 +103,55 @@ Template.observatoryjsObjectInspector.events
   'mouseenter .oi_property_list_item': (e,t) ->
     $('.oi_property_list_item').removeClass('selected')
     $(e.target).addClass('selected')
-    t.myCodeMirror.setValue(if this.o then "" else this.it[this.i].toString())
+    t.myCodeMirror.setValue(if this.o then "" else this.v)
     true
+  
   'click .oi_property_list_item': () ->
-    if typeof(this) == 'object' and this.o
-      br = Session.get('object_inspector_breadcrumbs')
+    if this.o
+      br = Session.get('oi_breadcrumbs')
       br.push(this.i)
-      Session.set('object_inspector_breadcrumbs',br)
-  'click .oi_breadcrumb a': (e) ->
-    br = Session.get('object_inspector_breadcrumbs')
-    i = parseInt($(e.target).data('index'))
-    Session.set('object_inspector_breadcrumbs', br.slice(0,i+1))
+      Session.set('oi_breadcrumbs',br)
+      Template.observatoryjsObjectInspector.setObjectInfo()
     true
+  
+  'click .oi_breadcrumb a': (e) ->
+    br = Session.get('oi_breadcrumbs')
+    i = parseInt($(e.target).data('index'))
+    Session.set('oi_breadcrumbs', br.slice(0,i+1))
+    Template.observatoryjsObjectInspector.setObjectInfo()
+    true
+  
   'change select.oi_object_selector': (e) ->
-    Session.set('object_inspector_breadcrumbs', [$(e.target).val()])
+    v = $(e.target).val().split(':')
+    Session.set('oi_breadcrumbs', [v[0],v[1]])
+    Template.observatoryjsObjectInspector.setObjectInfo()
+    true
 
+#
+# METHODS
+#
 
+if Meteor.isServer
+  Meteor.methods
+    oiObjectInfo: (objectPath) ->
+      Template.observatoryjsObjectInspector.objectInfo(objectPath)
+
+if Meteor.isClient
+  Meteor.startup ->
+
+    #
+    # INIT 
+    #
+    # The item of oi_object_list has a type, a name, a path from global object.
+    # The type can be 'c' or 's'. 'c' is browser object, 's' is server object.
+    # The global object in browser is Window but in server is Global.
+    # Don't use colon in the name.
+    #
+
+    Session.set('oi_object_list', 
+     [['c','Meteor','Meteor'],
+      ['c','Template','Template'],
+      ['c','c Session','Session'],
+      ['c','c Deps','Deps'],
+      ['s','s Deps','Deps'],
+      ['s','s Session','Session']]);

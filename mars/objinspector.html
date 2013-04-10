@@ -4,7 +4,7 @@
         {{#constant}}
         <select class="oi_object_selector">
           {{#each objectList}}
-          <option value="{{this}}">{{this}}</option>
+          <option value="{{this.t}}">{{this.n}}</option>
           {{/each}}
         </select>
         {{/constant}}
@@ -18,7 +18,7 @@
       <div class="oi_inner_wrapper">
         <div class="oi_list_wrapper">
           <table>
-            {{#each infoLastObject.p}}
+            {{#each infoObject.p}}
             <tr class="oi_property_list">
               <td class="oi_property_symbol">
                 <span class="label label-info">p</span>
@@ -26,11 +26,11 @@
                 <span class="label label-warning">o</span>
                 {{/if}}
               </td>
-              <td class="oi_property_type">{{#unless this.o}}<span class="label label-success">{{itemType this.it this.i}}</span>{{/unless}}</td>
+              <td class="oi_property_type">{{#unless this.o}}<span class="label label-success">{{this.t}}</span>{{/unless}}</td>
               <td class="oi_property_list_item">{{this.i}}</td>
             </tr>
             {{/each}}
-            {{#each infoLastObject.f}}
+            {{#each infoObject.f}}
             <tr>
               <td class="oi_property_symbol"><span class="label label-important">f</span></td>
               <td class="oi_property_type"></td>
