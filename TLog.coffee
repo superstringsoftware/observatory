@@ -71,9 +71,11 @@ class TLog
     if Meteor.isServer
       # Hooking into connect middleware
       __meteor_bootstrap__.app.use Observatory.logger #TLog.useragent
-      if !ObservatorySettings || ObservatorySettings.should_publish()
-        Meteor.publish '_observatory_logs',->
+      Meteor.publish '_observatory_logs',->
+        if !ObservatorySettings or ObservatorySettings.should_publish(@)
           TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
+        else
+          false
       # TODO: make this configurable
       TLog._global_logs.allow
         insert: (uid)->
@@ -83,7 +85,8 @@ class TLog
 
     if Meteor.isClient
       Meteor.subscribe('_observatory_logs')
-    @warn("You should use TLog.getLogger(loglevel, want_to_print) method instead of a constructor! Constructor calls may be removed 
+
+    @warn("You should use TLog.getLogger(loglevel, want_to_print) method instead of a constructor! Constructor calls may be removed
       in the next versions of the package.") if show_warning
     @verbose "Creating logger with level #{TLog.LOGLEVEL_NAMES[@_currentLogLevel]}, print to console: #{@_printToConsole}, log user: #{@_log_user}", "Observatory"
 
