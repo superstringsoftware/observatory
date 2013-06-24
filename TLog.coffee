@@ -71,8 +71,9 @@ class TLog
     if Meteor.isServer
       # Hooking into connect middleware
       __meteor_bootstrap__.app.use Observatory.logger #TLog.useragent
-      Meteor.publish '_observatory_logs',->
-        TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
+      if !ObservatorySettings || ObservatorySettings.should_publish()
+        Meteor.publish '_observatory_logs',->
+          TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
       # TODO: make this configurable
       TLog._global_logs.allow
         insert: (uid)->
@@ -240,7 +241,7 @@ class TLog
     st = timestamp.getUTCDate() + '/' + timestamp.getUTCMonth() + '/'+timestamp.getUTCFullYear()
 
   @_convertTime: (timestamp, ms=true)->
-    ts = timestamp.getUTCHours()+ ':' + timestamp.getUTCMinutes() + ':' + timestamp.getUTCSeconds() 
+    ts = timestamp.getUTCHours()+ ':' + timestamp.getUTCMinutes() + ':' + timestamp.getUTCSeconds()
     ts += '.' + timestamp.getUTCMilliseconds() if ms
     ts
 
