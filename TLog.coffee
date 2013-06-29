@@ -76,12 +76,14 @@ class TLog
           TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
         else
           false
-      # TODO: make this configurable
-      TLog._global_logs.allow
-        insert: (uid)->
-          true
-        update: (uid)->
-          false
+      if ObservatorySettings.allow
+        TLog._global_logs.allow(ObservatorySettings.allow)
+      else
+        TLog._global_logs.allow
+          insert: (uid)->
+            true
+          update: (uid)->
+            false
 
     if Meteor.isClient
       Meteor.subscribe('_observatory_logs')
