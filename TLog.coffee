@@ -67,6 +67,12 @@ class TLog
   ]
 
   constructor: (@_currentLogLevel, @_printToConsole, @_log_user = true, show_warning = true)->
+    if ObservatorySettings
+      if ObservatorySettings.logLevel? then @_currentLogLevel = ObservatorySettings.logLevel
+      if ObservatorySettings.printToConsole? then @_printToConsole = ObservatorySettings.printToConsole
+      if ObservatorySettings.log_user? then @_log_user = ObservatorySettings.log_user
+      if ObservatorySettings.log_http? then TLog._log_http = ObservatorySettings.log_http
+    
     @_logs = TLog._global_logs
     if Meteor.isServer
       # Hooking into connect middleware
