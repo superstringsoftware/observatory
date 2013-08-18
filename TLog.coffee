@@ -91,8 +91,9 @@ class TLog
       #console.dir Meteor
       #console.dir WebApp
       
-      #WebApp.connectHandlers.use Observatory.logger #TLog.useragent
-      __meteor_bootstrap__.app.use Observatory.logger
+      WebApp.connectHandlers.use Observatory.logger #TLog.useragent
+      #__meteor_bootstrap__.app.use Observatory.logger
+      
       Meteor.publish '_observatory_logs',->
         if !ObservatorySettings or ObservatorySettings.should_publish(@)
           TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
