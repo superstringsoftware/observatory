@@ -67,22 +67,34 @@ class TLog
   ]
 
   constructor: (@_currentLogLevel, @_printToConsole, @_log_user = true, show_warning = true)->
+    if ObservatorySettings
+      if ObservatorySettings.logLevel? then @_currentLogLevel = ObservatorySettings.logLevel
+      if ObservatorySettings.printToConsole? then @_printToConsole = ObservatorySettings.printToConsole
+      if ObservatorySettings.log_user? then @_log_user = ObservatorySettings.log_user
+      if ObservatorySettings.log_http? then TLog._log_http = ObservatorySettings.log_http
+    
     @_logs = TLog._global_logs
     if Meteor.isServer
       # Hooking into connect middleware
       __meteor_bootstrap__.app.use Observatory.logger #TLog.useragent
       Meteor.publish '_observatory_logs',->
-        TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
-      # TODO: make this configurable
-      TLog._global_logs.allow
-        insert: (uid)->
-          true
-        update: (uid)->
+        if !ObservatorySettings or ObservatorySettings.should_publish(@)
+          TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
+        else
           false
+      if ObservatorySettings.allow
+        TLog._global_logs.allow(ObservatorySettings.allow)
+      else
+        TLog._global_logs.allow
+          insert: (uid)->
+            true
+          update: (uid)->
+            false
 
     if Meteor.isClient
       Meteor.subscribe('_observatory_logs')
-    @warn("You should use TLog.getLogger(loglevel, want_to_print) method instead of a constructor! Constructor calls may be removed 
+
+    @warn("You should use TLog.getLogger(loglevel, want_to_print) method instead of a constructor! Constructor calls may be removed
       in the next versions of the package.") if show_warning
     @verbose "Creating logger with level #{TLog.LOGLEVEL_NAMES[@_currentLogLevel]}, print to console: #{@_printToConsole}, log user: #{@_log_user}", "Observatory"
 
@@ -240,7 +252,7 @@ class TLog
     st = timestamp.getUTCDate() + '/' + timestamp.getUTCMonth() + '/'+timestamp.getUTCFullYear()
 
   @_convertTime: (timestamp, ms=true)->
-    ts = timestamp.getUTCHours()+ ':' + timestamp.getUTCMinutes() + ':' + timestamp.getUTCSeconds() 
+    ts = timestamp.getUTCHours()+ ':' + timestamp.getUTCMinutes() + ':' + timestamp.getUTCSeconds()
     ts += '.' + timestamp.getUTCMilliseconds() if ms
     ts
 
