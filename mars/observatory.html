@@ -12,7 +12,7 @@
                    <!-- <li><button class="btn btn-mini btn-info" type="button" id="lb_btn_switch_dynamic">toggle full page</button></li> -->
                     <li><button class="btn btn-danger btn-mini" id="lb_btn_clear_logs" type="button">clear logs</button></li>
                   <div id="lb_status_line" class="pull-right">
-                      {{#with getSession "observatoryjs.ConnectionStatus"}}
+                      {{#with blGetSession "observatoryjs.ConnectionStatus"}}
                       {{#if connected}}
                       <span style="color: #2c2;">connected</span>
                       {{else}}
@@ -24,7 +24,7 @@
               </ul>
                {{else}}
                 <div id="lb_status_line">
-                    {{#with getSession "observatoryjs.ConnectionStatus"}}
+                    {{#with blGetSession "observatoryjs.ConnectionStatus"}}
                     {{#if connected}}
                     <span style="color: #2c2;">connected</span>
                     {{else}}
@@ -139,7 +139,7 @@
                 </tbody>
             </table>
             <div>
-                {{#each getSession "observatoryjs.CurrentSubscriptions"}}
+                {{#each blGetSession "observatoryjs.CurrentSubscriptions"}}
                 {{name}}: {{inactive}}: {{ready}} <br/>
                 {{/each}}
             </div>
