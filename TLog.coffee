@@ -99,7 +99,7 @@ class TLog
           TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
         else
           false
-      if ObservatorySettings.allow
+      if ObservatorySettings?.allow
         TLog._global_logs.allow(ObservatorySettings.allow)
       else
         TLog._global_logs.allow
