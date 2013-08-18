@@ -79,7 +79,11 @@ class TLog
     @_logs = TLog._global_logs
     if Meteor.isServer
       # Hooking into connect middleware
-      __meteor_bootstrap__.app.use Observatory.logger #TLog.useragent
+      #console.dir Meteor
+      #console.dir WebApp
+      
+      #WebApp.connectHandlers.use Observatory.logger #TLog.useragent
+      __meteor_bootstrap__.app.use Observatory.logger
       Meteor.publish '_observatory_logs',->
         TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
       # TODO: make this configurable
@@ -200,7 +204,17 @@ class TLog
 
     if fn
       @_logs.insert obj, fn # calling this with callback is only useful for testing
-    else @_logs.insert obj
+    else 
+      #console.dir @_logs
+      #console.dir obj
+      try
+        @_logs.insert obj
+        #console.dir obj
+      catch e
+        console.log "ERROR while inserting logs from TLog"
+        console.dir e
+      
+      
 
   # helper method to format a message from standard API methods
   
