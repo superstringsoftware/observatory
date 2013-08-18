@@ -10,13 +10,15 @@ try {
         } catch (err){
         }
 
-        api.use(['coffeescript', 'underscore'], ['client','server']);
+        api.use(['coffeescript', 'underscore','standard-app-packages'], ['client','server']);
         //api.use(['webapp'], ['server']);
 
         api.add_files('TLog.coffee',['client','server']);
         api.add_files('connectHook.coffee','server');
         api.add_files('monitoringHooks.coffee','server');
         api.add_files('Monitor.coffee','server');
+
+        api.export (['TLog','Inspect'], ['client','server']);
     });
 }
 catch (err) {
