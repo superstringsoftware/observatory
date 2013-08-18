@@ -1,3 +1,28 @@
+require = if Npm? then Npm.require else __meteor_bootstrap__.require
+Fiber = require 'fibers'
+
+#console.log Meteor.default_server.stream_server
+
+Meteor.userIP = (uid)->
+  ret = {}
+  if uid?
+    s = ss for k, ss of Meteor.default_server.sessions when ss.userId is uid
+    if s
+      ret.forwardedFor = s.socket?.headers?['x-forwarded-for']
+      ret.remoteAddress = s.socket?.remoteAddress
+  ret
+
+
+# Ok, we can register handler for every new connecting socket, we can analyze all current meteor sessions
+Meteor.default_server.stream_server.register (socket)->
+  #console.log "SOCKET Connect! ----------------------------->"
+  #console.dir socket
+  #console.log "METEOR SESSION: ----------------------------->"
+  #Meteor.userIP()
+  #console.dir socket.meteor_session
+  #console.log s.meteor_session.userId, s.meteor_session.socket.headers for s in Meteor.default_server.stream_server.open_sockets when s.meteor_session?
+
+
 Meteor.methods
   # TODO: add authorization!
   _observatoryGetOpenSessions: ->
@@ -41,6 +66,9 @@ Meteor.methods
     publishHandlers = ({name: k, func: v.toString()} for k,v of Meteor.default_server?.publish_handlers)
     methodHandlers = ({name: k, func: v.toString()} for k,v of Meteor.default_server?.method_handlers)
     {publishHandlers: publishHandlers, methodHandlers: methodHandlers}
+
+  _observatoryGetArbitraryObj: (line)->
+    console.log Meteor.userIP()
 
 
 

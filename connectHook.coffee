@@ -38,6 +38,9 @@ _.extend Observatory,
         userAgent: req.headers["user-agent"]
         #contentLength: parseInt(res.getHeader('Content-Length'), 10)
         responseHeader: res._header
+        acceptLanguage: req.headers['accept-language']
+        forwardedFor: req.headers['x-forwarded-for']
+        #requestHeaders: req.headers
         timestamp: new Date
         responseTime: new Date - req._startTime
 

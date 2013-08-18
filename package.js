@@ -11,6 +11,7 @@ try {
         }
 
         api.use(['coffeescript', 'underscore'], ['client','server']);
+        //api.use(['webapp'], ['server']);
 
         api.add_files('TLog.coffee',['client','server']);
         api.add_files('connectHook.coffee','server');

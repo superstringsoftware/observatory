@@ -1,0 +1,14 @@
+{
+  "meteor": {
+    "git": "https://github.com/meteor/meteor.git",
+    "branch": "master"
+  },
+  "packages": {
+      "observatory-apollo": {
+          "path": "../"
+      },
+      "observatory-testing": {
+          "path": "../../observatory-testing"
+      }
+  }
+}

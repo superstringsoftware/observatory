@@ -1,0 +1,2 @@
+mocha -R spec --watch --compilers coffee:coffee-script *.coffee
+

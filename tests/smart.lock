@@ -1,0 +1,25 @@
+{
+  "meteor": {
+    "git": "https://github.com/meteor/meteor.git",
+    "branch": "master",
+    "commit": "f07715dc70de16a7aab84e56ab0c6cbd9c1f9dc6"
+  },
+  "dependencies": {
+    "basePackages": {
+      "observatory-apollo": {
+        "path": ".."
+      },
+      "observatory-testing": {
+        "path": "../../observatory-testing"
+      }
+    },
+    "packages": {
+      "observatory-apollo": {
+        "path": ".."
+      },
+      "observatory-testing": {
+        "path": "../../observatory-testing"
+      }
+    }
+  }
+}

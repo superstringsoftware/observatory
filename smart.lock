@@ -1,0 +1,24 @@
+{
+  "meteor": {
+    "git": "https://github.com/meteor/meteor.git",
+    "branch": "master",
+    "commit": "f07715dc70de16a7aab84e56ab0c6cbd9c1f9dc6"
+  },
+  "dependencies": {
+    "basePackages": {
+      "observatory-apollo": {
+        "path": ""
+      }
+    },
+    "packages": {
+      "observatory-apollo": {
+        "path": ""
+      },
+      "mocha-web": {
+        "git": "https://github.com/mad-eye/meteor-mocha-web.git",
+        "tag": "v0.1.0",
+        "commit": "540fd609af4e4cfa921a1ef1151bee542d2e06a4"
+      }
+    }
+  }
+}
