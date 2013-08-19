@@ -53,16 +53,8 @@ class TLog
   # @param [TLog enum] loglevel desired loglevel, one of TLog.LOGLEVEL_FATAL,TLog.LOGLEVEL_ERROR,TLog.LOGLEVEL_WARNING,TLog.LOGLEVEL_INFO,TLog.LOGLEVEL_VERBOSE
   # @param [Bool] want_to_print if true, log messages will be printed to the console as well
   #
-  @getLogger: (settings)->
-    if not settings?
-      settings = 
-        should_publish: () -> true
-        logLevel: TLog.LOGLEVEL_DEBUG
-        printToConsole: false
-        log_user: true
-        log_http: true
-    
-    @_instance?=new TLog(settings, false)
+  @getLogger:->
+    @_instance?=new TLog TLog.LOGLEVEL_DEBUG, false, true, false
     @_instance
 
   @LOGLEVEL_FATAL = 0
@@ -82,9 +74,9 @@ class TLog
     "FTL", "ERR", "WRN", "INF", "VRB", "DBG","MAX"
   ]
 
-  constructor: (ObservatorySettings, show_warning = true)->
+  constructor: (@_currentLogLevel, @_printToConsole, @_log_user = true, show_warning = true)->
 
-    if ObservatorySettings?
+    if ObservatorySettings
       if ObservatorySettings.logLevel? then @_currentLogLevel = ObservatorySettings.logLevel
       if ObservatorySettings.printToConsole? then @_printToConsole = ObservatorySettings.printToConsole
       if ObservatorySettings.log_user? then @_log_user = ObservatorySettings.log_user
@@ -103,7 +95,7 @@ class TLog
       #__meteor_bootstrap__.app.use Observatory.logger
       
       Meteor.publish '_observatory_logs',->
-        if not ObservatorySettings? or ObservatorySettings?.should_publish(@)
+        if !ObservatorySettings or ObservatorySettings.should_publish(@)
           TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
         else
           false
@@ -228,7 +220,15 @@ class TLog
 
     if fn
       @_logs.insert obj, fn # calling this with callback is only useful for testing
-    else @_logs.insert obj
+    else 
+      #console.dir @_logs
+      #console.dir obj
+      try
+        @_logs.insert obj
+        #console.dir obj
+      catch e
+        console.log "ERROR while inserting logs from TLog"
+        console.dir e.stack
       
       
 
