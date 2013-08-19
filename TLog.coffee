@@ -75,38 +75,21 @@ class TLog
   ]
 
   constructor: (@_currentLogLevel, @_printToConsole, @_log_user = true, show_warning = true)->
-
-    if ObservatorySettings
-      if ObservatorySettings.logLevel? then @_currentLogLevel = ObservatorySettings.logLevel
-      if ObservatorySettings.printToConsole? then @_printToConsole = ObservatorySettings.printToConsole
-      if ObservatorySettings.log_user? then @_log_user = ObservatorySettings.log_user
-      if ObservatorySettings.log_http? then TLog._log_http = ObservatorySettings.log_http
-    
-
     if TLog._instance? then throw new Error "Attempted to create another instance of the TLog"
 
     @_logs = TLog._global_logs
     if Meteor.isServer
-      # Hooking into connect middleware
-      #console.dir Meteor
-      #console.dir WebApp
       
       WebApp.connectHandlers.use Observatory.logger #TLog.useragent
-      #__meteor_bootstrap__.app.use Observatory.logger
       
       Meteor.publish '_observatory_logs',->
-        if !ObservatorySettings or ObservatorySettings.should_publish(@)
-          TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
-        else
+        TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
+      
+      TLog._global_logs.allow
+        insert: (uid)->
+          true
+        update: (uid)->
           false
-      if ObservatorySettings?.allow
-        TLog._global_logs.allow(ObservatorySettings.allow)
-      else
-        TLog._global_logs.allow
-          insert: (uid)->
-            true
-          update: (uid)->
-            false
 
     if Meteor.isClient
       Meteor.subscribe('_observatory_logs')

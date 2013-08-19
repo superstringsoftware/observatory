@@ -4,12 +4,6 @@ try {
     });
 
     Package.on_use(function (api) {
-        //observatory-settings may not exist, so catch any errors
-        try {
-            api.use('observatory-settings');
-        } catch (err){
-        }
-
         api.use(['coffeescript', 'underscore','standard-app-packages','ejson'], ['client','server']);
         //api.use(['webapp'], ['server']);
 
