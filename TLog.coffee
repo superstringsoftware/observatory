@@ -228,7 +228,7 @@ class TLog
         #console.dir obj
       catch e
         console.log "ERROR while inserting logs from TLog"
-        console.dir e
+        console.dir e.stack
       
       
 

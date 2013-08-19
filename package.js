@@ -10,7 +10,7 @@ try {
         } catch (err){
         }
 
-        api.use(['coffeescript', 'underscore','standard-app-packages'], ['client','server']);
+        api.use(['coffeescript', 'underscore','standard-app-packages','ejson'], ['client','server']);
         //api.use(['webapp'], ['server']);
 
         api.add_files('TLog.coffee',['client','server']);
