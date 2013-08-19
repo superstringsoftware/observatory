@@ -1,6 +1,6 @@
 What is it?
 -------------
-This is Observatory v0.2.1 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient
+This is Observatory v0.2.5 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient
 and pretty logging and monitoring for [Meteor framework](http://meteor.com) application development.
 [See it in action!](http://observatoryjs.com/).
 
@@ -28,6 +28,42 @@ Installation
 
 Usage
 ---------
+New in 0.2.5 - thanks to [Jonathan](https://github.com/jperl) contribution, better way to set options for the logger now
+is by using ObservatorySettings object:
+
+By defining an `observatory-settings` package which defines a global `ObservatorySettings`, you can now configure should_publish, [allow](docs.meteor.com/#allow), and control the logger constructor settings.
+
+Ex.
+
+```javascript
+ObservatorySettings = {
+    allow: {
+        insert: function (userId, doc) {
+            //make sure the userId is correct
+            return !(doc.uid && doc.uid !== userId);
+        },
+        update: function (userId, doc, fields, modifier) {
+            return false;
+        },
+        remove: function (userId, doc) {
+            return false;
+        }
+    },
+    log_http: false,
+    printToConsole: false,
+    should_publish: function (publish) {
+        //only publish logs to the admins
+        return Meteor.users.findOne({ _id: publish.userId, role: "admin"});
+    }
+};
+```
+
+For the example of how it's done, please see [the sample app](https://github.com/jhoxray/telescope), but it's very 
+straightforward.
+
+Old way also works as described below, but you may need to comment out dependency on `observatory-settings` in 
+`observatory-apollo` `package.js`.
+
 Somewhere in the common code of your meteor app call:
 ```coffeescript
 logger = TLog.getLogger()
@@ -139,6 +175,10 @@ to share your thoughts and ideas!
 
 Revision history
 -----------------
+####0.2.5: August, 19, 2013
+* Updated to work with Meteor 0.6.5
+* Added ObservatorySettings dependency for settings, please see sample app on how it works
+
 ####0.2.1: March 25, 2013
 * Added http requests logging via connect middleware hook
 * Changed UI behavior so that Observatory modifies last child of &lt;body&gt; to be able to scroll main site content up
