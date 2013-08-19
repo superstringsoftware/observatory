@@ -21,7 +21,13 @@ class Observatory.Monitor
       closedSessions = _.difference @_sessions, currentSessions
       updatedSessions = _.intersection @_sessions, currentSessions
 
-      #console.dir currentSessions
+      ###
+      console.log currentSessions?.length
+      console.log newSessions?.length
+      console.log closedSessions?.length
+      console.log updatedSessions?.length
+      ###
+      
       @isRunning = true
     , timePeriod or 30000 # 30 sec by default
 

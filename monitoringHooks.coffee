@@ -15,29 +15,31 @@ Meteor.userIP = (uid)->
 
 # Ok, we can register handler for every new connecting socket, we can analyze all current meteor sessions
 Meteor.default_server.stream_server.register (socket)->
-  #console.log "SOCKET Connect! ----------------------------->"
-  #console.dir socket
-  #console.log "METEOR SESSION: ----------------------------->"
-  #Meteor.userIP()
-  #console.dir socket.meteor_session
-  #console.log s.meteor_session.userId, s.meteor_session.socket.headers for s in Meteor.default_server.stream_server.open_sockets when s.meteor_session?
-
+  ###
+  console.log "SOCKET Connect! ----------------------------->"
+  console.dir socket
+  console.log "METEOR SESSION: ----------------------------->"
+  Meteor.userIP()
+  console.dir socket.meteor_session
+  console.log s.meteor_session.userId, s.meteor_session.socket.headers for s in Meteor.default_server.stream_server.open_sockets when s.meteor_session?
+  ###
 
 Meteor.methods
   # TODO: add authorization!
   _observatoryGetOpenSessions: ->
     # console.log "======================================== called observatoryGetOpenSockets ======================================"
     ret = []
-    #console.dir Meteor.default_server.sessions
-    for k, os of Meteor.default_server.sessions #Meteor.default_server?.stream_server?.open_sockets
+    #console.dir Meteor.default_server?.stream_server?.open_sockets
+    for k, socket of Meteor.default_server?.stream_server?.open_sockets #Meteor.default_server.sessions #Meteor.default_server?.stream_server?.open_sockets
       # TODO: DO NOT delete the below as if Meteor internal API changes we'll need to look at it again!!!
       # console.dir os.collectionViews
+      os = socket.meteor_session
       o =
         ddpVersion: os.version
         sessionId: os.id
         initialized: os.initialized
-        lastConnect: os.last_connect_time
-        lastDetach: os.last_detach_time
+        lastConnect: new Date os.last_connect_time
+        lastDetach: new Date os.last_detach_time
         blocked: os.blocked
         workerRunning: os.worker_running
         userId: os.userId
@@ -56,6 +58,7 @@ Meteor.methods
         pendingReady: os._pendingReady
 
       ret.push o
+      #console.dir o
       #console.dir os.socket._events
       #console.dir Meteor.default_server.sessions
     ret
