@@ -1,17 +1,3 @@
-# stub for testing, if we are in the test env Meteor won't be defined
-###
-if not Meteor? and require?
-  {Meteor, EJSON} = require './unit-tests/MeteorStubs.coffee'
-  Observatory = Observatory or= {logger: -> console.log "Observatory.logger called"}
-  __meteor_bootstrap__ = Meteor.__meteor_bootstrap__
-###
-
-#(exports ? this).TLog = TLog
-# Class that handles all the logging logic
-#
-# @example Getting a logger that will print only WARNING and more severe messages both to db and console:
-#     TL = TLog.getLogger(TLog.LOGLEVEL_WARNING, true)
-#
 class TLog
   @_connectLogsBuffer = []
   @_log_http = true
@@ -27,8 +13,11 @@ class TLog
         fullMsg = msg + "\nreferrer: #{l.referrer?}"
         loglevel = TLog.LOGLEVEL_VERBOSE
         if l.status >= 500 then loglevel = TLog.LOGLEVEL_FATAL
-        else if l.status >= 400 then loglevel = TLog.LOGLEVEL_ERROR
-        else if l.status >= 300 then loglevel = TLog.LOGLEVEL_WARNING
+        else
+          if l.status >= 400
+            loglevel = TLog.LOGLEVEL_ERROR
+          else
+            if l.status >= 300 then loglevel = TLog.LOGLEVEL_WARNING
 
         options =
           isServer: true
@@ -77,13 +66,22 @@ class TLog
   constructor: (@_currentLogLevel, @_printToConsole, @_log_user = true, show_warning = true)->
     if TLog._instance? then throw new Error "Attempted to create another instance of the TLog"
 
+    settings = Meteor.settings?.public?.observatorySettings
+    console.log settings
+    if settings?
+      @_currentLogLevel = settings.logLevel
+      @_printToConsole = settings.printToConsole
+      @_log_user = settings.logUser
+      @_log_http = settings.logHttp
+
     @_logs = TLog._global_logs
+
     if Meteor.isServer
-      
       WebApp.connectHandlers.use Observatory.logger #TLog.useragent
-      
-      Meteor.publish '_observatory_logs',->
-        TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
+
+      if (not settings?.prohibitAutoPublish)
+        Meteor.publish '_observatory_logs', ->
+          TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
       
       TLog._global_logs.allow
         insert: (uid)->
@@ -97,6 +95,14 @@ class TLog
     @warn("You should use TLog.getLogger(loglevel, want_to_print) method instead of a constructor! Constructor calls may be removed
       in the next versions of the package.") if show_warning
     @verbose "Creating logger with level #{TLog.LOGLEVEL_NAMES[@_currentLogLevel]}, print to console: #{@_printToConsole}, log user: #{@_log_user}", "Observatory"
+
+  @publish: (func)->
+    if Meteor.isServer
+      Meteor.publish '_observatory_logs',->
+        if func?
+          func @
+        else
+          TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
 
 
   # function to set who is allowed to remove the logs from the database
@@ -197,6 +203,7 @@ class TLog
       timestamp_text: ts
       timestamp: options.timestamp
       uid: options.uid # user id or null
+      user: options.user
       ip: options.ip # IP address or null
       elapsedTime: options.elapsedTime # e.g., response time for http or method running time for profiling functions
       customOptions: customOptions # anything else EJSONable that you want to store
