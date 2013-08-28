@@ -67,7 +67,7 @@ class TLog
     if TLog._instance? then throw new Error "Attempted to create another instance of the TLog"
 
     settings = Meteor.settings?.public?.observatorySettings
-    console.log settings
+    #console.log settings
     if settings?
       @_currentLogLevel = TLog[settings.logLevel]
       @_printToConsole = settings.printToConsole
