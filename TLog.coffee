@@ -69,7 +69,7 @@ class TLog
     settings = Meteor.settings?.public?.observatorySettings
     console.log settings
     if settings?
-      @_currentLogLevel = settings.logLevel
+      @_currentLogLevel = TLog[settings.logLevel]
       @_printToConsole = settings.printToConsole
       @_log_user = settings.logUser
       @_log_http = settings.logHttp
@@ -96,13 +96,12 @@ class TLog
       in the next versions of the package.") if show_warning
     @verbose "Creating logger with level #{TLog.LOGLEVEL_NAMES[@_currentLogLevel]}, print to console: #{@_printToConsole}, log user: #{@_log_user}", "Observatory"
 
+  # func should return whether we allow publishing or not
   @publish: (func)->
     if Meteor.isServer
       Meteor.publish '_observatory_logs',->
-        if func?
-          func @
-        else
-          TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
+        canPublish = if func? then func @userId else true
+        TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit} if canPublish
 
 
   # function to set who is allowed to remove the logs from the database
