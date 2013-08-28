@@ -1,6 +1,6 @@
 What is it?
 -------------
-This is Observatory v0.2.53 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient
+This is Observatory v0.2.6 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient
 and pretty logging and monitoring for [Meteor framework](http://meteor.com) application development.
 [See it in action!](http://observatoryjs.com/).
 
@@ -37,6 +37,33 @@ logger.setOptions(TLog.LOGLEVEL_MAX,true, true, true)
 ```
 This will get you a logger that will log everything, will also output to the console (second parameter),
 will log current user (third parameter) and http requests (last parameter).
+
+Since 0.2.6 new and preferred method of setting options is via 'meteor --settings <filename>' call. Example settings file is
+included and follows the format described below:
+
+```javascript
+{
+    "public": {
+        "observatorySettings": {
+            "logLevel": "LOGLEVEL_DEBUG",
+            "printToConsole": true,
+            "logUser": true,
+            "logHttp": true,
+            "prohibitAutoPublish": false
+        }
+    }
+}
+```
+
+This way you can use one set of settings while debugging (meteor --settings) and another - when deploying
+(meteor deploy --settings). By default observatory publishes logs to any user. If you set "prohibitAutoPublish" to true
+you can set your own publishing criteria via calling TLog.publish that takes function of the userId as an argument.
+For example, if you just want to publish to admin users:
+
+```coffeescript
+TLog.publish (uid)->
+      Meteor.users.findOne(uid)?.role is "admin"
+```
 
 If you want to set logs removal permission, call allowRemove with allow function as an argument - it gets passed to
 Collection.allow({remove: ...}) call. If you call allowRemove with no arguments, it simply sets "true" so use with care.
@@ -140,6 +167,11 @@ to share your thoughts and ideas!
 
 Revision history
 -----------------
+####0.2.6: August, 28, 2013
+* Added Meteor.settings support
+* Better user logging options
+* Weak dependency on the bootstrap
+
 ####0.2.53: August, 19, 2013
 * Updated to work with Meteor 0.6.5
 
