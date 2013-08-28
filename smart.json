@@ -8,9 +8,7 @@
   "packages": {
     "observatory-apollo": {
         "git": "https://github.com/superstringsoftware/observatory-apollo.git"
-
     }
   }
 }
 
-// "path": "/Users/aantich/Development/meteor/observatory-suite/observatory-apollo/"
