@@ -1,6 +1,8 @@
 class TLog
   @_connectLogsBuffer = []
+  @_ddpLogsBuffer = []
   @_log_http = true
+  @_log_DDP = true
 
   @addToLogsBuffer: (obj)->
     @_connectLogsBuffer.push obj
@@ -29,9 +31,27 @@ class TLog
           elapsedTime: l.responseTime # e.g., response time for http or method running time for profiling functions
 
         # recording the result
+        full_message = tl._formatLogMessage options
         tl._lowLevelLog loglevel, options, l
+        console.log full_message if tl._printToConsole
 
       TLog._connectLogsBuffer = []
+
+  @checkDDPLogsBuffer: ->
+    return unless TLog._ddpLogsBuffer.length > 0
+    tl = TLog.getLogger()
+    for l in TLog._ddpLogsBuffer
+      options =
+        isServer: true
+        message: l.msg
+        module: "DDP"
+        timestamp: l.timestamp
+      full_message = tl._formatLogMessage options
+      options.full_message = full_message
+      tl._lowLevelLog TLog.LOGLEVEL_DEBUG, options, l
+      console.log full_message if tl._printToConsole
+    TLog._ddpLogsBuffer = []
+
 
 
   @_instance = undefined
@@ -73,12 +93,34 @@ class TLog
       @_printToConsole = settings.printToConsole
       @_log_user = settings.logUser
       @_log_http = settings.logHttp
+      @_log_DDP = settings.logDDP
+
+    TLog._log_http = @_log_http
+    TLog._log_DDP = @_log_DDP
 
     @_logs = TLog._global_logs
 
+    ##############################
+    # THIS IS MAGIC STUFF BELOW!!!
+    ##############################
     if Meteor.isServer
-      WebApp.connectHandlers.use Observatory.logger #TLog.useragent
+      # hooking up connect middleware logger
+      WebApp.connectHandlers.use Observatory.httpLogger #TLog.useragent
 
+      # hooking up DDP logging
+      Meteor.default_server.stream_server.register (socket)->
+        TLog._ddpLogsBuffer.push {timestamp: new Date, msg: "Connected socket #{socket.id}"} if TLog._log_DDP
+        socket.on 'data', (raw_msg)->
+          return unless TLog._log_DDP
+          t = new Date
+          TLog._ddpLogsBuffer.push {timestamp: t, msg: "Got message in a socket #{@id}"}
+          TLog._ddpLogsBuffer.push {timestamp: t, msg: EJSON.stringify(raw_msg)}
+        socket.on 'close', ->
+          TLog._ddpLogsBuffer.push {timestamp: new Date, msg: "Closing socket #{@id}"}
+
+
+
+      # publishing default last "limit" logs unless explicitly prohibited
       if (not settings?.prohibitAutoPublish)
         Meteor.publish '_observatory_logs', ->
           TLog._global_logs.find {}, {sort: {timestamp: -1}, limit:TLog.limit}
@@ -119,12 +161,15 @@ class TLog
   # @param [TLog enum] loglevel desired (see getLogger())
   # @param [Bool] whether to print to the console
   #
-  setOptions: (loglevel, want_to_print = true, log_user = true, log_http = true) ->
+  setOptions: (loglevel, want_to_print = true, log_user = true, log_http = true, log_DDP = true) ->
     if (loglevel>=0) and (loglevel<=TLog.LOGLEVEL_MAX)
       @_currentLogLevel = loglevel
     @_printToConsole = want_to_print
     @_log_user = log_user
+    @_log_http = log_http
+    @_log_DDP = log_DDP
     TLog._log_http = log_http
+    TLog._log_DDP = log_DDP
     @verbose "Setting log options with level #{TLog.LOGLEVEL_NAMES[@_currentLogLevel]}, print to console: #{@_printToConsole}, log user: #{@_log_user}, http logging: #{TLog._log_http}", "Observatory"
 
   # Main logging methods:
@@ -306,6 +351,7 @@ if Meteor.isServer
   Meteor.startup ->
     Meteor.setInterval ->
       TLog.checkConnectLogsBuffer()
+      TLog.checkDDPLogsBuffer()
     , 5000
 
 Inspect =

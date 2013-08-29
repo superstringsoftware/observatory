@@ -8,7 +8,7 @@ Observatory = if Observatory? then Observatory else {}
 
 _.extend Observatory,
 
-  logger: (req, res, next) ->
+  httpLogger: (req, res, next) ->
     if not TLog._log_http
       next()
       return
