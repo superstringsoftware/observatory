@@ -1,2 +1,2 @@
-mocha -R spec --watch --compilers coffee:coffee-script *.coffee
+mocha -R spec --watch --compilers coffee:coffee-script ttt.coffee
 

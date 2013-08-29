@@ -1,25 +1,32 @@
-chai = require 'chai'  
-should = chai.should() 
+chai = require 'chai'
+#console.log Meteor
+should = chai.should()
 
 describe 'TLog class', ->
-  #console.dir TLog.TLog
-  TLogModule = require '../TLog'
-  TLog = TLogModule.TLog
+  #TLog = TLogModule.TLog
+  #console.dir TLog
   tl = TLog.getLogger()
   it 'should be visible, have the global logs collection and log http by default',->
     #console.log TLog
     TLog.should.exist
     TLog._global_logs.should.exist
     TLog._log_http.should.be.true
+    TLog._connectLogsBuffer.should.be.empty
   it 'should return the default logger with correct defaults', ->
     tl.should.exist
     tl.should.be.an.instanceof TLog
     tl._currentLogLevel.should.equal TLog.LOGLEVEL_DEBUG
     tl._log_user.should.be.true
     tl._printToConsole.should.be.false
-   it 'should be a singleton', ->
-   	tl1 = new TLog
-   	tl.should.equal tl1
+  it 'should add http logs to buffer and clean them after processing',->
+    httpLog =
+      timestamp: new Date
+    TLog.addToLogsBuffer(httpLog)
+    TLog._connectLogsBuffer.length.should.equal 1
+    TLog._connectLogsBuffer[0].should.equal httpLog
+    TLog.checkConnectLogsBuffer()
+    TLog._connectLogsBuffer.should.be.empty
+
 
   describe 'Logging methods:', ->
     it "should call methods with all log levels", ->

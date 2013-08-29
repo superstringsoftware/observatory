@@ -1,5 +1,5 @@
-require = if Npm? then Npm.require else __meteor_bootstrap__.require
-Fiber = require 'fibers'
+#require = if Npm? then Npm.require else __meteor_bootstrap__.require
+#Fiber = require 'fibers'
 
 #console.log Meteor.default_server.stream_server
 
@@ -17,11 +17,17 @@ Meteor.userIP = (uid)->
 Meteor.default_server.stream_server.register (socket)->
   ###
   console.log "SOCKET Connect! ----------------------------->"
+  socket.on 'data', (raw_msg)->
+    console.log 'Got message in a socket: --------->', @id
+    console.log raw_msg
+  socket.on 'close', ->
+    console.log "Closing socket #{@id}"
+
   console.dir socket
   console.log "METEOR SESSION: ----------------------------->"
   Meteor.userIP()
   console.dir socket.meteor_session
-  console.log s.meteor_session.userId, s.meteor_session.socket.headers for s in Meteor.default_server.stream_server.open_sockets when s.meteor_session?
+  #console.log s.meteor_session.userId, s.meteor_session.socket.headers for s in Meteor.default_server.stream_server.open_sockets when s.meteor_session?
   ###
 
 Meteor.methods

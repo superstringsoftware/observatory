@@ -1,0 +1,30 @@
+fs = require 'fs'
+{print} = require 'util'
+{spawn, exec} = require "child_process"
+
+listOfFiles = "MeteorStubs.coffee ../TLog.coffee test.coffee"
+files = ["MeteorStubs.coffee", "../TLog.coffee", "test.coffee"]
+
+task "test", "Run unit tests", ->
+  exec " coffee -j tests.js -c " + listOfFiles, (err, stdout, stderr) ->
+    throw err if err
+    console.log stdout + stderr
+    exec " mocha -R spec --colors tests.js", (err, stdout, stderr)->
+      throw err if err
+      console.log stdout + stderr
+      fs.unlink "tests.js", (err)->
+        throw err if err
+        console.log "Done."
+
+
+task "watch", "Run unit tests watching for changes", ->
+  coffee = spawn 'coffee', ['-w', '-j', 'tests.js', '-c'].concat files
+  coffee.stderr.on 'data', (data) -> process.stderr.write data.toString()
+  coffee.stdout.on 'data', (data) -> print data.toString()
+  coffee.on 'exit', (code) -> print 'Finished coffee' + code
+  console.log 'Spawned coffee'
+  mocha = spawn 'mocha', ['-R', 'spec', '--watch', '--colors', '*.js']
+  console.log 'Spawned mocha'
+  mocha.stdout.pipe process.stdout, end: false
+  mocha.stderr.pipe process.stderr, end: false
+  mocha.on 'exit', (code) -> callback?(code,code)
