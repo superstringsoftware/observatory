@@ -346,7 +346,7 @@ class TLog
     @_global_logs.remove {}
 
 
-# Starting the cycle of watching http logs buffer
+# Starting the cycle of watching log buffers (http, ddp for now)
 if Meteor.isServer
   Meteor.startup ->
     Meteor.setInterval ->
