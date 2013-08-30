@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Observatory by jhoxray</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Observatory</h1>
+        <h2>Powerful, yet easy to use, logging and monitoring package for Meteor framework. </h2>
+
+        <section id="downloads">
+          <a href="https://github.com/jhoxray/observatory/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/jhoxray/observatory/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/jhoxray/observatory" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h2>
+<a name="what-is-it" class="anchor" href="#what-is-it"><span class="octicon octicon-link"></span></a>What is it?</h2>
+
+<p>This is Observatory v0.2.6 - a <a href="https://github.com/oortcloud/meteorite">Meteorite</a> package that provides powerful, efficient
+and pretty logging and monitoring for <a href="http://meteor.com">Meteor framework</a> application development.
+<a href="http://observatoryjs.com/">See it in action!</a>.</p>
+
+<h2>
+<a name="what-does-it-do" class="anchor" href="#what-does-it-do"><span class="octicon octicon-link"></span></a>What does it do?</h2>
+
+<ul>
+<li><p>Easy logging with different log levels with corresponding methods for message output, optional 
+logging to console, pretty output of both Client and Server logs right in the browser, optional logging of
+the currently logged-in user for additional control.</p></li>
+<li><p>NEW! Logging of http requests (yes, with client-side IP address - an infamous topic among Meteor devs :))</p></li>
+<li><p>Monitoring of your application internals: currently, Templates with all events and a Session object; much more to come.</p></li>
+<li><p>2 visual styles: "dark" for additional "terminal" coolness and "light" that may be easier on the eyes. Adding a new theme is pretty
+easy even now and will be even easier soon - just look at observatory.less and theme() helper in observatoryTemplates.coffee.</p></li>
+<li><p>[experimental] Testing support for your Meteor app with BDD / TDD like syntax. This is currently in alpha and moved to a
+<a href="https://github.com/superstringsoftware/observatory-testing">separate package</a></p></li>
+</ul><h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<h4>
+<a name="with-meteorite" class="anchor" href="#with-meteorite"><span class="octicon octicon-link"></span></a>With meteorite:</h4>
+
+<pre><code>mrt add observatory
+</code></pre>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>Somewhere in the common code of your meteor app call:</p>
+
+<div class="highlight"><pre><span class="nv">logger = </span><span class="nx">TLog</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">()</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">setOptions</span><span class="p">(</span><span class="nx">TLog</span><span class="p">.</span><span class="nx">LOGLEVEL_MAX</span><span class="p">,</span><span class="kc">true</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span>
+<span class="c1">#for other options, see API section below</span>
+</pre></div>
+
+<p>This will get you a logger that will log everything, will also output to the console (second parameter),
+will log current user (third parameter) and http requests (last parameter).</p>
+
+<p>Since 0.2.6 new and preferred method of setting options is via 'meteor --settings ' call. Example settings file is
+included and follows the format described below:</p>
+
+<div class="highlight"><pre><span class="p">{</span>
+    <span class="s2">"public"</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">"observatorySettings"</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s2">"logLevel"</span><span class="o">:</span> <span class="s2">"LOGLEVEL_DEBUG"</span><span class="p">,</span>
+            <span class="s2">"printToConsole"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="s2">"logUser"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="s2">"logHttp"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="s2">"prohibitAutoPublish"</span><span class="o">:</span> <span class="kc">false</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>This way you can use one set of settings while debugging (meteor --settings) and another - when deploying
+(meteor deploy --settings). By default observatory publishes logs to any user. If you set "prohibitAutoPublish" to true
+you can set your own publishing criteria via calling TLog.publish that takes function of the userId as an argument.
+For example, if you just want to publish to admin users:</p>
+
+<div class="highlight"><pre><span class="nx">TLog</span><span class="p">.</span><span class="nx">publish</span> <span class="nf">(uid)-&gt;</span>
+      <span class="nx">Meteor</span><span class="p">.</span><span class="nx">users</span><span class="p">.</span><span class="nx">findOne</span><span class="p">(</span><span class="nx">uid</span><span class="p">)</span><span class="o">?</span><span class="p">.</span><span class="nx">role</span> <span class="o">is</span> <span class="s">"admin"</span>
+</pre></div>
+
+<p>If you want to set logs removal permission, call allowRemove with allow function as an argument - it gets passed to
+Collection.allow({remove: ...}) call. If you call allowRemove with no arguments, it simply sets "true" so use with care.
+Usual Meteor restrictions on the client apply, so if you really want to clear logs you have to call <code>TLog._clear()</code> on
+the server.</p>
+
+<div class="highlight"><pre><span class="nx">TLog</span><span class="p">.</span><span class="nx">allowRemove</span> <span class="nf">(uid)-&gt;</span>
+    <span class="k">if</span> <span class="nx">Meteor</span><span class="p">.</span><span class="nx">users</span><span class="p">.</span><span class="nx">findOne</span><span class="p">(</span><span class="nx">uid</span><span class="p">)</span> <span class="o">==</span> <span class="s">"admin"</span>
+        <span class="kc">true</span>
+    <span class="k">else</span>
+        <span class="kc">false</span>
+</pre></div>
+
+<p>When you want to log a message of a certain log level:</p>
+
+<div class="highlight"><pre><span class="nx">TL</span><span class="p">.</span><span class="nx">fatal</span><span class="p">(</span><span class="s">"your message"</span><span class="p">,</span><span class="s">"optional module name"</span><span class="p">)</span>
+<span class="nx">TL</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s">"your message"</span><span class="p">,</span><span class="s">"optional module name"</span><span class="p">)</span>
+<span class="nx">TL</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="s">"your message"</span><span class="p">,</span><span class="s">"optional module name"</span><span class="p">)</span>
+<span class="nx">TL</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s">"your message"</span><span class="p">,</span><span class="s">"optional module name"</span><span class="p">)</span>
+<span class="nx">TL</span><span class="p">.</span><span class="nx">verbose</span><span class="p">(</span><span class="s">"your message"</span><span class="p">,</span><span class="s">"optional module name"</span><span class="p">)</span>
+<span class="nx">TL</span><span class="p">.</span><span class="nx">debug</span><span class="p">(</span><span class="s">"your message"</span><span class="p">,</span><span class="s">"optional module name"</span><span class="p">)</span>
+
+<span class="c1"># tracing errors - correctly handles both Meteor and regular js errors</span>
+<span class="nx">TL</span><span class="p">.</span><span class="nx">trace</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="s">"your message"</span><span class="p">,</span> <span class="s">"optional module name"</span><span class="p">)</span>
+
+<span class="c1"># inspecting objects</span>
+<span class="nx">TL</span><span class="p">.</span><span class="nx">dir</span><span class="p">(</span><span class="nx">object</span><span class="p">,</span> <span class="s">"your message"</span><span class="p">,</span> <span class="s">"optional module name"</span><span class="p">)</span>
+</pre></div>
+
+<p>To actually display the logs and use monitoring capabilities, plugin "logs_bootstrap" template anywhere in your Handlebars
+templates right before closing body tag:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;body&gt;</span>
+  ...
+  {{&gt;logs_bootstrap}}
+<span class="nt">&lt;/body&gt;</span>
+</pre></div>
+
+<p>To set the default panel to either hidden or half a screen, set the session variable:</p>
+
+<div class="highlight"><pre><span class="nx">Session</span><span class="p">.</span><span class="nx">set</span> <span class="s">"bl_default_panel"</span><span class="p">,</span> <span class="s">"hidden"</span> <span class="c1"># or "half"</span>
+</pre></div>
+
+<p>Everything else is done automagically, as always is the case with Meteor. See the code for 
+<a href="https://github.com/jhoxray/telescope">the sample app</a> and<br><a href="http://observatoryjs.com">check it out live</a>.</p>
+
+<h2>
+<a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h2>
+
+<p>In addition to the functions above here's a short description of what else you may need.</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nx">TLog</span>
+  <span class="c1">#setting desired log level and whether you also want to output your log messages to the console (true or false)</span>
+  <span class="c1">#Set log_user to true if you also want to log currently logged in user with every log message</span>
+  <span class="c1">#userId is stored in the uid field of the log collection document.</span>
+  <span class="vi">@getLogger: </span><span class="nf">(currentLogLevel, printToConsole = true, log_user = false)-&gt;</span>
+
+  <span class="c1">#log levels are defined as follows, so use TLog.LOGLEVEL_... when calling get Logger()</span>
+  <span class="vi">@LOGLEVEL_FATAL = </span><span class="mi">0</span>
+  <span class="vi">@LOGLEVEL_ERROR = </span><span class="mi">1</span>
+  <span class="vi">@LOGLEVEL_WARNING = </span><span class="mi">2</span>
+  <span class="vi">@LOGLEVEL_INFO = </span><span class="mi">3</span>
+  <span class="vi">@LOGLEVEL_VERBOSE = </span><span class="mi">4</span>
+  <span class="vi">@LOGLEVEL_DEBUG = </span><span class="mi">5</span>
+  <span class="vi">@LOGLEVEL_MAX = </span><span class="mi">6</span>
+
+  <span class="c1">#to change log level and console printing, use:</span>
+  <span class="nv">setOptions: </span><span class="p">(</span><span class="nx">loglevel</span><span class="p">,</span> <span class="nv">want_to_print = </span><span class="kc">true</span><span class="p">,</span> <span class="nv">log_user = </span><span class="kc">false</span><span class="p">)</span>
+</pre></div>
+
+<p>Log levels work in a very straightforward way: TLog will record any message which log level is &lt;= current log level 
+set in <code>setOptions()</code>.</p>
+
+<p>If you are into internals type of person, Observatory logs all info to the "_observatory_logs"
+Meteor collection. Every document has the following fields:</p>
+
+<div class="highlight"><pre><span class="nx">@_logs</span><span class="p">.</span><span class="nx">insert</span>
+    <span class="nv">isServer: </span><span class="nx">srv</span> <span class="c1"># boolean, whether called on the server or on the client</span>
+    <span class="nv">message: </span><span class="nx">msg</span> <span class="c1"># message provided to any of the logging methods</span>
+    <span class="nv">module: </span><span class="nx">module</span> <span class="c1"># module name provided to any of the logging methods</span>
+    <span class="nv">loglevel: </span><span class="nx">loglevel</span> <span class="c1"># loglevel with which the message is logged</span>
+    <span class="nv">timestamp_text: </span><span class="nx">ts</span> <span class="c1"># textual representation of the timestamp</span>
+    <span class="nv">timestamp: </span><span class="nx">timestamp</span> <span class="c1"># timestamp as a Date()</span>
+    <span class="nv">full_message: </span><span class="nx">full_message</span> <span class="c1"># full textual log message (useful for quick export etc)</span>
+    <span class="nv">uid: </span><span class="nx">uid</span> <span class="c1"># currently logged in user id (if log_user option set to true)</span>
+    <span class="nv">ip: </span><span class="nx">ip</span> <span class="c1"># IP address of the client in case it's an http request (working on logging socks requests too)</span>
+    <span class="nv">elapsedTime: </span><span class="nx">time</span> <span class="c1"># time in ms, e.g. response time for http request, or method running time for profiling calls</span>
+    <span class="nv">customOptions: </span><span class="nx">obj</span> <span class="c1"># any EJSONable object; currently cannot be set from public API but is filled when logging http calls</span>
+</pre></div>
+
+<p>This should be enough if you want to manipulate your logs in any way you want that Observatory
+does not provide out of the box. Access the "_observatory_logs" collection directly via</p>
+
+<div class="highlight"><pre><span class="nv">col = </span><span class="nx">TLog</span><span class="p">.</span><span class="nx">_global_logs</span>
+</pre></div>
+
+<p>and then all the usual Meteor Collection API is applicable.</p>
+
+<h2>
+<a name="feedback" class="anchor" href="#feedback"><span class="octicon octicon-link"></span></a>Feedback</h2>
+
+<p>We'd love to hear what you think, whether it's useful and which other features you'd want to see -- so please submit issues here on github or <a href="http://superstringsoftware.com">leave a comment on our blog</a> 
+to share your thoughts and ideas!</p>
+
+<h2>
+<a name="revision-history" class="anchor" href="#revision-history"><span class="octicon octicon-link"></span></a>Revision history</h2>
+
+<h4>
+<a name="026-august-28-2013" class="anchor" href="#026-august-28-2013"><span class="octicon octicon-link"></span></a>0.2.6: August, 28, 2013</h4>
+
+<ul>
+<li>Added Meteor.settings support</li>
+<li>Better user logging options</li>
+<li>Weak dependency on the bootstrap</li>
+</ul><h4>
+<a name="0253-august-19-2013" class="anchor" href="#0253-august-19-2013"><span class="octicon octicon-link"></span></a>0.2.53: August, 19, 2013</h4>
+
+<ul>
+<li>Updated to work with Meteor 0.6.5</li>
+</ul><h4>
+<a name="021-march-25-2013" class="anchor" href="#021-march-25-2013"><span class="octicon octicon-link"></span></a>0.2.1: March 25, 2013</h4>
+
+<ul>
+<li>Added http requests logging via connect middleware hook</li>
+<li>Changed UI behavior so that Observatory modifies last child of &lt;body&gt; to be able to scroll main site content up</li>
+<li>Preparation for Meteor 0.6.0 in terms of variables scoping</li>
+<li>Internal package restructuring - moved core logger etc to a separate package (to be released separately soon)</li>
+</ul><h4>
+<a name="020-march-18-2013" class="anchor" href="#020-march-18-2013"><span class="octicon octicon-link"></span></a>0.2.0: March 18, 2013</h4>
+
+<p>First minor release with "real" Meteor (auth, users, ui improvements).</p>
+
+<ul>
+<li>Properly logging currently logged-in user</li>
+<li>Works with Meteor 0.5.9</li>
+<li>Code highlighting in the Templates Internals</li>
+<li>Session as a separate panel</li>
+<li>Unit testing moved to a <a href="https://github.com/superstringsoftware/observatory-testing">separate package</a>
+</li>
+<li>Keyboard based control of the panels ("~" and "ctrl + ~")</li>
+<li>Setting default panel states via Session</li>
+</ul><h4>
+<a name="019-march-6-2013" class="anchor" href="#019-march-6-2013"><span class="octicon octicon-link"></span></a>0.1.9: March 6, 2013</h4>
+
+<p>Update to support Meteor 0.5.7:</p>
+
+<ul>
+<li>New logging methods (debug, trace, dir)</li>
+<li>Meteor Authorization support</li>
+<li>Some clean up of the logs display in the panel</li>
+<li>Fixing template methods inspection for the new Meteor syntax</li>
+<li>Preview version of unit testing</li>
+</ul><h4>
+<a name="018-oct-2012" class="anchor" href="#018-oct-2012"><span class="octicon octicon-link"></span></a>0.1.8: Oct, 2012</h4>
+
+<p>Minor code clean up, ability to clear logs.</p>
+
+<h4>
+<a name="017" class="anchor" href="#017"><span class="octicon octicon-link"></span></a>0.1.7</h4>
+
+<p>Some styling changes, module names support:</p>
+
+<ul>
+<li>added 2 themes: dark and light, switchable on the fly.</li>
+<li>added module names support to easier sort through logs.</li>
+<li>some css cleanup, started restyling to get away from Bootstrap dependency (still dependent though so if you use css names that
+are the same as Twitter Bootstrap is using you may get weird effects in your app - will remove in a future version).</li>
+</ul><h4>
+<a name="015-016" class="anchor" href="#015-016"><span class="octicon octicon-link"></span></a>0.1.5, 0.1.6</h4>
+
+<p>Bottom sliding panel with tabs added, monitoring / inspection capabilities added, files renamed, some cleanup started</p>
+
+<h4>
+<a name="011" class="anchor" href="#011"><span class="octicon octicon-link"></span></a>0.1.1</h4>
+
+<p>Clean up for visibility / encapsulation, now need to use TLog.getLogger() instead of constructing directly</p>
+
+<h4>
+<a name="01" class="anchor" href="#01"><span class="octicon octicon-link"></span></a>0.1</h4>
+
+<p>Initial commit </p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
