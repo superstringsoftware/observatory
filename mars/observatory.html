@@ -2,15 +2,15 @@
     <div class="{{theme}}" id="lb_id_containing_box"><!-- theming support -->
         <div id="id_logs_bootstrap" {{#if isDynamic}}class="observatory_panel {{height}}"{{else}}class="observatory_panel_static  {{#if isHidden}}lb_hidden{{/if}}"{{/if}}>
               {{#if fullFeatured}}
-              <ul class="nav nav-tabs" id="lb_main_tab">
+              <ul class="nav-tabs" id="lb_main_tab">
                     <li><a href="#" data-target="observatoryjsLogsTab" id="id_logs_tab_btn">Logs</a></li>
                     <li><a href="#" data-target="observatoryjsInternalsTab" id="id_app_tab_btn">Templates Inspection</a></li>
                     <!-- <li><a href="#id_templates_tab" id="id_templates_tab_btn">Tests</a></li> -->
                     <!-- <li><a href="#" data-target="observatoryjsLogsSimple" id="id_export_tab_btn">Export</a></li> -->
                     <li><a href="#" data-target="observatoryjsHelpTab" id="id_help_tab_btn">Help</a></li>
-                    <li><button class="btn btn-mini btn-info" type="button" id="lb_btn_change_theme">change theme</button></li>
+                    <li><button class="lb_btn pull-right" type="button" id="lb_btn_change_theme">change theme</button></li>
                    <!-- <li><button class="btn btn-mini btn-info" type="button" id="lb_btn_switch_dynamic">toggle full page</button></li> -->
-                    <li><button class="btn btn-danger btn-mini" id="lb_btn_clear_logs" type="button">clear logs</button></li>
+                    <li><button class="lb_btn pull-right" id="lb_btn_clear_logs" type="button" disabled>clear logs</button></li>
                   <div id="lb_status_line" class="pull-right">
                       {{#with blGetSession "observatoryjs.ConnectionStatus"}}
                       {{#if connected}}
@@ -49,7 +49,7 @@
 
 <template name="observatoryjsLogsTab">
     <!-- logs tab tab -->
-    <div class="tab-pane" style="height: 100%;" >
+    <div class="tab-pane" style="height: 100%;" id="observatoryjsLogsTab" >
 
         <div class="lb_scrollable">
             <table class="table table-condensed lb_table-striped">
@@ -75,7 +75,7 @@
                     {{/if}}
                     <td class="lb_module">
                         {{#if module}}
-                        <span class="label label-info">{{module}}</span>
+                        <span class="label label-primary">{{module}}</span>
                         {{/if}}
                     </td>
                     <td class="lb_loglevel"><span class="label {{lb_loglevel_decoration}}">{{loglevel_names loglevel}}</span></td>

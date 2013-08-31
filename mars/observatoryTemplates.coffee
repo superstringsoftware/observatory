@@ -196,8 +196,9 @@ _.extend Template.logs_bootstrap,
 Template.observatoryjsInternalsTab.events
   "mouseleave .lb_template_events_list": (evt, templ)->
     selTmpl = Template[evt.target.getAttribute("templateName")]
+    return if not selTmpl?
     method = evt.target.getAttribute("methodName")
-    func = selTmpl._tmpl_data.events?[method]
+    func = selTmpl._tmpl_data?.events?[method]
     if func
       events = method.split ','
       for e in events
@@ -207,6 +208,7 @@ Template.observatoryjsInternalsTab.events
   #showing the source code for the chosen event
   "mouseenter .lb_template_events_list": (evt, templ)->
     selTmpl = Template[evt.target.getAttribute("templateName")]
+    return if not selTmpl?
     method = evt.target.getAttribute("methodName")
     #console.log "Entered: " + evt.target.getAttribute("templateName") + " w/ method: " + method
     if method in ["created","rendered","destroyed"]
@@ -267,17 +269,21 @@ Template.observatoryjsInternalsTab.helpers
 ######################################################################################################################
 _.extend Template.observatoryjsInternalsTab,
   destroyed: ->
-    Meteor.clearInterval @_handle
+    #Meteor.clearInterval @_handle
 
   created: ->
     # monitoring state of collections and subscriptions
     # TODO: style it
     # TODO: create collection monitoring area
+    # TODO: ok, we are moving it from here anyway, so commenting out. It belongs to
+    # TODO: separately thought out monitoring client module
+    ###
     @_handle = Meteor.setInterval =>
-      @_subscriptions = (v for k,v of TLog._global_logs._manager._subscriptions)
+      @_subscriptions = (v for k,v of TLog._global_logs._manager?._subscriptions)
       @_collections = Meteor._LocalCollectionDriver.collections
       Session.set "observatoryjs.CurrentSubscriptions", @_subscriptions
     , 5000
+    ###
 
   rendered: ->
     $("#selTemplateNames").val Session.get "bl_selected_template_name"
@@ -295,7 +301,7 @@ _.extend Template.observatoryjsInternalsTab,
 
   getMethodMap: (type, tmpl)->
     rt = []
-    rt.push tt for tt of Template[tmpl]?._tmpl_data[type]
+    rt.push tt for tt of Template[tmpl]?._tmpl_data?[type]
     rt.sort()
 
 
@@ -372,7 +378,7 @@ Template.observatoryjsLogsTab.helpers
     #console.log "Formatting date: " + ts
     #ts
     d = new Date(ts)
-    TLog._convertTime(d)
+    TLog._convertDate(d) + ' ' + TLog._convertTime(d)
 
   getUser: (log)->
     uid = log.uid
@@ -393,11 +399,13 @@ Template.observatoryjsLogsTab.helpers
 #applying class to labels showing loglevel / severity
   lb_loglevel_decoration: ->
     switch @loglevel
-      when TLog.LOGLEVEL_FATAL then cl = "label-inverse"
-      when TLog.LOGLEVEL_ERROR then cl = "label-important"
+      when TLog.LOGLEVEL_FATAL then cl = "label-fatal"
+      when TLog.LOGLEVEL_ERROR then cl = "label-danger"
       when TLog.LOGLEVEL_WARNING then cl = "label-warning"
-      when TLog.LOGLEVEL_INFO then cl = "label-info"
+      when TLog.LOGLEVEL_INFO then cl = "label-primary"
+      when TLog.LOGLEVEL_DEBUG then cl = "lb_test_label"
       when TLog.LOGLEVEL_VERBOSE then cl = "label-success"
+
 
 #apllying class to the message text (<td>) based on loglevel
   lb_loglevel_msg_decoration: ->

@@ -5,7 +5,6 @@ Package.describe({
 
 Package.on_use(function (api) {
   api.use(['coffeescript', 'underscore','templating','less','observatory-apollo'], 'client');
-  api.use('bootstrap','client',{weak: true});
 
   api.add_files('lib/codemirror/codemirror.js','client');
   api.add_files('lib/codemirror/javascript.js','client');

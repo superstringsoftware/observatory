@@ -5,6 +5,7 @@
             "printToConsole": true,
             "logUser": true,
             "logHttp": true,
+            "logDDP": true,
             "prohibitAutoPublish": false
         }
     }
