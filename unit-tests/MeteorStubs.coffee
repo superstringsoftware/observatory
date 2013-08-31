@@ -14,6 +14,9 @@ Meteor =
     #console.log "setInterval called"
   publish: (name, fn)->
     #console.log "Publishing #{name}"
+  default_server:
+    stream_server:
+      register: (func)->
 
 EJSON = JSON
 

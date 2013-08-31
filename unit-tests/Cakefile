@@ -2,19 +2,32 @@ fs = require 'fs'
 {print} = require 'util'
 {spawn, exec} = require "child_process"
 
-listOfFiles = "MeteorStubs.coffee ../TLog.coffee test.coffee"
+listOfFiles = [
+  "MeteorStubs.coffee ../lib/TLog.coffee test.coffee"
+,
+  "../lib/EventLogger.coffee ../lib/server/DDPLogger.coffee EventLogger.coffee"
+]
+
+
 files = ["MeteorStubs.coffee", "../TLog.coffee", "test.coffee"]
 
-task "test", "Run unit tests", ->
-  exec " coffee -j tests.js -c " + listOfFiles, (err, stdout, stderr) ->
-    throw err if err
-    console.log stdout + stderr
-    exec " mocha -R spec --colors tests.js", (err, stdout, stderr)->
+task "compile", "Compile unit tests", ->
+  for lf,i in listOfFiles
+    exec " coffee -j test#{i}.js -c " + lf, (err, stdout, stderr) ->
       throw err if err
       console.log stdout + stderr
-      fs.unlink "tests.js", (err)->
-        throw err if err
-        console.log "Done."
+
+task "test", "Run unit tests", ->
+  exec " mocha -R spec --colors *.js", (err, stdout, stderr)->
+    #throw err if err
+    console.log stdout + stderr
+
+
+# TODO: need to build a proper recursion
+buildBatch = (inFiles, outFile, cb)-> exec " coffee -j #{outFile} -c " + inFiles, cb
+buildAll = (cb)->
+  for lf,i in listOfFiles
+    buildBatch lf, "test#{i}.js", cb
 
 
 task "watch", "Run unit tests watching for changes", ->

@@ -8,6 +8,9 @@ class TLog
     @_connectLogsBuffer.push obj
 
   @checkConnectLogsBuffer: ->
+    console.log "connect logs buffer"
+    console.log TLog._connectLogsBuffer
+    console.log @_log_http
     if TLog._connectLogsBuffer.length > 0
       tl = TLog.getLogger()
       for l in TLog._connectLogsBuffer
@@ -77,6 +80,9 @@ class TLog
   @limit = 300
 
   @LOGLEVEL_NAMES = [
+    "fatal", "error", "warning", "info", "verbose", "debug", "max"
+  ]
+  @LOGLEVEL_NAMES_CAPS = [
     "FATAL", "ERROR", "WARNING", "INFO", "VERBOSE", "DEBUG", "MAX"
   ]
   @LOGLEVEL_NAMES_SHORT = [
@@ -95,8 +101,8 @@ class TLog
       @_log_http = settings.logHttp
       @_log_DDP = settings.logDDP
 
-    TLog._log_http = @_log_http
-    TLog._log_DDP = @_log_DDP
+    TLog._log_http = @_log_http ? true
+    TLog._log_DDP = @_log_DDP ? true
 
     @_logs = TLog._global_logs
 
@@ -106,6 +112,7 @@ class TLog
     if Meteor.isServer
       # hooking up connect middleware logger
       WebApp.connectHandlers.use Observatory.httpLogger #TLog.useragent
+      console.log WebApp.connectHandlers.listeners()
 
       # hooking up DDP logging
       Meteor.default_server.stream_server.register (socket)->
@@ -114,7 +121,7 @@ class TLog
           return unless TLog._log_DDP
           t = new Date
           TLog._ddpLogsBuffer.push {timestamp: t, msg: "Got message in a socket #{@id}"}
-          TLog._ddpLogsBuffer.push {timestamp: t, msg: EJSON.stringify(raw_msg)}
+          TLog._ddpLogsBuffer.push {timestamp: t, msg: raw_msg}
         socket.on 'close', ->
           TLog._ddpLogsBuffer.push {timestamp: new Date, msg: "Closing socket #{@id}"}
 
@@ -321,11 +328,13 @@ class TLog
       console.log(options.full_message) if @_printToConsole
 
   _convertTimestamp: (timestamp)->
-    st = timestamp.getUTCDate() + '/' + timestamp.getUTCMonth() + '/'+timestamp.getUTCFullYear() + ' ' +
+    st = timestamp.getUTCDate() + '/' + (timestamp.getUTCMonth()+1) + '/'+timestamp.getUTCFullYear() + ' ' +
       timestamp.getUTCHours()+ ':' + timestamp.getUTCMinutes() + ':' + timestamp.getUTCSeconds() + '.' + timestamp.getUTCMilliseconds()
 
-  @_convertDate: (timestamp)->
-    st = timestamp.getUTCDate() + '/' + timestamp.getUTCMonth() + '/'+timestamp.getUTCFullYear()
+  @_convertDate: (timestamp, includeYear = false)->
+    st = timestamp.getUTCDate() + '/' + (timestamp.getUTCMonth()+1)
+    st = st + '/'+timestamp.getUTCFullYear() if includeYear
+    st
 
   @_convertTime: (timestamp, ms=true)->
     ts = timestamp.getUTCHours()+ ':' + timestamp.getUTCMinutes() + ':' + timestamp.getUTCSeconds()

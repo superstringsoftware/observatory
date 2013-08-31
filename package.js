@@ -7,10 +7,10 @@ try {
         api.use(['coffeescript', 'underscore','standard-app-packages','ejson'], ['client','server']);
         //api.use(['webapp'], ['server']);
 
-        api.add_files('TLog.coffee',['client','server']);
-        api.add_files('connectHook.coffee','server');
-        api.add_files('monitoringHooks.coffee','server');
-        api.add_files('Monitor.coffee','server');
+        api.add_files(['lib/TLog.coffee','lib/EventLogger.coffee'],['client','server']);
+        api.add_files('lib/connectHook.coffee','server');
+        api.add_files('lib/monitoringHooks.coffee','server');
+        api.add_files('lib/Monitor.coffee','server');
 
         api.export (['TLog','Inspect','Observatory'], ['client','server']);
     });

@@ -6,12 +6,15 @@ describe 'TLog class', ->
   #TLog = TLogModule.TLog
   #console.dir TLog
   tl = TLog.getLogger()
-  it 'should be visible, have the global logs collection and log http by default',->
+  it 'should be visible, have the global logs collection and have correct default options',->
     #console.log TLog
     TLog.should.exist
     TLog._global_logs.should.exist
-    TLog._log_http.should.be.true
     TLog._connectLogsBuffer.should.be.empty
+    TLog._ddpLogsBuffer.should.be.empty
+    TLog._log_http.should.be.true
+    TLog._log_DDP.should.be.true
+
   it 'should return the default logger with correct defaults', ->
     tl.should.exist
     tl.should.be.an.instanceof TLog
