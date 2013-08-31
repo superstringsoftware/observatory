@@ -1,6 +1,6 @@
 What is it?
 -------------
-This is Observatory v0.2.6 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient
+This is Observatory v0.2.7 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient
 and pretty logging and monitoring for [Meteor framework](http://meteor.com) application development.
 [See it in action!](http://observatoryjs.com/).
 
@@ -10,15 +10,14 @@ What does it do?
 logging to console, pretty output of both Client and Server logs right in the browser, optional logging of
 the currently logged-in user for additional control.
 
-* NEW! Logging of http requests (yes, with client-side IP address - an infamous topic among Meteor devs :))
+* NEW! DDP Logging!
+
+* Logging of http requests (yes, with client-side IP address - an infamous topic among Meteor devs :))
 
 * Monitoring of your application internals: currently, Templates with all events and a Session object; much more to come.
 
 * 2 visual styles: "dark" for additional "terminal" coolness and "light" that may be easier on the eyes. Adding a new theme is pretty
 easy even now and will be even easier soon - just look at observatory.less and theme() helper in observatoryTemplates.coffee.
-
-* [experimental] Testing support for your Meteor app with BDD / TDD like syntax. This is currently in alpha and moved to a
-[separate package](https://github.com/superstringsoftware/observatory-testing)
 
 Installation
 -----------------
@@ -49,6 +48,7 @@ included and follows the format described below:
             "printToConsole": true,
             "logUser": true,
             "logHttp": true,
+            "logDDP": true,
             "prohibitAutoPublish": false
         }
     }
@@ -167,6 +167,11 @@ to share your thoughts and ideas!
 
 Revision history
 -----------------
+####0.2.7: August, 31, 2013
+* DDP server logging added
+* Bug fixes in the client monitoring part
+* Got rid of dependency on the bootstrap, fixed main panel, session needs more work
+
 ####0.2.6: August, 28, 2013
 * Added Meteor.settings support
 * Better user logging options
