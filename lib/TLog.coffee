@@ -8,9 +8,6 @@ class TLog
     @_connectLogsBuffer.push obj
 
   @checkConnectLogsBuffer: ->
-    console.log "connect logs buffer"
-    console.log TLog._connectLogsBuffer
-    console.log @_log_http
     if TLog._connectLogsBuffer.length > 0
       tl = TLog.getLogger()
       for l in TLog._connectLogsBuffer
@@ -112,8 +109,7 @@ class TLog
     if Meteor.isServer
       # hooking up connect middleware logger
       WebApp.connectHandlers.use Observatory.httpLogger #TLog.useragent
-      console.log WebApp.connectHandlers.listeners()
-
+      
       # hooking up DDP logging
       Meteor.default_server.stream_server.register (socket)->
         TLog._ddpLogsBuffer.push {timestamp: new Date, msg: "Connected socket #{socket.id}"} if TLog._log_DDP
