@@ -12,6 +12,8 @@ try {
         api.add_files('lib/monitoringHooks.coffee','server');
         api.add_files('lib/Monitor.coffee','server');
 
+        api.add_files('lib/client/templates.coffee','client');
+
         api.export (['TLog','Inspect','Observatory'], ['client','server']);
     });
 }

@@ -27,6 +27,7 @@ class TLog
           full_message: fullMsg
           module: "HTTP"
           timestamp: l.timestamp
+          loglevel: loglevel
           ip: l.forwardedFor #l.remoteAddress
           elapsedTime: l.responseTime # e.g., response time for http or method running time for profiling functions
 
@@ -43,6 +44,7 @@ class TLog
     for l in TLog._ddpLogsBuffer
       options =
         isServer: true
+        loglevel: TLog.LOGLEVEL_DEBUG
         message: l.msg
         module: "DDP"
         timestamp: l.timestamp
@@ -119,6 +121,7 @@ class TLog
           TLog._ddpLogsBuffer.push {timestamp: t, msg: "Got message in a socket #{@id}"}
           TLog._ddpLogsBuffer.push {timestamp: t, msg: raw_msg}
         socket.on 'close', ->
+          return unless TLog._log_DDP
           TLog._ddpLogsBuffer.push {timestamp: new Date, msg: "Closing socket #{@id}"}
 
 
