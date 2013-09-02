@@ -35,6 +35,28 @@ _.extend Observatory,
             tl = TLog.getLogger()
             tl.debug "#{c} called - not defined by user", "Template.#{t}"
 
+
+
+  logCollection: ->
+    sync = ['find','findOne']
+    async = ['insert','update','remove']
+    #console.log Meteor.Collection::
+
+    # Ok, can't call insert etc inside collection methods - problem is, TLog collection
+    # is created from Collection as well, so it goes crazy. Need to make sure we are not
+    # applying this to TLog, but not sure how so far --
+    # One option is just store this stuff in the buffer, as with http logs
+    # and then process it, checking when processing not to add the logs if it's about TLog
+    for m in sync
+      Meteor.Collection::[m] = _.wrap Meteor.Collection::[m], (f)->
+        console.log "#{m} call started", "Collection.#{@_name}"
+        console.log arguments
+        ret = f.apply this, _.rest(arguments)
+        console.log "#{m} call finished", "Collection.#{@_name}"
+        ret
+
+
+  # for now, only subscribe
   logMeteor: ->
     console.log "logging Meteor"
     console.log Meteor.subscribe
