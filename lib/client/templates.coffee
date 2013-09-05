@@ -5,6 +5,8 @@ Template.newPost.rendered = _.wrap Template.newPost.rendered, (func)->
   func.apply this
 ###
 
+Observatory = @Observatory ? {}
+
 _.extend Observatory,
 
   getTemplateNames: (includeHidden = false)->
@@ -109,3 +111,4 @@ _.extend Observatory,
 
 
 
+(exports ? this).Observatory = Observatory

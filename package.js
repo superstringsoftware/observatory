@@ -4,10 +4,11 @@ try {
     });
 
     Package.on_use(function (api) {
+        console.log("loading observatory: apollo");
         api.use(['coffeescript', 'underscore','standard-app-packages','ejson'], ['client','server']);
         //api.use(['webapp'], ['server']);
 
-        api.add_files(['lib/TLog.coffee','lib/EventLogger.coffee'],['client','server']);
+        api.add_files(['lib/TLog.coffee'],['client','server']);
         api.add_files('lib/connectHook.coffee','server');
         api.add_files('lib/monitoringHooks.coffee','server');
         api.add_files('lib/Monitor.coffee','server');

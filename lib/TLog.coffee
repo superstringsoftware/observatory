@@ -382,6 +382,6 @@ Inspect =
       properties.push prop  if typeof testObj[prop] isnt Inspect.TYPE_FUNCTION and typeof Inspect[prop] isnt Inspect.TYPE_FUNCTION
     properties
 
-module?.exports?.TLog = TLog
 (exports ? this).TLog = TLog
 (exports ? this).Inspect = Inspect
+(exports ? this).Observatory = @Observatory
