@@ -85,7 +85,7 @@ class TLog
     "FATAL", "ERROR", "WARNING", "INFO", "VERBOSE", "DEBUG", "MAX"
   ]
   @LOGLEVEL_NAMES_SHORT = [
-    "FTL", "ERR", "WRN", "INF", "VRB", "DBG","MAX"
+    "ftl", "err", "wrn", "inf", "vrb", "dbg","max"
   ]
 
   constructor: (@_currentLogLevel, @_printToConsole, @_log_user = true, show_warning = true)->

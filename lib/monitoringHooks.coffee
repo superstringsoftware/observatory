@@ -5,6 +5,7 @@
 
 Meteor.userIP = (uid)->
   ret = {}
+  uid = uid ? Meteor.userId()
   if uid?
     s = ss for k, ss of Meteor.default_server.sessions when ss.userId is uid
     if s
@@ -40,6 +41,20 @@ Meteor.methods
       # TODO: DO NOT delete the below as if Meteor internal API changes we'll need to look at it again!!!
       # console.dir os.collectionViews
       os = socket.meteor_session
+
+      # analyzing named subscriptions
+      ns = {}
+      for k1, v1 of os._namedSubs
+        ns[k1] =
+          uid: v1.userId
+          name: v1._name
+          deactivated: v1._deactivated
+          isReady: v1._ready
+          params: v1._params
+        for k,v of v1
+          if typeof(v) is 'function'
+            ns[k1][k] = v.toString()
+
       o =
         ddpVersion: os.version
         sessionId: os.id
@@ -50,7 +65,7 @@ Meteor.methods
         workerRunning: os.worker_running
         userId: os.userId
         sessionData: os.sessionData
-        # namedSubs: os._namedSubs - needs more work as it's not JSONable
+        namedSubs: ns
 
         collectionViews: ({name: v.collectionName, id: k, docNumber: Object.keys(v.documents).length} for k,v of os.collectionViews)
 
@@ -77,7 +92,7 @@ Meteor.methods
     {publishHandlers: publishHandlers, methodHandlers: methodHandlers}
 
   _observatoryGetArbitraryObj: (line)->
-    console.log Meteor.userIP()
+    Meteor.userIP()
 
 
 

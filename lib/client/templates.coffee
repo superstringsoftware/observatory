@@ -13,6 +13,11 @@ _.extend Observatory,
       ret.push k unless k.indexOf('_') is 0
     ret
 
+  getTemplate: (name)->_.find Template, (k,v)-> v is name
+
+  getEvents: (name)-> @getTemplate(name)?._tmpl_data.events
+  getHelpers: (name)-> @getTemplate(name)?._tmpl_data.helpers
+
   logAll: ->
     @logTemplates()
     @logMeteor()
