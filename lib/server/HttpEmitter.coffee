@@ -3,14 +3,14 @@ Observatory = @Observatory ? {}
 class Observatory.HttpEmitter extends @Observatory.MessageEmitter
   
   httpLogger: (req, res, next) =>
-    if not Observatory.settings.logHttp
+    if @isOff or (not Observatory.settings.logHttp)
       next()
       return
 
     req._startTime = new Date
     end = res.end
 
-    res.end = (chunk, encoding) ->
+    res.end = (chunk, encoding) =>
       res.end = end
       res.end chunk, encoding
 
@@ -64,6 +64,7 @@ class Observatory.HttpEmitter extends @Observatory.MessageEmitter
         object: l # recording original message in full
       options
 
+    super @name, @formatter
     # hooking up into Connect middleware
     WebApp.connectHandlers.use @httpLogger
     

@@ -2,6 +2,7 @@ Observatory = @Observatory ? {}
 
 class Observatory.MeteorLogger extends Observatory.Logger
   constructor: (@name, @colName = '_observatory_logs', connection = null) ->
+    super @name
     @_logsCollection = new Meteor.Collection @colName
     # can't update logs; setting up pointers to insert and remove allow functions
     if Meteor.isServer
@@ -32,7 +33,7 @@ class Observatory.MeteorLogger extends Observatory.Logger
   # TODO: Maybe just record uid and display actual user info when, uhm, displaying logs?
   _checkUserId: ->
     try
-      uid = if this.userId? then this.userId else Meteor.userId()
+      uid = this.userId ? Meteor.userId()
     catch err
     uid
 

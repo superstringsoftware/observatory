@@ -88,36 +88,44 @@ class Observatory.DDPEmitter extends @Observatory.MessageEmitter
   @_instance = undefined
 
   # getter for the instance
-  @de: -> @_instance?= new Observatory.DDPEmitter "DDP Emitter"
+  @de: => 
+    @_instance?= new Observatory.DDPEmitter "DDP Emitter"
+    @_instance
 
   constructor: (@name, @formatter)->
+    #console.log "DDPEmitter::constructor #{name}"
+    super @name, @formatter
     if Observatory.DDPEmitter._instance? then throw new Error "Attempted to create another instance of DDPEmitter and it is a really bad idea"
-    
     # registering to listen to socket events with Meteor
     Meteor.default_server.stream_server.register (socket)->
-      return if Observatory.DDPEmitter.de.isOff
+      return unless Observatory.DDPEmitter.de().isOn and Observatory.settings.logDDP
       msg = Observatory.DDPEmitter.messageStub()
       msg.socketId = socket.id
       msg.textMessage = "Connected socket #{socket.id}" 
       # emitting message and putting to the buffer for the sake of Meteor logging. Insensitive loggers, such as Console,
       # should actually ignore this
-      Observatory.DDPEmitter.de.emitMessage msg, true
+      #console.log msg
+      Observatory.DDPEmitter.de().emitMessage msg, true
 
       socket.on 'data', (raw_msg)->
-        return if Observatory.DDPEmitter.de.isOff
+        return unless Observatory.DDPEmitter.de().isOn and Observatory.settings.logDDP
         msg = Observatory.DDPEmitter.messageStub()
         msg.socketId = @id
         msg.textMessage = "Got message in a socket #{@id}"
         msg.object = raw_msg
         msg.type = "DDP"
-        Observatory.DDPEmitter.de.emitMessage msg, true
+        #console.log msg
+        Observatory.DDPEmitter.de().emitMessage msg, true
       
       socket.on 'close', ->
-        return if Observatory.DDPEmitter.de.isOff
+        return unless Observatory.DDPEmitter.de().isOn and Observatory.settings.logDDP
         msg = Observatory.DDPEmitter.messageStub()
         msg.socketId = socket.id
         msg.textMessage = "Closed socket #{socket.id}" 
-        Observatory.DDPEmitter.de.emitMessage msg, true
+        #console.log msg
+        Observatory.DDPEmitter.de().emitMessage msg, true
+
+    
         
 
 

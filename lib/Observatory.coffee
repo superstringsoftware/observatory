@@ -20,8 +20,22 @@ Settings format:
 
 # changing server definition function to meteor specific
 Observatory.isServer = -> Meteor.isServer
-
+# defining getter for the meteor logger
 Observatory.getMeteorLogger = -> Observatory._meteorLogger
+# adjusting initialize to read Meteor.settings
+Observatory.initialize = _.wrap Observatory.initialize, (f, s)->
+  s = Meteor.settings.public?.observatorySettings unless s?
+  f.call Observatory, s
+# extending the settings changing function
+Observatory.setSettings = _.wrap Observatory.setSettings, (f, s)->
+  # calling base function
+  f.call Observatory, s
+  # don't allow collection name change on the fly? Autopublishing is impossible to change without restart. 
+  # If you want granular control over how logs collection is being published, use the server
+  # @settings.logsCollectionName = s?.logsCollectionName ? @settings.logsCollectionName
+  @settings.logUser = s.logUser ? @settings.logUser
+  @settings.logHttp = s?.logHttp ? @settings.logHttp
+  @settings.logDDP = s?.logDDP ? @settings.logDDP
 
 # adding meteor-specific initialization
 Observatory.registerInitFunction (s)->
@@ -40,6 +54,12 @@ Observatory.registerInitFunction (s)->
   if Meteor.isServer
     @meteorServer = new Observatory.Server 
     @meteorServer.publish() unless @settings.prohibitAutoPublish
+    @emitters.DDP = Observatory.DDPEmitter.de 'DDP'
+    @emitters.Http = new Observatory.HttpEmitter 'HTTP'
+
+    #console.dir @emitters
+    #console.dir @settings
+    #console.dir Meteor.settings
 
 Observatory.initialize()
 
