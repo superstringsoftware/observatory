@@ -21,10 +21,12 @@ Settings format:
 # changing server definition function to meteor specific
 Observatory.isServer = -> Meteor.isServer
 
+Observatory.getMeteorLogger = -> Observatory._meteorLogger
+
 # adding meteor-specific initialization
 Observatory.registerInitFunction (s)->
   
-  @settings.logsCollectionName = s?.logsCollectionName ? '_observatory_logs1'
+  @settings.logsCollectionName = s?.logsCollectionName ? '_observatory_logs'
   @settings.logUser = s?.logUser ? true
   @settings.logHttp = s?.logHttp ? true
   @settings.logDDP = s?.logDDP ? false

@@ -77,27 +77,48 @@ I20130905-05:17:30.942(2)?      _pendingReady: [] } }
 Observatory = @Observatory ? {}
 
 class Observatory.DDPEmitter extends @Observatory.MessageEmitter
+  @messageStub: ->
+    options =
+      isServer: true
+      severity: Observatory.LOGLEVEL.DEBUG
+      module: "DDP"
+      timestamp: new Date
+    options
+
+  @_instance = undefined
+
+  # getter for the instance
+  @de: -> @_instance?= new Observatory.DDPEmitter "DDP Emitter"
 
   constructor: (@name, @formatter)->
+    if Observatory.DDPEmitter._instance? then throw new Error "Attempted to create another instance of DDPEmitter and it is a really bad idea"
+    
+    # registering to listen to socket events with Meteor
     Meteor.default_server.stream_server.register (socket)->
-      msg =
-        timestamp: new Date
-        socketId: socket.id
-      #TLog._ddpLogsBuffer.push {timestamp: new Date, msg: "Connected socket #{socket.id}"} if TLog._log_DDP
+      return if Observatory.DDPEmitter.de.isOff
+      msg = Observatory.DDPEmitter.messageStub()
+      msg.socketId = socket.id
+      msg.textMessage = "Connected socket #{socket.id}" 
+      # emitting message and putting to the buffer for the sake of Meteor logging. Insensitive loggers, such as Console,
+      # should actually ignore this
+      Observatory.DDPEmitter.de.emitMessage msg, true
+
       socket.on 'data', (raw_msg)->
-        #return unless TLog._log_DDP
-        msg =
-          timestamp: new Date
-          socketId: @id
-          msg: raw_msg
-        #TLog._ddpLogsBuffer.push {timestamp: t, msg: "Got message in a socket #{@id}"}
-        #TLog._ddpLogsBuffer.push {timestamp: t, msg: raw_msg}
+        return if Observatory.DDPEmitter.de.isOff
+        msg = Observatory.DDPEmitter.messageStub()
+        msg.socketId = @id
+        msg.textMessage = "Got message in a socket #{@id}"
+        msg.object = raw_msg
+        msg.type = "DDP"
+        Observatory.DDPEmitter.de.emitMessage msg, true
+      
       socket.on 'close', ->
-        #return unless TLog._log_DDP
-        msg =
-          timestamp: new Date
-          socketId: socket.id
-        #TLog._ddpLogsBuffer.push {timestamp: new Date, msg: "Closing socket #{@id}"}
+        return if Observatory.DDPEmitter.de.isOff
+        msg = Observatory.DDPEmitter.messageStub()
+        msg.socketId = socket.id
+        msg.textMessage = "Closed socket #{socket.id}" 
+        Observatory.DDPEmitter.de.emitMessage msg, true
+        
 
 
 (exports ? this).Observatory = Observatory
