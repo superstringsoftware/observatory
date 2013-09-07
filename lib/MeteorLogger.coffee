@@ -1,4 +1,3 @@
-console.log @Observatory
 Observatory = @Observatory ? {}
 
 class Observatory.MeteorLogger extends Observatory.Logger

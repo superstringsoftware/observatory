@@ -19,7 +19,7 @@ try {
         api.add_files('lib/client/templates.coffee','client');
         
 
-        api.export (['TLog','Inspect','Observatory'], ['client','server']);
+        api.export (['TLog','Observatory'], ['client','server']);
     });
 }
 catch (err) {

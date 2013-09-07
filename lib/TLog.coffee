@@ -8,7 +8,9 @@ class TLog
   ####################################################################################################
   @getLogger:-> 
     tb = Observatory.getToolbox()
-    tb.dir = @dir
+    tb.dir = (obj, message, module)->
+      msg = if message then message else "Inspecting object:"
+      @_emitWithSeverity Observatory.LOGLEVEL.VERBOSE, msg, @inspect obj, module
     tb
   @allowRemove: (f)-> Observatory.getMeteorLogger().allowRemove f
   @publish: (f)-> Observatory.meteorServer.publish f
@@ -67,47 +69,5 @@ class TLog
     @verbose "Setting log options with level #{TLog.LOGLEVEL_NAMES[@_currentLogLevel]}, print to console: #{@_printToConsole}, log user: #{@_log_user}, http logging: #{TLog._log_http}", "Observatory"
 
   
-
-  # inspects an object, stringifies it and prints out
-  @dir: (obj, message, module)->
-    msg = if message then message else "Inspecting object:"
-    if obj?
-      mnames = Inspect.methods(obj)
-      pnames = Inspect.properties(obj)
-      methods = []
-      props = []
-      for m in mnames
-        methods.push m
-      for p in pnames
-        props.push
-          name: p
-          value: obj[p]
-      ###
-      @debug(msg, module)
-      @_log("Methods: " + EJSON.stringify(methods),TLog.LOGLEVEL_DEBUG, module)
-      @_log("Properties: " + EJSON.stringify(props),TLog.LOGLEVEL_DEBUG, module)
-      ###
-
-Inspect =
-  TYPE_FUNCTION: "function"
-
-  # Returns an array of (the names of) all methods
-  methods: (obj) ->
-    testObj = obj or self
-    methods = []
-    for prop of testObj
-      methods.push prop  if typeof testObj[prop] is Inspect.TYPE_FUNCTION and typeof Inspect[prop] isnt Inspect.TYPE_FUNCTION
-    methods
-
-
-  # Returns an array of (the names of) all properties
-  properties: (obj) ->
-    testObj = obj or self
-    properties = []
-    for prop of testObj
-      properties.push prop  if typeof testObj[prop] isnt Inspect.TYPE_FUNCTION and typeof Inspect[prop] isnt Inspect.TYPE_FUNCTION
-    properties
-
 (exports ? this).TLog = TLog
-(exports ? this).Inspect = Inspect
 (exports ? this).Observatory = @Observatory
