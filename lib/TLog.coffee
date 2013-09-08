@@ -13,6 +13,7 @@ class TLog
     tb
   @allowRemove: (f)-> Observatory.getMeteorLogger().allowRemove f
   @publish: (f)-> Observatory.meteorServer.publish f
+  @_getLogs: (sort)-> Observatory.getMeteorLogger()._logsCollection.find {}, sort: timestamp: -1
 
 
   @LOGLEVEL_FATAL = 0

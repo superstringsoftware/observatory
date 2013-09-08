@@ -9,6 +9,9 @@ class Observatory.Server
     if Meteor.isServer
       Meteor.publish Observatory.settings.logsCollectionName, (numInPage = 300, pageNumber = 0)->
         canPublish = if func? then func.call this, @userId else true
-        @_logsCollection.find {}, sort: timestamp: -1, limit: numInPage if canPublish
+        #console.log "trying to publish logs"
+        cl = Observatory.getMeteorLogger()._logsCollection
+        #console.log cl
+        cl.find {}, sort: timestamp: -1, limit: numInPage if canPublish #
   
 (exports ? this).Observatory = Observatory

@@ -24,7 +24,7 @@ Observatory.isServer = -> Meteor.isServer
 Observatory.getMeteorLogger = -> Observatory._meteorLogger
 # adjusting initialize to read Meteor.settings
 Observatory.initialize = _.wrap Observatory.initialize, (f, s)->
-  s = Meteor.settings.public?.observatorySettings unless s?
+  s = Meteor.settings?.public?.observatorySettings unless s?
   f.call Observatory, s
 # extending the settings changing function
 Observatory.setSettings = _.wrap Observatory.setSettings, (f, s)->
@@ -56,6 +56,12 @@ Observatory.registerInitFunction (s)->
     @meteorServer.publish() unless @settings.prohibitAutoPublish
     @emitters.DDP = Observatory.DDPEmitter.de 'DDP'
     @emitters.Http = new Observatory.HttpEmitter 'HTTP'
+
+    # setting up buffers checks for http and DDP logging
+    Meteor.setInterval ->
+      m = Observatory.getMeteorLogger()
+      m.processBuffer()
+    , 3000
 
     #console.dir @emitters
     #console.dir @settings
