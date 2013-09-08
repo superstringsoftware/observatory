@@ -7,7 +7,7 @@ class Observatory.Server
   # func should return whether we allow publishing or not
   publish: (func)->
     if Meteor.isServer
-      Meteor.publish Observatory.settings.logsCollectionName, (numInPage = 300, pageNumber = 0)->
+      Meteor.publish Observatory.settings.logsCollectionName, (numInPage = 150, pageNumber = 0)->
         canPublish = if func? then func.call this, @userId else true
         #console.log "trying to publish logs"
         cl = Observatory.getMeteorLogger()._logsCollection
