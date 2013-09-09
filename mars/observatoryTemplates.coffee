@@ -378,7 +378,7 @@ Template.observatoryjsLogsTab.helpers
     #console.log "Formatting date: " + ts
     #ts
     d = new Date(ts)
-    TLog._convertDate(d) + ' ' + TLog._convertTime(d)
+    Observatory.viewFormatters._convertDate(d) + ' ' + Observatory.viewFormatters._convertTime(d)
 
   getUser: (log)->
     uid = log.uid
@@ -398,7 +398,7 @@ Template.observatoryjsLogsTab.helpers
 
 #applying class to labels showing loglevel / severity
   lb_loglevel_decoration: ->
-    switch @loglevel
+    switch @severity
       when TLog.LOGLEVEL_FATAL then cl = "label-fatal"
       when TLog.LOGLEVEL_ERROR then cl = "label-danger"
       when TLog.LOGLEVEL_WARNING then cl = "label-warning"
@@ -409,7 +409,7 @@ Template.observatoryjsLogsTab.helpers
 
 #apllying class to the message text (<td>) based on loglevel
   lb_loglevel_msg_decoration: ->
-    switch @loglevel
+    switch @severity
       when TLog.LOGLEVEL_FATAL then cl = "lb_msg_error"
       when TLog.LOGLEVEL_ERROR then cl = "text-error"#"lb_msg_error"
       when TLog.LOGLEVEL_WARNING then cl = "lb_msg_warning"
@@ -418,7 +418,7 @@ Template.observatoryjsLogsTab.helpers
   lb_loglevel_row_decoration: ->
     # Turning OFF for now as this is needed for the "light" scheme
 
-    switch @loglevel
+    switch @severity
       when TLog.LOGLEVEL_FATAL then cl = "error"
       when TLog.LOGLEVEL_ERROR then cl = "error"
       when TLog.LOGLEVEL_WARNING then cl = "warning"

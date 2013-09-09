@@ -78,8 +78,8 @@
                         <span class="label label-primary">{{module}}</span>
                         {{/if}}
                     </td>
-                    <td class="lb_loglevel"><span class="label {{lb_loglevel_decoration}}">{{loglevel_names loglevel}}</span></td>
-                    <td class="lb_message"><pre class=" {{lb_loglevel_msg_decoration}}">{{message}}</pre></td>
+                    <td class="lb_loglevel"><span class="label {{lb_loglevel_decoration}}">{{loglevel_names severity}}</span></td>
+                    <td class="lb_message"><pre class=" {{lb_loglevel_msg_decoration}}">{{textMessage}}</pre></td>
                     {{/each}}
                 </tbody>
             </table>

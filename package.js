@@ -5,9 +5,11 @@ Package.describe({
 
 Package.on_use(function (api) {
   api.use(['coffeescript', 'underscore','templating','less','observatory-apollo'], 'client');
+  console.log("loading observatory");
 
   api.add_files('lib/codemirror/codemirror.js','client');
   api.add_files('lib/codemirror/javascript.js','client');
+  api.add_files('lib/codemirror/coffeescript.js','client');
   api.add_files('lib/codemirror/codemirror.css','client');
   api.add_files([
       'lib/codemirror/theme/ambiance.css',
@@ -23,6 +25,17 @@ Package.on_use(function (api) {
 catch (err) {
   console.log("Error while trying to load a package: " + err.message);
 };
+
+/*
+
+api.add_files('lib/codemirror/xml.js','client');
+  api.add_files('lib/codemirror/htmlmixed.js','client');
+  api.add_files('lib/codemirror/css.js','client');
+  api.add_files('lib/codemirror/markdown.js','client');
+  
+
+
+ */
 
 /*
  'client/codemirror/theme/blackboard.css',
