@@ -11,10 +11,11 @@ try {
         api.add_files('lib/server/ObservatoryServer.coffee','server');
         api.add_files('lib/server/DDPEmitter.coffee','server');
         api.add_files('lib/server/HttpEmitter.coffee','server');
+        api.add_files('lib/server/MonitoringEmitter.coffee','server');
         api.add_files('lib/MeteorLogger.coffee',['client','server']);
         api.add_files(['lib/TLog.coffee', 'lib/Observatory.coffee'],['client','server']);
         api.add_files('lib/monitoringHooks.coffee','server');
-        api.add_files('lib/Monitor.coffee','server');
+        
 
         api.add_files('lib/client/templates.coffee','client');
         

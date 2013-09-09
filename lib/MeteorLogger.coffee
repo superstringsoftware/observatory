@@ -10,8 +10,10 @@ class Observatory.MeteorLogger extends Observatory.Logger
         update: (uid)-> false
         insert: (uid)=> @allowInsert uid
         remove: (uid)=> @allowRemove uid
+    ###
     else
       Meteor.subscribe @colName # need to handle this differently
+    ###
       
     
   # redefine these functions anytime on server side to be able to control what gets logged -

@@ -47,6 +47,7 @@ Observatory.registerInitFunction (s)->
   @settings.prohibitAutoPublish = s?.prohibitAutoPublish ? false
   
   # setting up client / server meteor loggers
+  #console.log @settings
   @_meteorLogger = new Observatory.MeteorLogger 'Meteor Logger', @settings.logsCollectionName
   @subscribeLogger @_meteorLogger
   
@@ -56,6 +57,9 @@ Observatory.registerInitFunction (s)->
     @meteorServer.publish() unless @settings.prohibitAutoPublish
     @emitters.DDP = Observatory.DDPEmitter.de 'DDP'
     @emitters.Http = new Observatory.HttpEmitter 'HTTP'
+    @emitters.Monitor = new Observatory.MonitoringEmitter 'Monitor'
+
+    #@emitters.Monitor.startMonitor(3000)
 
     # setting up buffers checks for http and DDP logging
     Meteor.setInterval ->
