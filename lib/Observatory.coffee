@@ -58,6 +58,8 @@ Observatory.registerInitFunction (s)->
     @emitters.DDP = Observatory.DDPEmitter.de 'DDP'
     @emitters.Http = new Observatory.HttpEmitter 'HTTP'
     @emitters.Monitor = new Observatory.MonitoringEmitter 'Monitor'
+  else
+    Meteor.subscribe @settings.logsCollectionName unless @settings.prohibitAutoPublish
 
     #@emitters.Monitor.startMonitor(3000)
 
