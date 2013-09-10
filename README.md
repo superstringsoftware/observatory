@@ -1,8 +1,8 @@
 What is it?
 -------------
-This is Observatory v0.2.7 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient
+This is Observatory v0.3.0 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient
 and pretty logging and monitoring for [Meteor framework](http://meteor.com) application development.
-[See it in action!](http://observatoryjs.com/).
+[See it in action and read full usage docs!](http://observatoryjs.com/).
 
 What does it do?
 ------------------
@@ -10,14 +10,11 @@ What does it do?
 logging to console, pretty output of both Client and Server logs right in the browser, optional logging of
 the currently logged-in user for additional control.
 
-* NEW! DDP Logging!
-
-* Logging of http requests (yes, with client-side IP address - an infamous topic among Meteor devs :))
+* Augomagical logging, profiling and error handling for DDP, http, Collections, Subscriptions, Template lifecycle methods and any custom code
 
 * Monitoring of your application internals: currently, Templates with all events and a Session object; much more to come.
 
-* 2 visual styles: "dark" for additional "terminal" coolness and "light" that may be easier on the eyes. Adding a new theme is pretty
-easy even now and will be even easier soon - just look at observatory.less and theme() helper in observatoryTemplates.coffee.
+* Coming up soon! Full-featured cloud-based monitoring and management of your Meteor applications.
 
 Installation
 -----------------
@@ -28,145 +25,22 @@ Installation
 Usage
 ---------
 
-Somewhere in the common code of your meteor app call:
-```coffeescript
-logger = TLog.getLogger()
-logger.setOptions(TLog.LOGLEVEL_MAX,true, true, true)
-#for other options, see API section below
-```
-This will get you a logger that will log everything, will also output to the console (second parameter),
-will log current user (third parameter) and http requests (last parameter).
+[Read full docs](http://observatoryjs.com).
 
-Since 0.2.6 new and preferred method of setting options is via 'meteor --settings <filename>' call. Example settings file is
-included and follows the format described below:
-
-```javascript
-{
-    "public": {
-        "observatorySettings": {
-            "logLevel": "LOGLEVEL_DEBUG",
-            "printToConsole": true,
-            "logUser": true,
-            "logHttp": true,
-            "logDDP": true,
-            "prohibitAutoPublish": false
-        }
-    }
-}
-```
-
-This way you can use one set of settings while debugging (meteor --settings) and another - when deploying
-(meteor deploy --settings). By default observatory publishes logs to any user. If you set "prohibitAutoPublish" to true
-you can set your own publishing criteria via calling TLog.publish that takes function of the userId as an argument.
-For example, if you just want to publish to admin users:
-
-```coffeescript
-TLog.publish (uid)->
-      Meteor.users.findOne(uid)?.role is "admin"
-```
-
-If you want to set logs removal permission, call allowRemove with allow function as an argument - it gets passed to
-Collection.allow({remove: ...}) call. If you call allowRemove with no arguments, it simply sets "true" so use with care.
-Usual Meteor restrictions on the client apply, so if you really want to clear logs you have to call `TLog._clear()` on
-the server.
-```coffeescript
-TLog.allowRemove (uid)->
-    if Meteor.users.findOne(uid) == "admin"
-        true
-    else
-        false
-```
-
-When you want to log a message of a certain log level:
-```coffeescript
-TL.fatal("your message","optional module name")
-TL.error("your message","optional module name")
-TL.warn("your message","optional module name")
-TL.info("your message","optional module name")
-TL.verbose("your message","optional module name")
-TL.debug("your message","optional module name")
-
-# tracing errors - correctly handles both Meteor and regular js errors
-TL.trace(error, "your message", "optional module name")
-
-# inspecting objects
-TL.dir(object, "your message", "optional module name")
-```
-To actually display the logs and use monitoring capabilities, plugin "logs_bootstrap" template anywhere in your Handlebars
-templates right before closing body tag:
-```html
-<body>
-  ...
-  {{>logs_bootstrap}}
-</body>
-```
-
-To set the default panel to either hidden or half a screen, set the session variable:
-```coffeescript
-Session.set "bl_default_panel", "hidden" # or "half"
-```
-
-Everything else is done automagically, as always is the case with Meteor. See the code for 
-[the sample app](https://github.com/jhoxray/telescope) and  
-[check it out live](http://observatoryjs.com).
-
-
-API
----------
-In addition to the functions above here's a short description of what else you may need.
-```coffeescript
-class TLog
-  #setting desired log level and whether you also want to output your log messages to the console (true or false)
-  #Set log_user to true if you also want to log currently logged in user with every log message
-  #userId is stored in the uid field of the log collection document.
-  @getLogger: (currentLogLevel, printToConsole = true, log_user = false)->
-  
-  #log levels are defined as follows, so use TLog.LOGLEVEL_... when calling get Logger()
-  @LOGLEVEL_FATAL = 0
-  @LOGLEVEL_ERROR = 1
-  @LOGLEVEL_WARNING = 2
-  @LOGLEVEL_INFO = 3
-  @LOGLEVEL_VERBOSE = 4
-  @LOGLEVEL_DEBUG = 5
-  @LOGLEVEL_MAX = 6
-
-  #to change log level and console printing, use:
-  setOptions: (loglevel, want_to_print = true, log_user = false)
-```
-Log levels work in a very straightforward way: TLog will record any message which log level is <= current log level 
-set in `setOptions()`.
-
-If you are into internals type of person, Observatory logs all info to the "_observatory_logs"
-Meteor collection. Every document has the following fields:
-```coffeescript
-@_logs.insert
-    isServer: srv # boolean, whether called on the server or on the client
-    message: msg # message provided to any of the logging methods
-    module: module # module name provided to any of the logging methods
-    loglevel: loglevel # loglevel with which the message is logged
-    timestamp_text: ts # textual representation of the timestamp
-    timestamp: timestamp # timestamp as a Date()
-    full_message: full_message # full textual log message (useful for quick export etc)
-    uid: uid # currently logged in user id (if log_user option set to true)
-    ip: ip # IP address of the client in case it's an http request (working on logging socks requests too)
-    elapsedTime: time # time in ms, e.g. response time for http request, or method running time for profiling calls
-    customOptions: obj # any EJSONable object; currently cannot be set from public API but is filled when logging http calls
-```
-This should be enough if you want to manipulate your logs in any way you want that Observatory
-does not provide out of the box. Access the "_observatory_logs" collection directly via
-```coffeescript
-col = TLog._global_logs
-```
-and then all the usual Meteor Collection API is applicable.
 
 
 Feedback
 ----------
-We'd love to hear what you think, whether it's useful and which other features you'd want to see -- so please submit issues here on github or [leave a comment on our blog](http://superstringsoftware.com) 
+We'd love to hear what you think, whether it's useful and which other features you'd want to see -- so please submit issues here on github or [leave a comment on our blog](http://meteorology.io) 
 to share your thoughts and ideas!
 
 Revision history
 -----------------
+####0.3.0: September, 10, 2013
+* Completely new modular architecture, based on Meteor-independent coffee-script
+* Added monitoring, profiling and alpha automagical logging for Collections, Subscriptions and Templates
+* Backward-compatible
+
 ####0.2.7: August, 31, 2013
 * DDP server logging added
 * Bug fixes in the client monitoring part
