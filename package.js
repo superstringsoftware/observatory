@@ -1,10 +1,11 @@
 try {
 Package.describe({
-  summary: "Powerful, yet easy to use, logging and monitoring package"
+  summary: "Powerful, yet easy to use, logging, monitoring and application management package. See http://observatoryjs.com for full details."
 });
 
 Package.on_use(function (api) {
-  api.use(['coffeescript', 'underscore','templating','less','observatory-apollo'], 'client');
+  api.use(['coffeescript', 'underscore','templating','less'], 'client');
+  api.use (['observatory-galileo', 'observatory-apollo'], ['client','server']);
   
   console.log("...loading observatory");
   console.log("This is version 0.3.0 with completely redesigned architecture and a host of new features available - ");
