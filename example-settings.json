@@ -2,7 +2,7 @@
     "public": {
         "observatorySettings": {
             "logsCollectionName": "_observatory_logs",
-            "logLevel": "LOGLEVEL_DEBUG",
+            "logLevel": "DEBUG",
             "printToConsole": true,
             "logUser": true,
             "logHttp": true,

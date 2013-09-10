@@ -5,7 +5,10 @@ Package.describe({
 
 Package.on_use(function (api) {
   api.use(['coffeescript', 'underscore','templating','less','observatory-apollo'], 'client');
-  console.log("loading observatory");
+  
+  console.log("...loading observatory");
+  console.log("This is version 0.3.0 with completely redesigned architecture and a host of new features available - ");
+  console.log("please check out http://observatoryjs.com for details. There's automagical logging, profiling, application monitoring and more.");
 
   api.add_files('lib/codemirror/codemirror.js','client');
   api.add_files('lib/codemirror/javascript.js','client');
