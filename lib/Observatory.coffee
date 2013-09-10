@@ -62,20 +62,15 @@ Observatory.registerInitFunction (s)->
     @emitters.DDP = Observatory.DDPEmitter.de 'DDP'
     @emitters.Http = new Observatory.HttpEmitter 'HTTP'
     @emitters.Monitor = new Observatory.MonitoringEmitter 'Monitor'
-  else
-    Meteor.subscribe @settings.logsCollectionName unless @settings.prohibitAutoPublish
-
-    #@emitters.Monitor.startMonitor(3000)
-
     # setting up buffers checks for http and DDP logging
     Meteor.setInterval ->
       m = Observatory.getMeteorLogger()
       m.processBuffer()
     , 3000
 
-    #console.dir @emitters
-    #console.dir @settings
-    #console.dir Meteor.settings
+  else
+    Meteor.subscribe @settings.logsCollectionName unless @settings.prohibitAutoPublish
+
 
 Observatory.initialize()
 
