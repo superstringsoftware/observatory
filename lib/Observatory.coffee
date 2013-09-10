@@ -18,6 +18,10 @@ Settings format:
 }
 ###
 
+# wrapping subscription function if somebody wants to use locally
+Observatory.subscribe = (numOfLogs)->
+  Meteor.subscribe @settings.logsCollectionName, numOfLogs ? 50 if Meteor.isClient
+
 # changing server definition function to meteor specific
 Observatory.isServer = -> Meteor.isServer
 # defining getter for the meteor logger
