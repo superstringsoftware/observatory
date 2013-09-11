@@ -53,7 +53,7 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
         type: 'monitor'
         severity: Observatory.LOGLEVEL.INFO
         object: obj
-        textMessage: "monitoring tick - every #{timePeriod} ms"
+        textMessage: "Monitoring every #{timePeriod / 1000}s"
 
       @emitMessage msg
       @isRunning = true
