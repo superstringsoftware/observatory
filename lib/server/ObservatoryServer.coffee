@@ -3,8 +3,12 @@ Observatory = @Observatory ? {}
 # Class that publishes logs, manages relations with clients, sets up monitors etc
 # heart of Observatory operations in Meteor
 class Observatory.Server 
+  heartbeat: ->
+    @monitor = @monitor ? new Observatory.MonitoringEmitter
+    @monitor.measure()
   
   # func should return whether we allow publishing or not
+  # This is the heart of Vega operations - publishing all necessary data to the client
   publish: (func)->
   
     canPublish = if func? then func.call this, @userId else true
@@ -17,11 +21,11 @@ class Observatory.Server
       cr = cl.find({type: {$ne: 'monitor'}}, {sort: {timestamp: -1}, limit: numInPage})
 
     # funky stuff - publishing specific query, just the monitoring logs
-    Meteor.publish '_observatory_monitoring', ->
+    Meteor.publish '_observatory_monitoring', (numInPage = 100, pageNumber = 0)->
       #console.log "trying to publish monitoring"
       cl = Observatory.getMeteorLogger()._logsCollection
       #initializing = true
-      handle = cl.find({type: 'monitor'}, {sort: {timestamp: -1}, limit: 100}).observe {
+      handle = cl.find({type: 'monitor'}, {sort: {timestamp: -1}, limit: numInPage}).observe {
         added: (doc)=>
           @added('_observatory_monitoring', doc._id, doc) #unless initializing
       }
@@ -29,11 +33,12 @@ class Observatory.Server
       @ready()
       @onStop = -> handle.stop()
 
-    Meteor.publish '_observatory_http_logs', ->
+    # just the http logs - for web visits analysis, will need to move to aggregation queries eventually
+    Meteor.publish '_observatory_http_logs', (numInPage = 100, pageNumber = 0)->
       #console.log "trying to publish monitoring"
       cl = Observatory.getMeteorLogger()._logsCollection
       #initializing = true
-      handle = cl.find({module: 'HTTP'}, {sort: {timestamp: -1}, limit: 500}).observe {
+      handle = cl.find({module: 'HTTP'}, {sort: {timestamp: -1}, limit: numInPage}).observe {
         added: (doc)=>
           @added('_observatory_http_logs', doc._id, doc) #unless initializing
       }
@@ -41,15 +46,24 @@ class Observatory.Server
       @ready()
       @onStop = -> handle.stop()
 
-    Meteor.publish '_observatory_errors', ->
+    # just the errors
+    Meteor.publish '_observatory_errors', (numInPage = 100, pageNumber = 0)->
       cl = Observatory.getMeteorLogger()._logsCollection
-      handle = cl.find({severity: {$lte: 1}}, {sort: {timestamp: -1}, limit: 500}).observe {
+      handle = cl.find({severity: {$lte: 1}}, {sort: {timestamp: -1}, limit: numInPage}).observe {
         added: (doc)=>
           @added('_observatory_errors', doc._id, doc) 
       }
       @ready()
       @onStop = -> handle.stop()
       
-        
+
+
+################################################################################################################################################
+# METHODS
+#################################################################################################################################################
+
+Meteor.methods
+  # called by Vega to check the heartbeat
+  _observatoryHeartbeat: -> Observatory.meteorServer.heartbeat()
   
 (exports ? this).Observatory = Observatory

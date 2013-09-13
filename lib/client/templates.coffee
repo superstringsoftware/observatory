@@ -65,15 +65,15 @@ _.extend Observatory,
 
   # for now, only subscribe
   logMeteor: ->
-    console.log "logging Meteor"
-    console.log Meteor.subscribe
+    #console.log "logging Meteor"
+    #console.log Meteor.subscribe
 
     Meteor.subscribe = _.wrap Meteor.subscribe, (f)->
       #console.log "hmm..."
       #console.log arguments
-      tl = TLog.getLogger()
+      tl = Observatory.getToolbox()
       name = arguments[1]
-      tl.debug "Subscribing to #{name}", "Meteor"
+      tl.verbose "Subscribing to #{name}", "Meteor"
 
       # some funky stuff to wrap original callbacks
       last = _.last arguments
@@ -93,11 +93,11 @@ _.extend Observatory,
       cb =
         onReady: =>
           t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
-          tl.debug "Subscription ready for #{name} in #{t} ms"
+          tl.profile "Subscription ready for #{name} in #{t} ms", t
           origOnReady() if origOnReady?
         onError: (err)=>
-          tl.trace err
-          origOnError() if origOnError?
+          tl.error "Error while subscribing to 'userData': " + err.reason, err
+          origOnError(err) if origOnError?
 
       args = _.rest arguments
 
