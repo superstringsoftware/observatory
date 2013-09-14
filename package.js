@@ -7,8 +7,8 @@ Package.on_use(function (api) {
   api.use(['coffeescript', 'underscore','templating','less'], 'client');
   api.use (['observatory-galileo', 'observatory-apollo'], ['client','server']);
   
-  console.log("...loading observatory");
-  console.log("This is version 0.3.0 with completely redesigned architecture and a host of new features available - ");
+  console.log("Loading Observatory:");
+  console.log("This is version 0.3.2 with completely redesigned architecture and a host of new features available - ");
   console.log("please check out http://observatoryjs.com for details. There's automagical logging, profiling, application monitoring and more.");
 
   api.add_files('lib/codemirror/codemirror.js','client');

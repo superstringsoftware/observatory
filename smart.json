@@ -3,7 +3,7 @@
   "description": "Powerful, yet easy to use, logging, monitoring and application management package. See http://observatoryjs.com for details. NEW! All the old Observatory + a bunch of new monitoring and management features in the cloud!",
   "homepage": "https://github.com/jhoxray/observatory",
   "author": "J Ho XRay <jho.xray@gmail.com>",
-  "version": "0.3.2",
+  "version": "0.3.21",
   "git": "https://github.com/jhoxray/observatory.git",
   "packages": {
     "observatory-apollo": "0.3.2"
