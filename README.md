@@ -25,6 +25,10 @@ Installation
 Usage
 ---------
 
+	tb = Observatory.getToolbox()
+	tb.warn("This is a warning message")
+
+There's *much* more.
 [Read full docs](http://observatoryjs.com).
 
 
