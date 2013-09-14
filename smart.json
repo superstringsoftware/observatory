@@ -6,8 +6,6 @@
   "version": "0.3.2",
   "git": "https://github.com/jhoxray/observatory.git",
   "packages": {
-    "observatory-apollo": {
-        "path": "../observatory-apollo"
-    }
+    "observatory-apollo": "0.3.2"
   }
 }
