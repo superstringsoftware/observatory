@@ -1,7 +1,8 @@
 What is it?
 -------------
-This is Observatory v0.3.0 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient
-and pretty logging and monitoring for [Meteor framework](http://meteor.com) application development.
+This is Observatory v0.3.2 - a [Meteorite](https://github.com/oortcloud/meteorite) package that provides powerful, efficient
+and pretty logging, monitoring and application management for [Meteor framework](http://meteor.com) application development and 
+deployment.
 [See it in action and read full usage docs!](http://observatoryjs.com/).
 
 What does it do?
@@ -30,7 +31,6 @@ Usage
 
 There's *much* more.
 [Read full docs](http://observatoryjs.com).
-
 
 
 Feedback
