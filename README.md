@@ -36,6 +36,13 @@ to share your thoughts and ideas!
 
 Revision history
 -----------------
+####0.3.2: September, 14, 2013
+* Additional enhancements for cloud support:
+	* Versioning
+	* Handshakes
+	* Heartbeats
+* Profiler methods, minor bug fixes in Galileo
+
 ####0.3.0: September, 10, 2013
 * Completely new modular architecture, based on Meteor-independent coffee-script
 * Added monitoring, profiling and alpha automagical logging for Collections, Subscriptions and Templates
