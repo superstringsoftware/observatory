@@ -3,7 +3,7 @@
     "description": "Observatory: Apollo. Lightweight but versatile logging & monitoring framework, part of Observatory suite (http://observatoryjs.com)",
     "homepage": "http://observatoryjs.com",
     "author": "Superstring Software, J 'XRay' Ho <jho.xray@gmail.com>",
-    "version": "0.3.0",
+    "version": "0.3.2",
     "git": "https://github.com/superstringsoftware/observatory-apollo.git",
     "packages": {
         "observatory-galileo": {

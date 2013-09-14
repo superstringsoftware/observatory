@@ -96,7 +96,7 @@ _.extend Observatory,
           tl.profile "Subscription ready for #{name} in #{t} ms", t
           origOnReady() if origOnReady?
         onError: (err)=>
-          tl.error "Error while subscribing to 'userData': " + err.reason, err
+          tl.error "Error while subscribing to #{name}: " + err.reason, err
           origOnError(err) if origOnError?
 
       args = _.rest arguments

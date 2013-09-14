@@ -57,6 +57,9 @@ Observatory.registerInitFunction (s)->
   
   # adding Observatory Server and publishing logs if not forbidden explicitly
   if Meteor.isServer
+
+    #console.log Meteor.absoluteUrl()
+
     @meteorServer = new Observatory.Server 
     @meteorServer.publish() unless @settings.prohibitAutoPublish
     @emitters.DDP = Observatory.DDPEmitter.de 'DDP'

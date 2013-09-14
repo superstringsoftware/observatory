@@ -3,6 +3,13 @@ Observatory = @Observatory ? {}
 # Class that publishes logs, manages relations with clients, sets up monitors etc
 # heart of Observatory operations in Meteor
 class Observatory.Server 
+  handshake: -> 
+    o = 
+      version: Observatory.version
+      settings: Observatory.settings
+      monitoring: Observatory.emitters.Monitor.isRunning
+      heartbeat: @heartbeat()
+
   heartbeat: ->
     @monitor = @monitor ? new Observatory.MonitoringEmitter
     @monitor.measure()
@@ -65,5 +72,6 @@ class Observatory.Server
 Meteor.methods
   # called by Vega to check the heartbeat
   _observatoryHeartbeat: -> Observatory.meteorServer.heartbeat()
+  _observatoryHandshake: -> Observatory.meteorServer.handshake()
   
 (exports ? this).Observatory = Observatory
