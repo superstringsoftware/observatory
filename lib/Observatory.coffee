@@ -18,6 +18,12 @@ Settings format:
 }
 ###
 
+# This is KEY for handshakes and stuff
+Observatory.version = 
+  major: 0
+  minor: 3
+  patch: 2
+
 # wrapping subscription function if somebody wants to use locally
 Observatory.subscribe = (numOfLogs)->
   Meteor.subscribe @settings.logsCollectionName, numOfLogs ? 50 if Meteor.isClient
