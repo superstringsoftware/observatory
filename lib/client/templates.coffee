@@ -93,10 +93,11 @@ _.extend Observatory,
       cb =
         onReady: =>
           t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
-          tl.profile "Subscription ready for #{name} in #{t} ms", t
+          tl.profile "Subscription ready for #{name} in #{t} ms", t, {subscription: name, type: 'subscription'}
           origOnReady() if origOnReady?
         onError: (err)=>
-          tl.error "Error while subscribing to #{name}: " + err.reason, err
+          t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
+          tl.error "Error while subscribing to #{name}: " + err.reason, {error: err, subscription: name, timeElapsed: t, type: 'subscription'}
           origOnError(err) if origOnError?
 
       args = _.rest arguments
