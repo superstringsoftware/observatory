@@ -46,6 +46,7 @@ Revision history
 	* Handshakes
 	* Heartbeats
 * Profiler methods, minor bug fixes in Galileo
+* Better & profiled automagical subscription logging
 
 ####0.3.0: September, 10, 2013
 * Completely new modular architecture, based on Meteor-independent coffee-script
