@@ -7,7 +7,7 @@ class Observatory.HttpEmitter extends @Observatory.MessageEmitter
       next()
       return
 
-    req._startTime = new Date
+    req._startTime = Date.now()
     end = res.end
 
     res.end = (chunk, encoding) =>
@@ -15,6 +15,7 @@ class Observatory.HttpEmitter extends @Observatory.MessageEmitter
       res.end chunk, encoding
 
       # TODO: LOG HERE!!!
+      timeElaspsed = Date.now() - req._startTime
       obj =
         url: req.originalUrl or req.url
         method: req.method
@@ -36,7 +37,9 @@ class Observatory.HttpEmitter extends @Observatory.MessageEmitter
         forwardedFor: req.headers['x-forwarded-for']
         #requestHeaders: req.headers
         timestamp: new Date
-        responseTime: new Date - req._startTime
+        responseTime: timeElaspsed
+        timeElaspsed: timeElaspsed
+        type: 'http'
 
       #console.dir obj
       @emitFormattedMessage obj, true
@@ -58,9 +61,10 @@ class Observatory.HttpEmitter extends @Observatory.MessageEmitter
         textMessage: msg
         module: "HTTP"
         timestamp: l.timestamp
+        type: 'profile'
         severity: severity
         ip: l.forwardedFor #l.remoteAddress
-        elapsedTime: l.responseTime # e.g., response time for http or method running time for profiling functions
+        #elapsedTime: l.responseTime # e.g., response time for http or method running time for profiling functions
         object: l # recording original message in full
       options
 
