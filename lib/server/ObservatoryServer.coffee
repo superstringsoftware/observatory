@@ -62,6 +62,19 @@ class Observatory.Server
       }
       @ready()
       @onStop = -> handle.stop()
+
+    # profiling data
+    Meteor.publish '_observatory_profiling', (numInPage = 100, pageNumber = 0)->
+      #console.log "trying to publish monitoring"
+      cl = Observatory.getMeteorLogger()._logsCollection
+      #initializing = true
+      handle = cl.find({type: 'profile'}, {sort: {timestamp: -1}, limit: numInPage}).observe {
+        added: (doc)=>
+          @added('_observatory_profiling', doc._id, doc) #unless initializing
+      }
+      #initializing = false
+      @ready()
+      @onStop = -> handle.stop()
       
 
 

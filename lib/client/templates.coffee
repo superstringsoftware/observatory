@@ -29,19 +29,33 @@ _.extend Observatory,
     names = @getTemplateNames()
     console.log names
     callbacks = ['created','rendered','destroyed']
+    tl = Observatory.getToolbox()
+    Observatory.ot = {}
+    ###
     for t in names
+      Observatory.ot[t] = {}
       for c in callbacks
         if Template[t][c]?
-          Template[t][c] = _.wrap Template[t][c], (f)->
-            tl = TLog.getLogger()
-            tl.debug "#{c} call started", "Template.#{t}"
-            f.apply this
-            tl.debug "#{c} call finished", "Template.#{t}"
-        else
-          Template[t][c] = ->
-            tl = TLog.getLogger()
-            tl.debug "#{c} called - not defined by user", "Template.#{t}"
-
+          #console.log Template[t][c].toString()
+          Observatory.ot[t][c] = Template[t][c]
+          #_.bind oldf, Template[t]
+          #console.log "For #{t}.#{c}():"
+          #console.log ot
+          
+          Template[t][c] = _.wrap Observatory.ot[t][c], (f)->
+            tl = Observatory.getToolbox()
+            tl.debug "#{c}() call started", "Template.#{t}"
+            time1 = Date.now()
+            #console.dir Observatory.ot
+            #console.dir this
+            #f.call this
+            time2 = Date.now() - time1
+            tl.profile "#{c}() call finished in #{time2} ms", time2, {template: t, type: 'template'}
+            #ret
+            #tl.debug "#{c} call finished", "Template.#{t}"
+          
+    console.dir Observatory.ot
+    ###
 
 
   logCollection: ->
