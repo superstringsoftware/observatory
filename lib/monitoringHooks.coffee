@@ -34,7 +34,9 @@ Meteor.default_server.stream_server.register (socket)->
 Meteor.methods
   # TODO: add authorization!
   _observatoryGetOpenSessions: ->
-    # console.log "======================================== called observatoryGetOpenSockets ======================================"
+    #console.log "======================================== called observatoryGetOpenSockets ======================================"
+    #console.log Meteor.default_server.stream_server.open_sockets
+    #console.log this
     ret = []
     #console.dir Meteor.default_server?.stream_server?.open_sockets
     for k, socket of Meteor.default_server?.stream_server?.open_sockets #Meteor.default_server.sessions #Meteor.default_server?.stream_server?.open_sockets

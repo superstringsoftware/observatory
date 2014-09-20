@@ -8,6 +8,10 @@ try {
         api.use(['coffeescript', 'underscore','standard-app-packages','ejson'], ['client','server']);
         //api.use(['webapp'], ['server']);
 
+// galileo files
+        api.add_files(['lib/lib/galileo/Observatory.coffee','lib/lib/galileo/Toolbox.coffee'],['client','server']);
+
+        
         api.add_files('lib/server/ObservatoryServer.coffee','server');
         api.add_files('lib/server/DDPEmitter.coffee','server');
         api.add_files('lib/server/HttpEmitter.coffee','server');
