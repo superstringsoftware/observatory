@@ -1,6 +1,6 @@
 try {
     Package.describe({
-        summary: "Observatory: Apollo. Versatile and powerful logger package, part of Observatory suite (http://observatoryjs.com)",
+        summary: "Versatile and powerful logger package, part of Observatory suite (http://observatoryjs.com)",
         "version": "0.3.5",
         "git": "https://github.com/superstringsoftware/observatory-apollo.git"
 
