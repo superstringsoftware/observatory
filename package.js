@@ -1,11 +1,15 @@
 try {
 Package.describe({
-  summary: "Powerful, yet easy to use, logging, monitoring and application management package. See http://observatoryjs.com for full details."
+  summary: "Powerful, yet easy to use, logging, monitoring and application management package. See http://observatoryjs.com for full details.",
+  version: "0.3.21",
+  git: "https://github.com/jhoxray/observatory.git"
 });
 
 Package.on_use(function (api) {
+  api.versionsFrom("METEOR@0.9.0");
   api.use(['coffeescript', 'underscore','templating','less'], 'client');
-  api.use (['observatory-galileo', 'observatory-apollo'], ['client','server']);
+  api.use ("standard-app-packages", ['client','server']);
+  api.use ("superstringsoft:observatory-apollo", ['client','server']);
   
   console.log("Loading Observatory:");
   console.log("This is version 0.3.2 with completely redesigned architecture and a host of new features available - ");

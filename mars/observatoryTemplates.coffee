@@ -1,7 +1,7 @@
 _tlog = TLog.getLogger()
 
 Meteor.startup ->
-  Handlebars.registerHelper "blGetSession", (name) ->
+  UI.registerHelper "blGetSession", (name) ->
     Session.get name
 
 
@@ -56,9 +56,9 @@ Template.logs_bootstrap.helpers
   observatoryjsRenderCurrent: ->
     tmpl = Session.get "observatoryjs-currentRender"
     if Template[tmpl]
-      new Handlebars.SafeString(Template[tmpl]())
+      new Spacebars.SafeString(Template[tmpl]())
     else
-      new Handlebars.SafeString(Template["observatoryjsLogsTab"]())
+      new Spacebars.SafeString(Template["observatoryjsLogsTab"]())
 
   isHidden: ->
     return !(Session.get "bl_is_visible")
