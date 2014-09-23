@@ -42,7 +42,8 @@ Meteor.methods
     for k, socket of Meteor.default_server?.stream_server?.open_sockets #Meteor.default_server.sessions #Meteor.default_server?.stream_server?.open_sockets
       # TODO: DO NOT delete the below as if Meteor internal API changes we'll need to look at it again!!!
       # console.dir os.collectionViews
-      os = socket.meteor_session
+      os = socket._meteorSession
+      #console.dir socket
 
       # analyzing named subscriptions
       ns = {}

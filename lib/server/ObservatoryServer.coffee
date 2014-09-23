@@ -34,15 +34,18 @@ class Observatory.Server
       #initializing = true
       handle = cl.find({type: 'monitor'}, {sort: {timestamp: -1}, limit: numInPage}).observe {
         added: (doc)=>
+          #console.log "added called!"
+          #console.log doc
           @added('_observatory_monitoring', doc._id, doc) #unless initializing
       }
       #initializing = false
       @ready()
       @onStop = -> handle.stop()
+      return
 
     # just the http logs - for web visits analysis, will need to move to aggregation queries eventually
     Meteor.publish '_observatory_http_logs', (numInPage = 100, pageNumber = 0)->
-      #console.log "trying to publish monitoring"
+      #console.log "trying to publish monitoring - logs"
       cl = Observatory.getMeteorLogger()._logsCollection
       #initializing = true
       handle = cl.find({module: 'HTTP'}, {sort: {timestamp: -1}, limit: numInPage}).observe {
@@ -52,9 +55,11 @@ class Observatory.Server
       #initializing = false
       @ready()
       @onStop = -> handle.stop()
+      return
 
     # just the errors
     Meteor.publish '_observatory_errors', (numInPage = 100, pageNumber = 0)->
+      #console.log "trying to publish errors"
       cl = Observatory.getMeteorLogger()._logsCollection
       handle = cl.find({severity: {$lte: 1}}, {sort: {timestamp: -1}, limit: numInPage}).observe {
         added: (doc)=>
@@ -62,10 +67,11 @@ class Observatory.Server
       }
       @ready()
       @onStop = -> handle.stop()
+      return
 
     # profiling data
     Meteor.publish '_observatory_profiling', (numInPage = 100, pageNumber = 0)->
-      #console.log "trying to publish monitoring"
+      #console.log "trying to publish profiling"
       cl = Observatory.getMeteorLogger()._logsCollection
       #initializing = true
       handle = cl.find({type: 'profile'}, {sort: {timestamp: -1}, limit: numInPage}).observe {
@@ -75,6 +81,7 @@ class Observatory.Server
       #initializing = false
       @ready()
       @onStop = -> handle.stop()
+      return
       
 
 
