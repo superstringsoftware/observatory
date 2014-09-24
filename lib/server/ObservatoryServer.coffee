@@ -15,6 +15,19 @@ class Observatory.Server
     @monitor = @monitor ? new Observatory.MonitoringEmitter
     @monitor.measure()
   
+
+  # publishing settings and other info to local Observatory clients (local to the App being monitored that is)
+  # now, of course you can connect to anything published both directly as well as via ddp.connect,
+  # but keeping this separate for easier maintenance
+  publishLocal: ->
+    Meteor.publish '_observatory_settings', ->
+      console.log 'publishing settings'
+
+    Meteor.onConnection (con)->
+      #console.dir con
+      #console.log Mongo.Collection.toString()
+      #console.dir MongoInternals
+
   # func should return whether we allow publishing or not
   # This is the heart of Vega operations - publishing all necessary data to the client
   publish: (func)->

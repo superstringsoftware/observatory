@@ -46,6 +46,7 @@ Observatory.setSettings = _.wrap Observatory.setSettings, (f, s)->
 # adding meteor-specific initialization
 Observatory.registerInitFunction (s)->
   
+  # Default settings for loglevel and printToConsole are INFO and false (defined in Galileo).
   @settings.logsCollectionName = s?.logsCollectionName ? '_observatory_logs'
   @settings.logUser = s?.logUser ? true
   @settings.logHttp = s?.logHttp ? true
@@ -64,7 +65,9 @@ Observatory.registerInitFunction (s)->
   
   @meteorServer = new Observatory.Server
   @meteorServer.publish() unless @settings.prohibitAutoPublish
+  @meteorServer.publishLocal()
   @emitters.DDP = Observatory.DDPEmitter.de 'DDP'
+  @emitters.DDPConnection = Observatory.DDPConnectionEmitter.de 'DDP Connection'
   @emitters.Http = new Observatory.HttpEmitter 'HTTP'
   @emitters.Monitor = new Observatory.MonitoringEmitter 'Monitor'
   # setting up buffers checks for http and DDP logging
