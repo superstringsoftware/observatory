@@ -13,7 +13,7 @@ try {
         //api.use(['webapp'], ['server']);
 
         // galileo files
-        api.add_files(['lib/lib/galileo/src/Observatory.coffee','lib/lib/galileo/src/Toolbox.coffee'],['client','server']);
+        api.add_files(['lib/lib/observatory-galileo/src/Observatory.coffee','lib/lib/observatory-galileo/src/Toolbox.coffee'],['client','server']);
 
         api.add_files('lib/server/ObservatoryServer.coffee','server');
         api.add_files('lib/server/DDPEmitter.coffee','server');

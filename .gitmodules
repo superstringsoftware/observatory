@@ -1,3 +1,6 @@
 [submodule "lib/lib/galileo"]
 	path = lib/lib/galileo
 	url = https://github.com/superstringsoftware/observatory-galileo.git
+[submodule "lib/lib/observatory-galileo"]
+	path = lib/lib/observatory-galileo
+	url = https://github.com/superstringsoftware/observatory-galileo.git
