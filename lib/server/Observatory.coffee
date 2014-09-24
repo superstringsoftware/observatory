@@ -6,8 +6,18 @@ Observatory = @Observatory ? {}
 
 ###
 Settings format:
+  "public" only for backward compat. Now settings stay on the server.
 
 {
+  "observatorySettings": {
+      "logLevel": "DEBUG",
+      "printToConsole": true,
+      "logUser": true,
+      "logAnonymous": true,
+      "logHttp": true,
+      "logDDP": true,
+      "prohibitAutoPublish": false
+  }
     "public": {
         "observatorySettings": {
             "logsCollectionName": "_observatory_logs",
@@ -29,9 +39,6 @@ Observatory.initialize = _.wrap Observatory.initialize, (f, s)->
 Observatory.setSettings = _.wrap Observatory.setSettings, (f, s)->
   # calling base function
   f.call Observatory, s
-  # don't allow collection name change on the fly? Autopublishing is impossible to change without restart. 
-  # If you want granular control over how logs collection is being published, use the server
-  # @settings.logsCollectionName = s?.logsCollectionName ? @settings.logsCollectionName
   @settings.logUser = s.logUser ? @settings.logUser
   @settings.logHttp = s?.logHttp ? @settings.logHttp
   @settings.logDDP = s?.logDDP ? @settings.logDDP
@@ -44,11 +51,16 @@ Observatory.registerInitFunction (s)->
   @settings.logHttp = s?.logHttp ? true
   @settings.logDDP = s?.logDDP ? false
   @settings.prohibitAutoPublish = s?.prohibitAutoPublish ? false
+  @settings.logAnonymous = s?.logAnonymous ? false
   
   # setting up client / server meteor loggers
   #console.log @settings
   @_meteorLogger = new Observatory.MeteorLogger 'Meteor Logger', @settings.logsCollectionName
   @subscribeLogger @_meteorLogger
+
+  if not @settings.logAnonymous
+    @_meteorLogger.allowInsert = (uid) ->
+      if uid? then true else false
   
   @meteorServer = new Observatory.Server
   @meteorServer.publish() unless @settings.prohibitAutoPublish
