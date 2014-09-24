@@ -21,8 +21,8 @@ Settings format:
 # This is KEY for handshakes and stuff
 Observatory.version = 
   major: 0
-  minor: 3
-  patch: 6
+  minor: 4
+  patch: 0
 
 # wrapping subscription function if somebody wants to use locally
 Observatory.subscribe = (numOfLogs)->

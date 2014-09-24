@@ -1,14 +1,14 @@
 try {
     Package.describe({
-        summary: "Versatile and powerful logger package, part of Observatory suite (http://observatoryjs.com)",
-        "version": "0.3.6",
-        "git": "https://github.com/superstringsoftware/observatory-apollo.git"
+        summary: "Versatile and powerful logging and application management (http://observatoryjs.com)",
+        "version": "0.4.0",
+        "git": "https://github.com/superstringsoftware/observatory.git"
 
     });
 
     Package.on_use(function (api) {
         api.versionsFrom("METEOR@0.9.0");
-        console.log("loading observatory: apollo -- now working with Meteor 0.9");
+        //console.log("loading observatory: apollo -- now working with Meteor 0.9");
         api.use(['coffeescript', 'underscore','standard-app-packages','ejson'], ['client','server']);
         //api.use(['webapp'], ['server']);
 
