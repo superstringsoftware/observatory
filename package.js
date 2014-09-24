@@ -21,11 +21,15 @@ try {
         api.add_files('lib/server/HttpEmitter.coffee','server');
         api.add_files('lib/server/MonitoringEmitter.coffee','server');
         api.add_files('lib/MeteorLogger.coffee',['client','server']);
-        api.add_files(['lib/TLog.coffee', 'lib/Observatory.coffee'],['client','server']);
-        api.add_files('lib/monitoringHooks.coffee','server');
+        api.add_files('lib/server/monitoringHooks.coffee','server');
+
+        api.add_files('lib/server/Observatory.coffee','server');
+        api.add_files('lib/client/Observatory.coffee','client');
         
 
         api.add_files('lib/client/templates.coffee','client');
+
+        api.add_files(['lib/TLog.coffee', 'lib/Observatory.coffee'],['client','server']);
 
         api.add_files('globals.js',['client','server']);
 
