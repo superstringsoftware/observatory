@@ -9,6 +9,7 @@ class Observatory.Server
       settings: Observatory.settings
       monitoring: Observatory.emitters.Monitor.isRunning
       heartbeat: @heartbeat()
+      sysinfo: Observatory.emitters.Monitor.sysInfo()
 
   heartbeat: ->
     @monitor = @monitor ? new Observatory.MonitoringEmitter

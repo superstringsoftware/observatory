@@ -6,9 +6,15 @@ Observatory = @Observatory ? {}
 class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
   # doesn't belong here!!!
   sysInfo: ->
-    console.dir os.cpus()
-    console.log os.hostname(), os.type(), os.platform(), os.arch(), os.release()
-    console.log os.networkInterfaces()
+    o =
+      cpus: os.cpus()
+      host: os.hostname()
+      os:
+        type: os.type()
+        platform: os.platform()
+        arch: os.arch()
+        release: os.release()
+      network: os.networkInterfaces()
 
   measure: ->
     obj = 

@@ -22,7 +22,7 @@ Settings format:
 Observatory.version = 
   major: 0
   minor: 3
-  patch: 2
+  patch: 6
 
 # wrapping subscription function if somebody wants to use locally
 Observatory.subscribe = (numOfLogs)->
@@ -89,6 +89,5 @@ if Meteor.isServer
     console.log "Trying to insert for " + uid
     true
 ###
-      
 
 (exports ? this).Observatory = Observatory
