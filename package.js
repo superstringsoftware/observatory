@@ -10,6 +10,7 @@ try {
         api.versionsFrom("METEOR@0.9.0");
         //console.log("loading observatory: apollo -- now working with Meteor 0.9");
         api.use(['coffeescript', 'underscore','standard-app-packages','ejson'], ['client','server']);
+        api.use('accounts-password', 'server')
         //api.use(['webapp'], ['server']);
 
         // galileo files

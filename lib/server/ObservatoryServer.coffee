@@ -94,5 +94,7 @@ Meteor.methods
   # called by Vega to check the heartbeat
   _observatoryHeartbeat: -> Observatory.meteorServer.heartbeat()
   _observatoryHandshake: -> Observatory.meteorServer.handshake()
+
+  # auth stuff
   
 (exports ? this).Observatory = Observatory

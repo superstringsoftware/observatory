@@ -1,6 +1,14 @@
 {
   "dependencies": [
     [
+      "accounts-base",
+      "1.1.0"
+    ],
+    [
+      "accounts-password",
+      "1.0.1"
+    ],
+    [
       "application-configuration",
       "1.0.2"
     ],
@@ -53,6 +61,10 @@
       "1.0.2"
     ],
     [
+      "email",
+      "1.0.2"
+    ],
+    [
       "fastclick",
       "1.0.0"
     ],
@@ -93,6 +105,10 @@
       "1.0.9"
     ],
     [
+      "localstorage",
+      "1.0.0"
+    ],
+    [
       "logging",
       "1.0.3"
     ],
@@ -119,6 +135,10 @@
     [
       "mongo",
       "1.0.5"
+    ],
+    [
+      "npm-bcrypt",
+      "0.7.7"
     ],
     [
       "observe-sequence",
@@ -153,8 +173,16 @@
       "1.0.1"
     ],
     [
+      "service-configuration",
+      "1.0.1"
+    ],
+    [
       "session",
       "1.0.1"
+    ],
+    [
+      "sha",
+      "1.0.0"
     ],
     [
       "spacebars",
@@ -163,6 +191,10 @@
     [
       "spacebars-compiler",
       "1.0.2"
+    ],
+    [
+      "srp",
+      "1.0.0"
     ],
     [
       "standard-app-packages",

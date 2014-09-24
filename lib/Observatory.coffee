@@ -77,9 +77,10 @@ Observatory.registerInitFunction (s)->
       m.processBuffer()
     , 3000
 
+  ###
   else
     Meteor.subscribe @settings.logsCollectionName unless @settings.prohibitAutoPublish
-
+  ###
 
 Observatory.initialize()
 
