@@ -26,18 +26,18 @@ class Observatory.Server
       # for now, no granularity, only anon vs logged in
       cur = if @userId then Observatory.Settings.find {type: "CLIENT_LOGGEDIN"} else Observatory.Settings.find {type: "CLIENT_ANONYMOUS"}
 
-
-    Meteor.onConnection (con)->
-      #console.dir con
-      #console.log Mongo.Collection.toString()
-      #console.dir MongoInternals
-
   # func should return whether we allow publishing or not
   # This is the heart of Vega operations - publishing all necessary data to the client
   publish: (func)->
   
     canPublish = if func? then func.call this, @userId else true
     return unless canPublish
+
+    # publishing ALL settings for management purposes
+    # TODO: rethink naming, as now Vega won't be able to monitor itself on the client (maybe that's ok)
+    Meteor.publish '_observatory_settings_admin', (opts)->
+      #console.log 'publishing settings'
+      Observatory.Settings.find {}
     
     # publishing logs
     Meteor.publish Observatory.settings.logsCollectionName, (numInPage = 300, pageNumber = 0)->
@@ -100,7 +100,29 @@ class Observatory.Server
       @ready()
       @onStop = -> handle.stop()
       return
-      
+
+    # open sessions - see DDPConnectionEmitter for hooks on manipulating dummy SessionsCollection
+    Meteor.publish '_observatory_current_sessions', ->
+      mi = new Observatory.MeteorInternals
+      #console.log "trying to publish current sessions"
+      #initializing = true
+      handle = Observatory.DDPConnectionEmitter.SessionsCollection.find().observe {
+        added: (doc)=>
+          #console.log this
+          # needs to be here because of mind-driving-crazy @userId thing in Meteor :(((
+          ss = mi.convertSessionToView mi.findSession(doc.connectionId)
+          @added('_observatory_current_sessions', doc.connectionId, ss) #unless initializing
+
+        removed: (doc)=>
+          @removed('_observatory_current_sessions', doc.connectionId)
+      }
+      #initializing = false
+      @ready()
+      @onStop = -> handle.stop()
+      return
+
+
+
 
 
 ################################################################################################################################################

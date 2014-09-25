@@ -34,9 +34,10 @@ Meteor.default_server.stream_server.register (socket)->
 Meteor.methods
 
   _observatoryGetOpenSessions: ->
-    ss = Observatory.MeteorInternals.getCurrentSessions()
+    mi = new Observatory.MeteorInternals
+    ss = mi.getCurrentSessions()
     sessions = []
-    sessions.push Observatory.MeteorInternals.convertSessionToView(v) for k,v of ss
+    sessions.push mi.convertSessionToView(v) for k,v of ss
     #console.dir v._namedSubs
     sessions
 

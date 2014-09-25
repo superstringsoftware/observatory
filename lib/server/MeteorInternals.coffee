@@ -5,13 +5,13 @@ Observatory = @Observatory ? {}
 class Observatory.MeteorInternals
 
   # returns all currently open sessions
-  @getCurrentSessions: -> Meteor.server.sessions
-  @getSessionCount: -> _.keys(@getCurrentSessions()).length
+  getCurrentSessions: -> Meteor.server.sessions
+  getSessionCount: -> _.keys(@getCurrentSessions()).length
 
   # finds session by id (is session id the same as connection?)
-  @findSession: (id)-> _.find @getCurrentSessions(), (v,k)-> k is id
+  findSession: (id) -> _.find @getCurrentSessions(), (v,k)-> k is id
 
-  @convertSessionToView: (ss)->
+  convertSessionToView: (ss)->
     session =
       id: ss.id
       connectionId: ss.connectionHandle.id

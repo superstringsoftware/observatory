@@ -18,6 +18,7 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
     @_instance?= new Observatory.DDPConnectionEmitter "DDP Connection Emitter"
     @_instance
 
+  @SessionsCollection = new Mongo.Collection
 
   # TODO: add support for logging this in settings
   constructor: (@name, @formatter)->
@@ -40,6 +41,8 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
       #console.log "Sessions: #{Observatory.MeteorInternals.getSessionCount()}"
       #console.log "Connections: #{Observatory.DDPConnectionEmitter.connectionCount}"
       Observatory.DDPEmitter.de().emitMessage msg, false
+      Observatory.DDPConnectionEmitter.SessionsCollection.insert({connectionId: con.id})
+
 
       con.onClose =>
         #console.log "Closing connection #{con.id}"
@@ -59,13 +62,16 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
         #console.log "Sessions: #{Observatory.MeteorInternals.getSessionCount()}"
         #console.log "Connections: #{Observatory.DDPConnectionEmitter.connectionCount}"
         Observatory.DDPEmitter.de().emitMessage msg, false
+        Observatory.DDPConnectionEmitter.SessionsCollection.remove({connectionId: con.id})
 
 
 
 
 
-    
-        
+
+
+
+
 
 
 (exports ? this).Observatory = Observatory
