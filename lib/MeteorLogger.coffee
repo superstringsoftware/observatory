@@ -3,7 +3,7 @@ Observatory = @Observatory ? {}
 class Observatory.MeteorLogger extends Observatory.Logger
   constructor: (@name, @colName = '_observatory_logs', connection = null) ->
     super @name
-    @_logsCollection = new Meteor.Collection @colName
+    @_logsCollection = new Mongo.Collection @colName
     # can't update logs; setting up pointers to insert and remove allow functions
     if Meteor.isServer
       @_logsCollection.allow

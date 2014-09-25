@@ -32,9 +32,27 @@ Settings format:
 }
 ###
 
+Observatory.loadSettings = ->
+  # first run in the app - filling collection with defaults
+  if Observatory.Settings.find().count() is 0
+    Observatory.Settings.insert({type: "SERVER", settings: Observatory.defaultServerSettings})
+    Observatory.Settings.insert({type: "CLIENT_LOGGEDIN", settings: Observatory.defaultClientSettings})
+    Observatory.Settings.insert({type: "CLIENT_ANONYMOUS", settings: Observatory.defaultClientSettings})
+    s = @defaultServerSettings
+  else
+    s = @Settings.findOne({type: "SERVER"})?.settings
+    if not s?
+      Observatory.Settings.insert({type: "SERVER", settings: Observatory.defaultServerSettings})
+      s = @defaultServerSettings
+  s
+
+# initialize runs all functions that are registered with registerInitFunction with s as arguments
 Observatory.initialize = _.wrap Observatory.initialize, (f, s)->
-  s = Meteor.settings?.public?.observatorySettings unless s?
+  #s = Meteor.settings?.public?.observatorySettings unless s?
+  s = @loadSettings() unless s?
+  #console.log s
   f.call Observatory, s
+
 # extending the settings changing function
 Observatory.setSettings = _.wrap Observatory.setSettings, (f, s)->
   # calling base function
@@ -65,7 +83,7 @@ Observatory.registerInitFunction (s)->
   
   @meteorServer = new Observatory.Server
   @meteorServer.publish() unless @settings.prohibitAutoPublish
-  @meteorServer.publishLocal()
+  @meteorServer.publishLocal() # basically, only settings
   @emitters.DDP = Observatory.DDPEmitter.de 'DDP'
   @emitters.DDPConnection = Observatory.DDPConnectionEmitter.de 'DDP Connection'
   @emitters.Http = new Observatory.HttpEmitter 'HTTP'

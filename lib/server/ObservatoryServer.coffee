@@ -19,9 +19,13 @@ class Observatory.Server
   # publishing settings and other info to local Observatory clients (local to the App being monitored that is)
   # now, of course you can connect to anything published both directly as well as via ddp.connect,
   # but keeping this separate for easier maintenance
+  # TODO: granular settings publishing --> based on userId and connectionId eventually
   publishLocal: ->
-    Meteor.publish '_observatory_settings', ->
-      console.log 'publishing settings'
+    Meteor.publish '_observatory_settings', (opts)->
+      #console.log 'publishing settings'
+      # for now, no granularity, only anon vs logged in
+      cur = if @userId then Observatory.Settings.find {type: "CLIENT_LOGGEDIN"} else Observatory.Settings.find {type: "CLIENT_ANONYMOUS"}
+
 
     Meteor.onConnection (con)->
       #console.dir con
