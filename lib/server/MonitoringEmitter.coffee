@@ -15,6 +15,14 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
         arch: os.arch()
         release: os.release()
       network: os.networkInterfaces()
+      url: Meteor.absoluteUrl()
+
+  sysInfoShort: ->
+    o = @sysInfo()
+    o.cpuType = o.cpus[0]?.model
+    o.cpus = o.cpus.length
+    o.network = _.keys(o.network).length
+    o
 
   measure: ->
     obj = 

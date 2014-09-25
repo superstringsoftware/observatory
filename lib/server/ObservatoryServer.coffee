@@ -1,15 +1,45 @@
 Observatory = @Observatory ? {}
 
+# quick and dirty authorization
+# user - currently logged in user or null
+# action - name of the action they want to run
+# in the future, need some role-based checking, action map etc
+# for now - only checking for the administrator role
+# to address mind-boggling @userId issue, call as Observatory.canRun.call this !!! in publish functions
+Observatory.canRun = (user, action = 'view')->
+  res = false
+  try
+    user = (Meteor.users.findOne(_id: @userId) ? Meteor.user()) if not user?
+  catch err
+  #console.log @userId
+  console.log user
+  res = true if user?.profile?.observatoryProfile?.role is "administrator"
+  res
+
 # Class that publishes logs, manages relations with clients, sets up monitors etc
 # heart of Observatory operations in Meteor
-class Observatory.Server 
-  handshake: -> 
-    o = 
+class Observatory.Server
+  needsSetup: -> if Observatory.Settings.find({initialSetupComplete: true}).count()>0 then false else true
+
+  # TODO: need to log calls when there's no needsSetup - that's malicious activity!!!
+  # now adding a new user with administrator priviliges and changing the initialSetupComplete doc in the database
+  initialSetup: (options)->
+    if not @needsSetup() then return
+    {user, email, password} = options
+    #console.log "#{user}, #{password}, #{email}"
+    id = Accounts.createUser {username: user, email: email, password: password, profile: {observatoryProfile: {role: "administrator"}} }
+    Observatory.Settings.insert({initialSetupComplete: true}) if id?
+
+
+  handshake: ->
+    #console.log Meteor.user()
+    o =
       version: Observatory.version
-      settings: Observatory.settings
+      needsSetup: @needsSetup()
+      #settings: Observatory.settings
       monitoring: Observatory.emitters.Monitor.isRunning
       heartbeat: @heartbeat()
-      sysinfo: Observatory.emitters.Monitor.sysInfo()
+      sysinfo: Observatory.emitters.Monitor.sysInfoShort()
 
   heartbeat: ->
     @monitor = @monitor ? new Observatory.MonitoringEmitter
@@ -30,13 +60,14 @@ class Observatory.Server
   # This is the heart of Vega operations - publishing all necessary data to the client
   publish: (func)->
   
-    canPublish = if func? then func.call this, @userId else true
-    return unless canPublish
+    #canPublish = if func? then func.call this, @userId else true
+    #return unless canPublish
 
     # publishing ALL settings for management purposes
     # TODO: rethink naming, as now Vega won't be able to monitor itself on the client (maybe that's ok)
     Meteor.publish '_observatory_settings_admin', (opts)->
-      #console.log 'publishing settings'
+      console.log 'publishing settings'
+      return if not Observatory.canRun.call(@)
       Observatory.Settings.find {}
     
     # publishing logs
@@ -133,6 +164,8 @@ Meteor.methods
   # called by Vega to check the heartbeat
   _observatoryHeartbeat: -> Observatory.meteorServer.heartbeat()
   _observatoryHandshake: -> Observatory.meteorServer.handshake()
+  _observatoryInitialSetup: (options)-> Observatory.meteorServer.initialSetup options
+
 
   # auth stuff
   
