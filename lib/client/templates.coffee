@@ -17,7 +17,7 @@ _.extend Observatory,
 
   getTemplate: (name)->_.find Template, (k,v)-> v is name
 
-  getEvents: (name)-> @getTemplate(name)?._tmpl_data.events
+  getEvents: (name)-> Template[name]?.__eventMaps
   getHelpers: (name)-> @getTemplate(name)?._tmpl_data.helpers
 
   logAll: ->

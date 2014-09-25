@@ -37,7 +37,8 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
       #msg.userId = @userId()
       # emitting message and putting to the buffer for the sake of Meteor logging. Insensitive loggers, such as Console,
       # should actually ignore this
-      # console.dir msg
+      #console.log "Sessions: #{Observatory.MeteorInternals.getSessionCount()}"
+      #console.log "Connections: #{Observatory.DDPConnectionEmitter.connectionCount}"
       Observatory.DDPEmitter.de().emitMessage msg, false
 
       con.onClose =>
@@ -54,6 +55,9 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
         # emitting message and putting to the buffer for the sake of Meteor logging. Insensitive loggers, such as Console,
         # should actually ignore this
         # console.dir msg
+        #console.dir Observatory.MeteorInternals.getSessionCount()
+        #console.log "Sessions: #{Observatory.MeteorInternals.getSessionCount()}"
+        #console.log "Connections: #{Observatory.DDPConnectionEmitter.connectionCount}"
         Observatory.DDPEmitter.de().emitMessage msg, false
 
 
