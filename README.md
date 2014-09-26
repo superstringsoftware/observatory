@@ -40,9 +40,14 @@ to share your thoughts and ideas!
 
 Revision history
 -----------------
+####0.4.5: September, 30, 2014
+* Major code improvements
+* Authentication
+* Visual wizards and management options
+* Session monitoring support
+
 ####0.4.0: September, 24, 2014
 * Bump to Meteor 0.9 & some re-architecturing
-
 
 ####0.3.2: September, 14, 2013
 * Additional enhancements for cloud support:

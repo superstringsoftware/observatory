@@ -32,8 +32,17 @@ Meteor.default_server.stream_server.register (socket)->
   ###
 
 Meteor.methods
-  # TODO: add authorization!
+
   _observatoryGetOpenSessions: ->
+    mi = new Observatory.MeteorInternals
+    ss = mi.getCurrentSessions()
+    sessions = []
+    sessions.push mi.convertSessionToView(v) for k,v of ss
+    #console.dir v._namedSubs
+    sessions
+
+  # TODO: add authorization!
+  _observatoryGetOpenSockets: ->
     #console.log "======================================== called observatoryGetOpenSockets ======================================"
     #console.log Meteor.default_server.stream_server.open_sockets
     #console.log this
