@@ -63,7 +63,8 @@ Observatory.setSettings = _.wrap Observatory.setSettings, (f, s)->
 
 # adding meteor-specific initialization
 Observatory.registerInitFunction (s)->
-  
+
+
   # Default settings for loglevel and printToConsole are INFO and false (defined in Galileo).
   @settings.logsCollectionName = s?.logsCollectionName ? '_observatory_logs'
   @settings.logUser = s?.logUser ? true

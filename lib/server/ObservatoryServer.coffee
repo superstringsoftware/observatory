@@ -66,18 +66,20 @@ class Observatory.Server
     # publishing ALL settings for management purposes
     # TODO: rethink naming, as now Vega won't be able to monitor itself on the client (maybe that's ok)
     Meteor.publish '_observatory_settings_admin', (opts)->
-      console.log 'publishing settings'
+      #console.log 'publishing settings'
       return if not Observatory.canRun.call(@)
       Observatory.Settings.find {}
     
     # publishing logs
     Meteor.publish Observatory.settings.logsCollectionName, (numInPage = 300, pageNumber = 0)->
+      return if not Observatory.canRun.call(@)
       #console.log "trying to publish logs with #{numInPage}"
       cl = Observatory.getMeteorLogger()._logsCollection
       cr = cl.find({type: {$ne: 'monitor'}}, {sort: {timestamp: -1}, limit: numInPage})
 
     # funky stuff - publishing specific query, just the monitoring logs
     Meteor.publish '_observatory_monitoring', (numInPage = 100, pageNumber = 0)->
+      return if not Observatory.canRun.call(@)
       #console.log "trying to publish monitoring"
       cl = Observatory.getMeteorLogger()._logsCollection
       #initializing = true
@@ -94,6 +96,7 @@ class Observatory.Server
 
     # just the http logs - for web visits analysis, will need to move to aggregation queries eventually
     Meteor.publish '_observatory_http_logs', (numInPage = 100, pageNumber = 0)->
+      return if not Observatory.canRun.call(@)
       #console.log "trying to publish monitoring - logs"
       cl = Observatory.getMeteorLogger()._logsCollection
       #initializing = true
@@ -108,6 +111,7 @@ class Observatory.Server
 
     # just the errors
     Meteor.publish '_observatory_errors', (numInPage = 100, pageNumber = 0)->
+      return if not Observatory.canRun.call(@)
       #console.log "trying to publish errors"
       cl = Observatory.getMeteorLogger()._logsCollection
       handle = cl.find({severity: {$lte: 1}}, {sort: {timestamp: -1}, limit: numInPage}).observe {
@@ -120,6 +124,7 @@ class Observatory.Server
 
     # profiling data
     Meteor.publish '_observatory_profiling', (numInPage = 100, pageNumber = 0)->
+      return if not Observatory.canRun.call(@)
       #console.log "trying to publish profiling"
       cl = Observatory.getMeteorLogger()._logsCollection
       #initializing = true
@@ -134,6 +139,7 @@ class Observatory.Server
 
     # open sessions - see DDPConnectionEmitter for hooks on manipulating dummy SessionsCollection
     Meteor.publish '_observatory_current_sessions', ->
+      return if not Observatory.canRun.call(@)
       mi = new Observatory.MeteorInternals
       #console.log "trying to publish current sessions"
       #initializing = true
