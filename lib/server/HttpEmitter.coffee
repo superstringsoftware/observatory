@@ -48,7 +48,8 @@ class Observatory.HttpEmitter extends @Observatory.MessageEmitter
   constructor: (@name)->
 
     @formatter = (l)->
-      msg = "#{l.method} #{l.url}: #{l.status} from #{l.forwardedFor} in #{l.responseTime} ms" #"#{l.method} #{l.url}: #{l.status} in #{l.responseTime} ms\n#{l.userAgent}\n#{l.responseHeader}\nreferrer: #{l.referrer?}"
+      #"#{l.method} #{l.url}: #{l.status} in #{l.responseTime} ms\n#{l.userAgent}\n#{l.responseHeader}\nreferrer: #{l.referrer?}"
+      msg = "#{l.method} #{l.url}: #{l.status} from #{l.forwardedFor} in #{l.responseTime} ms"
       severity = Observatory.LOGLEVEL.VERBOSE
       if l.status >= 500 then severity = Observatory.LOGLEVEL.FATAL
       else
