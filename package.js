@@ -23,7 +23,7 @@ try {
         api.add_files('lib/server/HttpEmitter.coffee','server');
         api.add_files('lib/server/MonitoringEmitter.coffee','server');
         api.add_files('lib/MeteorLogger.coffee',['client','server']);
-        api.add_files('lib/server/monitoringHooks.coffee','server');
+        //api.add_files('lib/server/monitoringHooks.coffee','server');
 
         api.add_files('lib/server/Observatory.coffee','server');
         api.add_files('lib/client/Observatory.coffee','client');
