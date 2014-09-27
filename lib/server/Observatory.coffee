@@ -81,6 +81,13 @@ Observatory.registerInitFunction (s)->
   if not @settings.logAnonymous
     @_meteorLogger.allowInsert = (uid) ->
       if uid? then true else false
+
+  Observatory.Settings.allow
+    insert: (uid, doc) -> Observatory.canRun(uid)
+    update: (uid, doc, fields, modifier) -> Observatory.canRun(uid)
+    # TODO: for removal, need to make sure SERVER, CLIENT and ANONYMOUS can't be deleted
+    remove: (uid, doc) -> Observatory.canRun(uid)
+
   
   @meteorServer = new Observatory.Server
   @meteorServer.publish() unless @settings.prohibitAutoPublish

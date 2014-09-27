@@ -6,11 +6,14 @@ Observatory = @Observatory ? {}
 # in the future, need some role-based checking, action map etc
 # for now - only checking for the administrator role
 # to address mind-boggling @userId issue, call as Observatory.canRun.call this !!! in publish functions
-Observatory.canRun = (user, action = 'view')->
+Observatory.canRun = (uid, action = 'view')->
   res = false
-  try
-    user = (Meteor.users.findOne(_id: @userId) ? Meteor.user()) if not user?
-  catch err
+  if uid?
+    user = Meteor.users.findOne(uid)
+  else
+    try
+      user = (Meteor.users.findOne(_id: @userId) ? Meteor.user()) if not uid?
+    catch err
   #console.log @userId
   #console.log user
   res = true if user?.profile?.observatoryProfile?.role is "administrator"
@@ -42,6 +45,8 @@ class Observatory.Server
       needsSetup: @needsSetup()
       #settings: Observatory.settings
       monitoring: Observatory.emitters.Monitor.isRunning
+      registeredUsers: Meteor.users.find().count()
+      meteorVersion: Meteor.release
       heartbeat: @heartbeat()
       sysinfo: Observatory.emitters.Monitor.sysInfoShort()
 
@@ -164,11 +169,11 @@ class Observatory.Server
 
     # publishing users in the selected [id] list - useful for getting logged in users etc
     Meteor.publish '_observatory_selected_users', (userIds)->
-      console.log userIds
+      #console.log userIds
       return unless Observatory.canRun.call(@) and userIds?
       handle = Meteor.users.find({_id: {$in: userIds}}, fields: services: 0).observe {
         added: (doc)=>
-          console.log doc
+          #console.log doc
           @added('_observatory_remote_users', doc._id, doc) #unless initializing
 
         removed: (doc)=>
