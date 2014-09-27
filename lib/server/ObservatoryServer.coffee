@@ -12,13 +12,17 @@ Observatory.canRun = (user, action = 'view')->
     user = (Meteor.users.findOne(_id: @userId) ? Meteor.user()) if not user?
   catch err
   #console.log @userId
-  console.log user
+  #console.log user
   res = true if user?.profile?.observatoryProfile?.role is "administrator"
   res
 
 # Class that publishes logs, manages relations with clients, sets up monitors etc
 # heart of Observatory operations in Meteor
 class Observatory.Server
+
+  constructor: ->
+    @mi = new Observatory.MeteorInternals
+
   needsSetup: -> if Observatory.Settings.find({initialSetupComplete: true}).count()>0 then false else true
 
   # TODO: need to log calls when there's no needsSetup - that's malicious activity!!!
@@ -158,6 +162,27 @@ class Observatory.Server
       @onStop = -> handle.stop()
       return
 
+    # publishing users in the selected [id] list - useful for getting logged in users etc
+    Meteor.publish '_observatory_selected_users', (userIds)->
+      console.log userIds
+      return unless Observatory.canRun.call(@) and userIds?
+      handle = Meteor.users.find({_id: {$in: userIds}}, fields: services: 0).observe {
+        added: (doc)=>
+          console.log doc
+          @added('_observatory_remote_users', doc._id, doc) #unless initializing
+
+        removed: (doc)=>
+          @removed('_observatory_remote_users', doc._id)
+      }
+      #initializing = false
+      @ready()
+      @onStop = -> handle.stop()
+      return
+      
+
+
+  startConnectionMonitoring: ->
+
 
 
 
@@ -167,12 +192,47 @@ class Observatory.Server
 #################################################################################################################################################
 
 Meteor.methods
-  # called by Vega to check the heartbeat
-  _observatoryHeartbeat: -> Observatory.meteorServer.heartbeat()
+  # No authorization: initial handshake with the server
+  # TODO: strip it down to Observatory version and essential info to establish a connection
   _observatoryHandshake: -> Observatory.meteorServer.handshake()
+  # Initial (First Time) setup - so, no auth
   _observatoryInitialSetup: (options)-> Observatory.meteorServer.initialSetup options
 
+  # METHODS REQUIRING AUTHORIZATION
+  # Current server - method and publish handlers
+  # TODO - remove Observatory handlers?
+  _observatoryGetCurrentServer: ->
+    throw new Meteor.Error(77,"Observatory access denied") if not Observatory.canRun()
+    Observatory.meteorServer.mi.getCurrentServer()
 
-  # auth stuff
+  # Regular heartbeat
+  _observatoryHeartbeat: ->
+    throw new Meteor.Error(77,"Observatory access denied") if not Observatory.canRun()
+    Observatory.meteorServer.heartbeat()
+
+  # Currently open sessions
+  _observatoryGetOpenSessions: ->
+    throw new Meteor.Error(77,"Observatory access denied") if not Observatory.canRun()
+    mi = Observatory.meteorServer.mi
+    ss = mi.getCurrentSessions()
+    sessions = []
+    sessions.push mi.convertSessionToView(v) for k,v of ss
+    #console.dir v._namedSubs
+    sessions
+
+
+
+# auth stuff
+
+_checkUserId = ->
+  #console.log @
+  uid = null
+  try
+    uid = this.userId ? Meteor.userId()
+    #console.log uid
+    return uid
+  catch err
+    #console.log err
+    uid
   
 (exports ? this).Observatory = Observatory

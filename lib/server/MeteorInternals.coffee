@@ -11,7 +11,18 @@ class Observatory.MeteorInternals
   # finds session by id (is session id the same as connection?)
   findSession: (id) -> _.find @getCurrentSessions(), (v,k)-> k is id
 
+  getCurrentServer: ->
+    #console.log "======================================== called getCurrentServer ======================================"
+    #console.dir Meteor.server
+    srv = Meteor.server
+    publishHandlers = ({name: k, func: v.toString().substring(0,v.toString().indexOf('{') - 1 ), body: v.toString().substring(v.toString().indexOf('{')) } for k,v of srv?.publish_handlers)
+    methodHandlers = ({name: k, func: v.toString().substring(0,v.toString().indexOf('{') - 1 ), body: v.toString().substring(v.toString().indexOf('{')) } for k,v of srv?.method_handlers)
+    {publishHandlers: publishHandlers, methodHandlers: methodHandlers}
+
+
   convertSessionToView: (ss)->
+    #console.log "=============================================================================================="
+    #console.dir ss.socket
     session =
       id: ss.id
       connectionId: ss.connectionHandle.id
