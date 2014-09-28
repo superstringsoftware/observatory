@@ -31,16 +31,6 @@ Observatory.isServer = -> Meteor.isServer
 # defining getter for the meteor logger
 Observatory.getMeteorLogger = -> Observatory._meteorLogger
 
-Observatory.defaultClientSettings =
-  logLevel: "INFO", printToConsole: false, logUser: true, logAnonymous: false
-
-Observatory.defaultServerSettings =
-  logLevel: "INFO", printToConsole: false, logUser: true, logAnonymous: false,
-  logHttp: true, logDDP: false, prohibitAutoPublish: false
-
-# settings collection
-Observatory.Settings = new Mongo.Collection('_observatory_settings')
-
 Observatory.initialize()
 
 

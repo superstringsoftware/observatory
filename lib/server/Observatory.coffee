@@ -32,24 +32,12 @@ Settings format:
 }
 ###
 
-Observatory.loadSettings = ->
-  # first run in the app - filling collection with defaults
-  if Observatory.Settings.find().count() is 0
-    Observatory.Settings.insert({type: "SERVER", settings: Observatory.defaultServerSettings})
-    Observatory.Settings.insert({type: "CLIENT_LOGGEDIN", settings: Observatory.defaultClientSettings})
-    Observatory.Settings.insert({type: "CLIENT_ANONYMOUS", settings: Observatory.defaultClientSettings})
-    s = @defaultServerSettings
-  else
-    s = @Settings.findOne({type: "SERVER"})?.settings
-    if not s?
-      Observatory.Settings.insert({type: "SERVER", settings: Observatory.defaultServerSettings})
-      s = @defaultServerSettings
-  s
 
 # initialize runs all functions that are registered with registerInitFunction with s as arguments
 Observatory.initialize = _.wrap Observatory.initialize, (f, s)->
   #s = Meteor.settings?.public?.observatorySettings unless s?
-  s = @loadSettings() unless s?
+  Observatory.settingsController = new Observatory.Settings
+  s = Observatory.settingsController.currentSettings() unless s?
   #console.log s
   f.call Observatory, s
 
@@ -57,40 +45,38 @@ Observatory.initialize = _.wrap Observatory.initialize, (f, s)->
 Observatory.setSettings = _.wrap Observatory.setSettings, (f, s)->
   # calling base function
   f.call Observatory, s
+  ###
   @settings.logUser = s.logUser ? @settings.logUser
   @settings.logHttp = s?.logHttp ? @settings.logHttp
   @settings.logDDP = s?.logDDP ? @settings.logDDP
+  ###
 
 # adding meteor-specific initialization
 Observatory.registerInitFunction (s)->
 
 
   # Default settings for loglevel and printToConsole are INFO and false (defined in Galileo).
+  ###
   @settings.logsCollectionName = s?.logsCollectionName ? '_observatory_logs'
   @settings.logUser = s?.logUser ? true
   @settings.logHttp = s?.logHttp ? true
   @settings.logDDP = s?.logDDP ? false
   @settings.prohibitAutoPublish = s?.prohibitAutoPublish ? false
   @settings.logAnonymous = s?.logAnonymous ? false
+  ###
   
   # setting up client / server meteor loggers
   #console.log @settings
-  @_meteorLogger = new Observatory.MeteorLogger 'Meteor Logger', @settings.logsCollectionName
+  @_meteorLogger = new Observatory.MeteorLogger 'Meteor Logger', @settingsController.currentSettings().logsCollectionName ? '_observatory_logs'
   @subscribeLogger @_meteorLogger
 
-  if not @settings.logAnonymous
+  if not @settingsController.currentSettings().logAnonymous
     @_meteorLogger.allowInsert = (uid) ->
       if uid? then true else false
 
-  Observatory.Settings.allow
-    insert: (uid, doc) -> Observatory.canRun(uid)
-    update: (uid, doc, fields, modifier) -> Observatory.canRun(uid)
-    # TODO: for removal, need to make sure SERVER, CLIENT and ANONYMOUS can't be deleted
-    remove: (uid, doc) -> Observatory.canRun(uid)
 
-  
   @meteorServer = new Observatory.Server
-  @meteorServer.publish() unless @settings.prohibitAutoPublish
+  @meteorServer.publish() #unless @settings.prohibitAutoPublish
   @meteorServer.publishLocal() # basically, only settings
   @emitters.DDP = Observatory.DDPEmitter.de 'DDP'
   @emitters.DDPConnection = Observatory.DDPConnectionEmitter.de 'DDP Connection'
