@@ -6,7 +6,7 @@ class Observatory.Settings extends Observatory.SettingsCommon
 
   @defaultServerSettings:
     logLevel: "INFO", printToConsole: false, logUser: true, logAnonymous: false,
-    logHttp: true, logDDP: false, prohibitAutoPublish: false
+    logHttp: true, logDDP: false, logBasicDDP: true, prohibitAutoPublish: false
 
   constructor: ->
     #console.log "constructor called"
@@ -55,7 +55,7 @@ class Observatory.Settings extends Observatory.SettingsCommon
     # TODO: rethink naming, as now Vega won't be able to monitor itself on the client (maybe that's ok)
     Meteor.publish '_observatory_settings_admin', (opts)->
       #console.log @
-      console.log "publishing settings #{@userId}"
+      #console.log "publishing settings #{@userId}"
       return if not Observatory.canRun.call(@)
       Observatory.SettingsCommon.col.find {}
 
@@ -68,6 +68,10 @@ class Observatory.Settings extends Observatory.SettingsCommon
   processSettingsUpdate: (s)->
     # printToConsole and loglevel are handled by super() call
     super s
+    if s.logBasicDDP
+      Observatory.emitters.DDPConnection.turnOn()
+    else
+      Observatory.emitters.DDPConnection.turnOff()
     if s.logDDP
       Observatory.emitters.DDP.turnOn()
     else

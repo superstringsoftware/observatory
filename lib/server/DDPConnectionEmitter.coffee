@@ -2,7 +2,7 @@
 Observatory = @Observatory ? {}
 
 class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
-  @connectionCount = 0
+  @connectionCount: 0
   @messageStub: ->
     options =
       isServer: true
@@ -11,7 +11,7 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
       timestamp: new Date
     options
 
-  @_instance = undefined
+  @_instance: undefined
 
   # getter for the instance
   @de: => 
@@ -24,6 +24,7 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
   constructor: (@name, @formatter)->
     #console.log "DDPEmitter::constructor #{name}"
     super @name, @formatter
+    @turnOff()
     if Observatory.DDPConnectionEmitter._instance? then throw new Error "Attempted to create another instance of DDPConnectionEmitter and it is a really bad idea"
     # registering to listen to connection events with Meteor
     Meteor.onConnection (con)=>
@@ -40,7 +41,7 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
       # should actually ignore this
       #console.log "Sessions: #{Observatory.MeteorInternals.getSessionCount()}"
       #console.log "Connections: #{Observatory.DDPConnectionEmitter.connectionCount}"
-      Observatory.DDPEmitter.de().emitMessage msg, false
+      Observatory.DDPConnectionEmitter.de().emitMessage msg, false
       Observatory.DDPConnectionEmitter.SessionsCollection.insert({connectionId: con.id})
 
 
@@ -61,7 +62,7 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
         #console.dir Observatory.MeteorInternals.getSessionCount()
         #console.log "Sessions: #{Observatory.MeteorInternals.getSessionCount()}"
         #console.log "Connections: #{Observatory.DDPConnectionEmitter.connectionCount}"
-        Observatory.DDPEmitter.de().emitMessage msg, false
+        Observatory.DDPConnectionEmitter.de().emitMessage msg, false
         Observatory.DDPConnectionEmitter.SessionsCollection.remove({connectionId: con.id})
 
 
