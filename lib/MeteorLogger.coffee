@@ -28,15 +28,13 @@ class Observatory.MeteorLogger extends Observatory.Logger
 
   # overriding the main logging method
   log: (message)=>
-    console.log "logging"
     if Meteor.isClient
       if not Observatory.settingsController.currentSettings().logAnonymous
         if not Observatory.settingsController.currentSettings().logUser
-          console.log "can't log client"
           return
         else
           return unless Meteor.userId()?
-    console.log "really logging"
+
     #console.log "Logging in Meteor Server: #{Meteor.isServer}"
     msg = message # do we really need the clone thing??
     msg.userId = msg.userId ? @_checkUserId()
