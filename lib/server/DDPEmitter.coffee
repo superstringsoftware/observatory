@@ -95,10 +95,12 @@ class Observatory.DDPEmitter extends @Observatory.MessageEmitter
   constructor: (@name, @formatter)->
     #console.log "DDPEmitter::constructor #{name}"
     super @name, @formatter
+    @turnOff()
     if Observatory.DDPEmitter._instance? then throw new Error "Attempted to create another instance of DDPEmitter and it is a really bad idea"
     # registering to listen to socket events with Meteor
     Meteor.default_server.stream_server.register (socket)->
-      return unless Observatory.DDPEmitter.de().isOn and Observatory.settings.logDDP
+      return unless Observatory.DDPEmitter.de().isOn
+      #console.log socket._session.connection
       msg = Observatory.DDPEmitter.messageStub()
       msg.socketId = socket.id
       msg.textMessage = "Connected socket #{socket.id}" 
@@ -108,20 +110,22 @@ class Observatory.DDPEmitter extends @Observatory.MessageEmitter
       Observatory.DDPEmitter.de().emitMessage msg, true
 
       socket.on 'data', (raw_msg)->
-        return unless Observatory.DDPEmitter.de().isOn and Observatory.settings.logDDP
+        #console.log @_session.connection._meteorSession.id
+        return unless Observatory.DDPEmitter.de().isOn
         msg = Observatory.DDPEmitter.messageStub()
         msg.socketId = @id
-        msg.textMessage = "Got message in a socket #{@id}"
+        msg.sessionId = @_session.connection._meteorSession.id
+        msg.textMessage = "Got message in a socket #{@id} session #{@_session.connection._meteorSession.id}"
         msg.object = raw_msg
         msg.type = "DDP"
         #console.log msg
         Observatory.DDPEmitter.de().emitMessage msg, true
       
       socket.on 'close', ->
-        return unless Observatory.DDPEmitter.de().isOn and Observatory.settings.logDDP
+        return unless Observatory.DDPEmitter.de().isOn
         msg = Observatory.DDPEmitter.messageStub()
         msg.socketId = socket.id
-        msg.textMessage = "Closed socket #{socket.id}" 
+        msg.textMessage = "Closed socket #{socket.id}"
         #console.log msg
         Observatory.DDPEmitter.de().emitMessage msg, true
 

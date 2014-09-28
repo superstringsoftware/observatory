@@ -53,6 +53,9 @@ Observatory.registerInitFunction (s)->
   @emitters.DDPConnection = Observatory.DDPConnectionEmitter.de 'DDP Connection'
   @emitters.Http = new Observatory.HttpEmitter 'HTTP'
   @emitters.Monitor = new Observatory.MonitoringEmitter 'Monitor'
+
+  @settingsController.processSettingsUpdate @settingsController.currentSettings()
+
   # setting up buffers checks for http and DDP logging
   Meteor.setInterval ->
     m = Observatory.getMeteorLogger()

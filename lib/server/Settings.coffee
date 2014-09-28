@@ -22,7 +22,6 @@ class Observatory.Settings extends Observatory.SettingsCommon
     # observing if our SERVER values change so that we process these changes
     @col.find({type: "SERVER"}).observe {
       changed: (newDoc, oldDoc)=>
-        #console.log this
         @processSettingsUpdate(newDoc.settings)
 
       removed: (doc)=>
@@ -37,12 +36,12 @@ class Observatory.Settings extends Observatory.SettingsCommon
   loadSettings: ->
     # first run in the app - filling collection with defaults (initial setup)
     if @col.find().count() is 0
-      @col.insert({type: "SERVER", settings: @defaultServerSettings})
-      @col.insert({type: "CLIENT_LOGGEDIN", settings: @defaultClientSettings})
-      @col.insert({type: "CLIENT_ANONYMOUS", settings: @defaultClientSettings})
+      @col.insert({type: "SERVER", settings: Observatory.Settings.defaultServerSettings})
+      @col.insert({type: "CLIENT_LOGGEDIN", settings: Observatory.Settings.defaultClientSettings})
+      @col.insert({type: "CLIENT_ANONYMOUS", settings: Observatory.Settings.defaultClientSettings})
 
     if @col.find({type: "SERVER"}).count() is 0
-      @col.insert({type: "SERVER", settings: @defaultServerSettings})
+      @col.insert({type: "SERVER", settings: Observatory.Settings.defaultServerSettings})
 
     @currentSettings()
 
@@ -65,6 +64,20 @@ class Observatory.Settings extends Observatory.SettingsCommon
     cs = @col.findOne({type: "SERVER"})
     #console.log cs
     cs.settings
+
+  processSettingsUpdate: (s)->
+    #console.log s
+    #action = true: "turnOn", false: "turnOff"
+    super s
+    if s.logDDP
+      Observatory.emitters.DDP.turnOn()
+    else
+      Observatory.emitters.DDP.turnOff()
+    if s.logHttp
+      Observatory.emitters.Http.turnOn()
+    else
+      Observatory.emitters.Http.turnOff()
+
 
   ######################################################################################################
   # Settings changing functions
