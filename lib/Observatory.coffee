@@ -2,24 +2,6 @@
 
 Observatory = @Observatory ? {}
 
-###
-Settings format:
-
-{
-    "public": {
-        "observatorySettings": {
-            "logsCollectionName": "_observatory_logs",
-            "logLevel": "DEBUG",
-            "printToConsole": true,
-            "logUser": true,
-            "logHttp": true,
-            "logDDP": true,
-            "prohibitAutoPublish": false
-        }
-    }
-}
-###
-
 # This is KEY for handshakes and stuff
 Observatory.version = 
   major: 0

@@ -4,35 +4,6 @@
 
 Observatory = @Observatory ? {}
 
-###
-Settings format:
-  "public" only for backward compat. Now settings stay on the server.
-
-{
-  "observatorySettings": {
-      "logLevel": "DEBUG",
-      "printToConsole": true,
-      "logUser": true,
-      "logAnonymous": true,
-      "logHttp": true,
-      "logDDP": true,
-      "prohibitAutoPublish": false
-  }
-    "public": {
-        "observatorySettings": {
-            "logsCollectionName": "_observatory_logs",
-            "logLevel": "DEBUG",
-            "printToConsole": true,
-            "logUser": true,
-            "logHttp": true,
-            "logDDP": true,
-            "prohibitAutoPublish": false
-        }
-    }
-}
-###
-
-
 # initialize runs all functions that are registered with registerInitFunction with s as arguments
 Observatory.initialize = _.wrap Observatory.initialize, (f, s)->
   #s = Meteor.settings?.public?.observatorySettings unless s?

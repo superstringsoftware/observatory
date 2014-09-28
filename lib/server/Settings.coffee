@@ -17,6 +17,17 @@ class Observatory.Settings extends Observatory.SettingsCommon
       # TODO: for removal, need to make sure SERVER, CLIENT and ANONYMOUS can't be deleted
       remove: (uid, doc) -> Observatory.canRun(uid) and doc.type not in ["SERVER", "CLIENT_LOGGEDIN", "CLIENT_ANONYMOUS"]
     #console.log this
+    # every startup checking that the databse contains at least the key stuff
+    @loadSettings()
+    # observing if our SERVER values change so that we process these changes
+    @col.find({type: "SERVER"}).observe {
+      changed: (newDoc, oldDoc)=>
+        #console.log this
+        @processSettingsUpdate(newDoc.settings)
+
+      removed: (doc)=>
+        throw new Meteor.Error 78, "SERVER settings removed: this SHOULD NOT be happening!"
+    }
 
   needsSetup: ->
     if @col.find({initialSetupComplete: true}).count()>0 then false else true
@@ -39,7 +50,7 @@ class Observatory.Settings extends Observatory.SettingsCommon
     Meteor.publish '_observatory_settings', (opts)->
       #console.log 'publishing settings'
       # for now, no granularity, only anon vs logged in
-      if @userId then Observatory.SettingsCommon.col.find {type: "CLIENT_LOGGEDIN"} else Observatory.Settings.find {type: "CLIENT_ANONYMOUS"}
+      if @userId then Observatory.SettingsCommon.col.find {type: "CLIENT_LOGGEDIN"} else Observatory.SettingsCommon.col.find {type: "CLIENT_ANONYMOUS"}
 
   publishAdmin: ->
     # TODO: rethink naming, as now Vega won't be able to monitor itself on the client (maybe that's ok)
@@ -49,12 +60,14 @@ class Observatory.Settings extends Observatory.SettingsCommon
       return if not Observatory.canRun.call(@)
       Observatory.SettingsCommon.col.find {}
 
-
+  # returns current settings relevant for the environment in which it's called
   currentSettings: ->
     cs = @col.findOne({type: "SERVER"})
     #console.log cs
     cs.settings
 
-#console.dir Observatory.Settings
+  ######################################################################################################
+  # Settings changing functions
+  ######################################################################################################
 
 (exports ? this).Observatory = Observatory
