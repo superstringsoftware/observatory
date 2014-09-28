@@ -66,8 +66,7 @@ class Observatory.Settings extends Observatory.SettingsCommon
     cs.settings
 
   processSettingsUpdate: (s)->
-    #console.log s
-    #action = true: "turnOn", false: "turnOff"
+    # printToConsole and loglevel are handled by super() call
     super s
     if s.logDDP
       Observatory.emitters.DDP.turnOn()
@@ -78,8 +77,25 @@ class Observatory.Settings extends Observatory.SettingsCommon
     else
       Observatory.emitters.Http.turnOff()
 
+    # anonymous & client calls in general
+    # this is somewhat dangerous as anonymous users can mess up the collection (but only inserting stuff, so not really)
+    if @currentSettings().logAnonymous
+      Observatory._meteorLogger.allowInsert = -> true
+    else
+      if @currentSettings().logUser
+        Observatory._meteorLogger.allowInsert = (uid) -> if uid? then true else false
+      else
+        Observatory._meteorLogger.allowInsert = -> false
 
-  ######################################################################################################
+
+
+
+
+
+
+
+
+######################################################################################################
   # Settings changing functions
   ######################################################################################################
 

@@ -41,11 +41,6 @@ Observatory.registerInitFunction (s)->
   @_meteorLogger = new Observatory.MeteorLogger 'Meteor Logger', @settingsController.currentSettings().logsCollectionName ? '_observatory_logs'
   @subscribeLogger @_meteorLogger
 
-  if not @settingsController.currentSettings().logAnonymous
-    @_meteorLogger.allowInsert = (uid) ->
-      if uid? then true else false
-
-
   @meteorServer = new Observatory.Server
   @meteorServer.publish() #unless @settings.prohibitAutoPublish
   @meteorServer.publishLocal() # basically, only settings
