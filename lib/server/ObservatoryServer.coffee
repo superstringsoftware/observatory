@@ -44,6 +44,7 @@ class Observatory.Server
       needsSetup: Observatory.settingsController.needsSetup()
       monitoring: Observatory.emitters.Monitor.isRunning
       registeredUsers: Meteor.users.find().count()
+      logsCount: Observatory.getMeteorLogger().logsCount()
       meteorVersion: Meteor.release
       heartbeat: @heartbeat()
       sysinfo: Observatory.emitters.Monitor.sysInfoShort()
@@ -144,9 +145,11 @@ class Observatory.Server
       #initializing = true
       handle = Observatory.DDPConnectionEmitter.SessionsCollection.find().observe {
         added: (doc)=>
+          #console.log "adding session to publish!!!", doc
           #console.log this
           # needs to be here because of mind-driving-crazy @userId thing in Meteor :(((
           ss = mi.convertSessionToView mi.findSession(doc.connectionId)
+          ss.started = doc.started
           @added('_observatory_current_sessions', doc.connectionId, ss) #unless initializing
 
         removed: (doc)=>

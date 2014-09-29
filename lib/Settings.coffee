@@ -3,7 +3,7 @@ Observatory = @Observatory ? {}
 # Settings
 class Observatory.SettingsCommon
   @defaultClientSettings:
-    logLevel: "INFO", printToConsole: false, logUser: true, logAnonymous: false
+    logLevel: "DEBUG", printToConsole: true, logUser: true, logAnonymous: true
 
   # settings collection
   @col: new Mongo.Collection('_observatory_settings')

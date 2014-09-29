@@ -5,6 +5,7 @@ class Observatory.Settings extends Observatory.SettingsCommon
 
   constructor: ->
     @col = Observatory.SettingsCommon.col
+    @processSettingsUpdate @currentSettings()
     # observing the settings changes and rerunning the setup
     @col.find().observe {
       changed: (newDoc, oldDoc)=>
@@ -28,7 +29,7 @@ class Observatory.Settings extends Observatory.SettingsCommon
     super s
     console.log s
 
-  currentSettings: -> @col.findOne()?.settings #? Observatory.SettingsCommon.defaultClientSettings
+  currentSettings: -> @col.findOne()?.settings ? Observatory.SettingsCommon.defaultClientSettings
 
 
 (exports ? this).Observatory = Observatory

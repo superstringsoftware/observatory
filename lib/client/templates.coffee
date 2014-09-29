@@ -79,15 +79,15 @@ _.extend Observatory,
 
   # for now, only subscribe
   logMeteor: ->
-    #console.log "logging Meteor"
+    console.log "logging Meteor - CALLED ALL DYNAMIC STUFF"
     #console.log Meteor.subscribe
 
     Meteor.subscribe = _.wrap Meteor.subscribe, (f)->
-      #console.log "hmm..."
+      #console.log "hmm... subscribe"
       #console.log arguments
       tl = Observatory.getToolbox()
       name = arguments[1]
-      tl.verbose "Subscribing to #{name}", "Meteor"
+      #console.log Observatory.settings.maxSeverity
 
       # some funky stuff to wrap original callbacks
       last = _.last arguments
@@ -104,15 +104,34 @@ _.extend Observatory,
           origOnReady = last
           changeLast = true
 
-      cb =
-        onReady: =>
+      cb = {}
+      if origOnReady?
+        cb.onReady = _.wrap origOnReady, (f)->
+          #console.log "OnReady callback"
+          #console.log arguments
           t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
-          tl.profile "Subscription ready for #{name} in #{t} ms", t, {subscription: name, type: 'subscription'}
-          origOnReady() if origOnReady?
-        onError: (err)=>
+          tl._profile "Subscription ready for #{name} in #{t} ms", t, {subscription: name, type: 'subscription'}
+          args = _.rest arguments
+          f.apply @, args
+      else
+        cb.onReady = ->
+          #console.log "OnReady callback no arguments"
           t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
-          tl.error "Error while subscribing to #{name}: " + err.reason, {error: err, subscription: name, timeElapsed: t, type: 'subscription'}
-          origOnError(err) if origOnError?
+          tl._profile "Subscription ready for #{name} in #{t} ms", t, {subscription: name, type: 'subscription'}
+
+      if origOnError?
+        cb.onError = _.wrap origOnError, (f)->
+          #console.log "OnError callback"
+          #console.log arguments
+          t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
+          tl._error "Error while subscribing to #{name}: " + err.reason, {error: err, subscription: name, timeElapsed: t, type: 'subscription'}
+          args = _.rest _.rest arguments
+          f.apply @, args
+      else
+        cb.onError = ->
+          #console.log "OnError callback no arguments"
+          t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
+          tl._error "Error while subscribing to #{name}: " + err.reason, {error: err, subscription: name, timeElapsed: t, type: 'subscription'}
 
       args = _.rest arguments
 
@@ -122,8 +141,83 @@ _.extend Observatory,
       #console.log args
 
       Session.set "_obs.subscription.#{name}.profileStart", Date.now()
+      tl._verbose "Subscribing to #{name}", "Meteor"
       f.apply this, args
 
+
+    Meteor.call = _.wrap Meteor.call, (f)->
+      console.log "hmm... call"
+      console.log arguments
+      tl = Observatory.getToolbox()
+      name = arguments[1]
+      #console.log Observatory.settings.maxSeverity
+
+      # some funky stuff to wrap original callbacks
+      last = _.last arguments
+      changeLast = false
+      if typeof last is 'function'
+        origOnReady = last
+        changeLast = true
+        cb = _.wrap origOnReady, (f1)->
+          console.log "OnReady callback"
+          console.log arguments
+          t = Date.now() - Session.get "_obs.methodCall.#{name}.profileStart"
+          tl._profile "Method #{name} executed in #{t} ms", t, {method: name, type: 'method'}
+          args = _.rest arguments
+          f1.apply @, args
+      else
+        cb = (err, res)->
+          console.log "OnReady callback no arguments"
+          console.log err
+          console.log res
+          t = Date.now() - Session.get "_obs.methodCall.#{name}.profileStart"
+          tl._profile "Method #{name} executed in #{t} ms", t, {method: name, type: 'method'}
+
+      args = _.rest arguments
+
+      if changeLast then args[args.length - 1] = cb # replacing original callbacks
+      else args.push cb # adding callbacks
+
+      #console.log args
+
+      Session.set "_obs.methodCall.#{name}.profileStart", Date.now()
+      tl._verbose "Starting execution of #{name}", "Meteor"
+      console.dir @
+      console.dir args
+      f.apply this, args
+
+    ###
+    Meteor.apply = _.wrap Meteor.apply, (f)->
+      console.log "hmm... apply"
+      console.log arguments
+      tl = Observatory.getToolbox()
+      name = arguments[1]
+      origArgs = arguments[2]
+      #console.log Observatory.settings.maxSeverity
+
+      # some funky stuff to wrap original callbacks
+      last = _.last arguments
+      changeLast = false
+      if typeof last is 'function'
+        origOnReady = last
+        changeLast = true
+
+      cb = =>
+        t = Date.now() - Session.get "_obs.methodCall.#{name}.profileStart"
+        tl._profile "Method #{name} executed in #{t} ms", t, {method: name, type: 'method'}
+        origOnReady() if origOnReady? # TODO: what about the arguments???
+
+      args = _.rest arguments
+
+      if changeLast then args[args.length - 1] = cb # replacing original callbacks
+      else args.push cb # adding callbacks
+
+      #console.log args
+
+      Session.set "_obs.methodCall.#{name}.profileStart", Date.now()
+      tl._verbose "Starting execution of #{name}", "Meteor"
+      f.apply this, args
+    ###
 
 
 (exports ? this).Observatory = Observatory
