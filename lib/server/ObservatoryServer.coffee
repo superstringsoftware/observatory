@@ -17,6 +17,7 @@ Observatory.canRun = (uid, action = 'view')->
   #console.log @userId
   #console.log user
   res = true if user?.profile?.observatoryProfile?.role is "administrator"
+  #console.log "Result of running canRun is #{res}"
   res
 
 # Class that publishes logs, manages relations with clients, sets up monitors etc
