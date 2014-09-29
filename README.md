@@ -1,25 +1,25 @@
 What is it?
 -------------
-This is Observatory v0.4.0 - package that provides powerful, efficient
+This is Observatory v0.4.6 - package that provides powerful, efficient
 and pretty logging, monitoring and application management for [Meteor framework](http://meteor.com) application development and 
 deployment.
-[See it in action and read full usage docs!](http://observatoryjs.com/).
+[See it in action and read full usage docs!](http://observatoryjs.com/)
 
 What does it do?
 ------------------
 * Easy logging with different log levels with corresponding methods for message output, optional 
-logging to console, pretty output of both Client and Server logs right in the browser, optional logging of
+logging to console, pretty output of both Client and Server logs right in the browser, logging of
 the currently logged-in user for additional control.
 
 * Augomagical logging, profiling and error handling for DDP, http, Collections, Subscriptions, Template lifecycle methods and any custom code
 
-* Monitoring of your application internals: currently, Templates with all events and a Session object; much more to come.
+* Monitoring of your application internals: publish and methods handlers, active sessions, etc
 
-* Coming up soon! Full-featured cloud-based monitoring and management of your Meteor applications.
+* Full-featured cloud-based monitoring and management of your Meteor applications: closed Alpha!
 
 Installation
 -----------------
-#### With meteorite:
+#### As a Meteor package:
 
 	meteor add superstringsoft:observatory
 
@@ -30,7 +30,7 @@ Usage
 	tb.warn("This is a warning message")
 
 There's *much* more.
-[Read full docs](http://observatoryjs.com).
+[Read full docs](http://observatoryjs.com) and [sign up](http://vega.observatoryjs.com) to be notified for the cloud launch!
 
 
 Feedback
@@ -40,10 +40,13 @@ to share your thoughts and ideas!
 
 Revision history
 -----------------
-####0.4.5: September, 30, 2014
+####0.4.6: September, 29, 2014
+* Visual wizards and management options: all current settings can be managed via UI now
+* API setup for advanced monitoring support
+
+####0.4.5: September, 26, 2014
 * Major code improvements
 * Authentication
-* Visual wizards and management options
 * Session monitoring support
 
 ####0.4.0: September, 24, 2014

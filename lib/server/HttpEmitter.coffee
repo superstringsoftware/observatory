@@ -3,7 +3,7 @@ Observatory = @Observatory ? {}
 class Observatory.HttpEmitter extends @Observatory.MessageEmitter
   
   httpLogger: (req, res, next) =>
-    if @isOff or (not Observatory.settings.logHttp)
+    if @isOff
       next()
       return
 
@@ -46,6 +46,7 @@ class Observatory.HttpEmitter extends @Observatory.MessageEmitter
     next()
 
   constructor: (@name)->
+    @turnOff()
 
     @formatter = (l)->
       #"#{l.method} #{l.url}: #{l.status} in #{l.responseTime} ms\n#{l.userAgent}\n#{l.responseHeader}\nreferrer: #{l.referrer?}"
