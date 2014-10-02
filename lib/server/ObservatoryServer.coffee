@@ -43,6 +43,7 @@ class Observatory.Server
     #console.log Observatory.settingsController
     o =
       version: Observatory.version
+      isLocalhost: Observatory.isLocalhost
       needsSetup: Observatory.settingsController.needsSetup()
       monitoring: Observatory.emitters.Monitor.isRunning
       registeredUsers: Meteor.users.find().count()
@@ -74,8 +75,9 @@ class Observatory.Server
     
     # publishing logs
     Meteor.publish '_observatory_logs', (numInPage = 300, pageNumber = 0)->
+      #console.log "trying to publish logs with #{numInPage} and #{pageNumber}"
       return if not Observatory.canRun.call(@)
-      #console.log "trying to publish logs with #{numInPage}"
+      #console.log "trying to publish logs with #{numInPage} and #{pageNumber}"
       cl = Observatory.getMeteorLogger()._logsCollection
       cr = cl.find({type: {$ne: 'monitor'}}, {sort: {timestamp: -1}, limit: numInPage})
 
