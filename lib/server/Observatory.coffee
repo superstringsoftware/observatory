@@ -51,6 +51,10 @@ Observatory.registerInitFunction (s)->
 
   @settingsController.processSettingsUpdate @settingsController.currentSettings()
 
+  # checking if running on localhost to bypass authorization
+  @isLocalhost = if Meteor.absoluteUrl(replaceLocalhost:true).indexOf("http://127.0.0.1") is 0 then true else false
+  #console.log @isLocalhost
+
   # setting up buffers checks for http and DDP logging
   Meteor.setInterval ->
     m = Observatory.getMeteorLogger()

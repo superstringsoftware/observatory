@@ -15,7 +15,8 @@ class Observatory.Settings extends Observatory.SettingsCommon
     # autorunning to make sure of re-subscription if the user id changes
     Meteor.startup =>
       Tracker.autorun =>
-        @sub = Meteor.subscribe '_observatory_settings', {uid: Meteor.userId(), connectionId: Meteor.connection._lastSessionId}, {
+        uid = if Accounts? then Meteor.userId() else null
+        @sub = Meteor.subscribe '_observatory_settings', {uid: uid, connectionId: Meteor.connection._lastSessionId}, {
           onError: (err)->
             console.log err
           onReady: =>
@@ -27,7 +28,7 @@ class Observatory.Settings extends Observatory.SettingsCommon
 
   processSettingsUpdate: (s)->
     super s
-    console.log s
+    #console.log s
 
   currentSettings: -> @col.findOne()?.settings ? Observatory.SettingsCommon.defaultClientSettings
 

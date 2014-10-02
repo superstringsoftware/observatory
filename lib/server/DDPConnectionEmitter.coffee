@@ -18,7 +18,7 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
     @_instance?= new Observatory.DDPConnectionEmitter "DDP Connection Emitter"
     @_instance
 
-  @SessionsCollection = new Mongo.Collection
+  @SessionsCollection = new Mongo.Collection null
 
   # TODO: add support for logging this in settings
   constructor: (@name, @formatter)->

@@ -1,6 +1,6 @@
 What is it?
 -------------
-This is Observatory v0.4.6 - package that provides powerful, efficient
+This is Observatory v0.4.7 - package that provides powerful, efficient
 and pretty logging, monitoring and application management for [Meteor framework](http://meteor.com) application development and 
 deployment.
 [See it in action and read full usage docs!](http://observatoryjs.com/)
@@ -40,6 +40,9 @@ to share your thoughts and ideas!
 
 Revision history
 -----------------
+####0.4.7: October, 2, 2014
+* Authorization improvements: localhost does not require one, graceful handling on the client
+
 ####0.4.6: September, 29, 2014
 * Visual wizards and management options: all current settings can be managed via UI now
 * API setup for advanced monitoring support
