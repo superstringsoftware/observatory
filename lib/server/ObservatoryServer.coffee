@@ -85,8 +85,19 @@ class Observatory.Server
     # publishing ALL settings for management purposes
     Observatory.settingsController.publishAdmin()
 
+    # publishing logs
+    ###
+    Meteor.publish '_observatory_logs', (numInPage = 300, pageNumber = 0)->
+      #console.log "trying to publish logs with #{numInPage} and #{pageNumber}"
+      return if not Observatory.canRun.call(@)
+      #console.log "trying to publish logs with #{numInPage} and #{pageNumber}"
+      cl = Observatory.getMeteorLogger()._logsCollection
+      cr = cl.find({type: {$ne: 'monitor'}}, {sort: {timestamp: -1}, limit: numInPage})
+      cr
+    ###
+
     # funky stuff - publishing specific query, just the monitoring logs
-    @_publishLogsTimed '_observatory_logs', '_observatory_logs', type: $ne: 'monitor'
+    @_publishLogsTimed '_observatory_logs', '_observatory_remote_logs', type: $ne: 'monitor'
     @_publishLogsTimed '_observatory_monitoring', '_observatory_monitoring', type: 'monitor'
     @_publishLogsTimed '_observatory_http_logs', '_observatory_http_logs', module: 'HTTP'
     @_publishLogsTimed '_observatory_errors', '_observatory_errors', severity: $lte: 1
