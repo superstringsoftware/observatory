@@ -63,84 +63,40 @@ class Observatory.Server
   # TODO: granular settings publishing --> based on userId and connectionId eventually
   publishLocal: -> Observatory.settingsController.publishLocal()
 
+
+  _publishLogsTimed: (name, collectionName, selector)->
+    Meteor.publish name, (hours = 12, scrollback = 0, limit = 2000)->
+      return if not Observatory.canRun.call(@)
+      cl = Observatory.getMeteorLogger()._logsCollection
+      dt = new Date (Date.now() - 3600000 * hours)
+      selector.timestamp = $gt: dt
+      #console.dir selector
+      handle = cl.find(selector, {sort: {timestamp: -1}, limit: limit}).observe {
+        added: (doc)=>
+          @added(collectionName, doc._id, doc)
+      }
+      @ready()
+      @onStop = -> handle.stop()
+      return
+
   # func should return whether we allow publishing or not
   # This is the heart of Vega operations - publishing all necessary data to the client
   publish: (func)->
-
-    #canPublish = if func? then func.call this, @userId else true
-    #return unless canPublish
-
     # publishing ALL settings for management purposes
     Observatory.settingsController.publishAdmin()
-    
-    # publishing logs
-    Meteor.publish '_observatory_logs', (numInPage = 300, pageNumber = 0)->
-      #console.log "trying to publish logs with #{numInPage} and #{pageNumber}"
-      return if not Observatory.canRun.call(@)
-      #console.log "trying to publish logs with #{numInPage} and #{pageNumber}"
-      cl = Observatory.getMeteorLogger()._logsCollection
-      cr = cl.find({type: {$ne: 'monitor'}}, {sort: {timestamp: -1}, limit: numInPage})
-      cr
 
     # funky stuff - publishing specific query, just the monitoring logs
-    Meteor.publish '_observatory_monitoring', (numInPage = 100, pageNumber = 0)->
-      return if not Observatory.canRun.call(@)
-      #console.log "trying to publish monitoring"
-      cl = Observatory.getMeteorLogger()._logsCollection
-      #initializing = true
-      handle = cl.find({type: 'monitor'}, {sort: {timestamp: -1}, limit: numInPage}).observe {
-        added: (doc)=>
-          #console.log "added called!"
-          #console.log doc
-          @added('_observatory_monitoring', doc._id, doc) #unless initializing
-      }
-      #initializing = false
-      @ready()
-      @onStop = -> handle.stop()
-      return
+    @_publishLogsTimed '_observatory_logs', '_observatory_logs', type: $ne: 'monitor'
+    @_publishLogsTimed '_observatory_monitoring', '_observatory_monitoring', type: 'monitor'
+    @_publishLogsTimed '_observatory_http_logs', '_observatory_http_logs', module: 'HTTP'
+    @_publishLogsTimed '_observatory_errors', '_observatory_errors', severity: $lte: 1
+    @_publishLogsTimed '_observatory_profiling', '_observatory_profiling', type: 'profile'
 
-    # just the http logs - for web visits analysis, will need to move to aggregation queries eventually
-    Meteor.publish '_observatory_http_logs', (numInPage = 100, pageNumber = 0)->
-      return if not Observatory.canRun.call(@)
-      #console.log "trying to publish monitoring - logs"
-      cl = Observatory.getMeteorLogger()._logsCollection
-      #initializing = true
-      handle = cl.find({module: 'HTTP'}, {sort: {timestamp: -1}, limit: numInPage}).observe {
-        added: (doc)=>
-          @added('_observatory_http_logs', doc._id, doc) #unless initializing
-      }
-      #initializing = false
-      @ready()
-      @onStop = -> handle.stop()
-      return
 
-    # just the errors
-    Meteor.publish '_observatory_errors', (numInPage = 100, pageNumber = 0)->
-      return if not Observatory.canRun.call(@)
-      #console.log "trying to publish errors"
-      cl = Observatory.getMeteorLogger()._logsCollection
-      handle = cl.find({severity: {$lte: 1}}, {sort: {timestamp: -1}, limit: numInPage}).observe {
-        added: (doc)=>
-          @added('_observatory_errors', doc._id, doc) 
-      }
-      @ready()
-      @onStop = -> handle.stop()
-      return
+########################################################################################################################
+# NON - PERSISTENT PUBLISHES
+########################################################################################################################
 
-    # profiling data
-    Meteor.publish '_observatory_profiling', (numInPage = 100, pageNumber = 0)->
-      return if not Observatory.canRun.call(@)
-      #console.log "trying to publish profiling"
-      cl = Observatory.getMeteorLogger()._logsCollection
-      #initializing = true
-      handle = cl.find({type: 'profile'}, {sort: {timestamp: -1}, limit: numInPage}).observe {
-        added: (doc)=>
-          @added('_observatory_profiling', doc._id, doc) #unless initializing
-      }
-      #initializing = false
-      @ready()
-      @onStop = -> handle.stop()
-      return
 
     # open sessions - see DDPConnectionEmitter for hooks on manipulating dummy SessionsCollection
     Meteor.publish '_observatory_current_sessions', ->
