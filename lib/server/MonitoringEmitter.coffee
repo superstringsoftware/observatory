@@ -48,18 +48,20 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
     @_sessions = []
     @isRunning = false
     @_monitorHandle = null
+    @mi = new Observatory.MeteorInternals
     super @name
 
   # Starting the monitoring process with timePeriod
   # Restarts in case it's already running
   # TODO: write the actual logic
   startMonitor: (timePeriod)->
+    #console.log "starting monitor"
     @stopMonitor if @isRunning
     timePeriod = timePeriod ? 60000
     @_monitorHandle = Meteor.setInterval =>
-      currentSessions = Meteor.call "_observatoryGetOpenSessions"
       obj = @measure()
-      obj.currentSessionNumber = currentSessions?.length
+      obj.currentSessionNumber = @mi.getSessionCount()
+      #console.dir obj
       msg = 
         isServer: true
         timestamp: new Date

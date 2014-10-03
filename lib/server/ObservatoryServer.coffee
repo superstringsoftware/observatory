@@ -7,7 +7,7 @@ Observatory = @Observatory ? {}
 # for now - only checking for the administrator role
 # to address mind-boggling @userId issue, call as Observatory.canRun.call this !!! in publish functions
 Observatory.canRun = (uid, action = 'view')->
-  return true if Observatory.isLocalhost
+  #return true if Observatory.isLocalhost
   res = false
   if uid?
     user = Meteor.users.findOne(uid)
@@ -66,7 +66,7 @@ class Observatory.Server
   # func should return whether we allow publishing or not
   # This is the heart of Vega operations - publishing all necessary data to the client
   publish: (func)->
-  
+
     #canPublish = if func? then func.call this, @userId else true
     #return unless canPublish
 
@@ -80,6 +80,7 @@ class Observatory.Server
       #console.log "trying to publish logs with #{numInPage} and #{pageNumber}"
       cl = Observatory.getMeteorLogger()._logsCollection
       cr = cl.find({type: {$ne: 'monitor'}}, {sort: {timestamp: -1}, limit: numInPage})
+      cr
 
     # funky stuff - publishing specific query, just the monitoring logs
     Meteor.publish '_observatory_monitoring', (numInPage = 100, pageNumber = 0)->

@@ -62,6 +62,8 @@ Observatory.registerInitFunction (s)->
   , 3000
 
 
+
+
 #Observatory.initialize()
 
 ###
@@ -70,5 +72,28 @@ if Meteor.isServer
     console.log "Trying to insert for " + uid
     true
 ###
+
+
+# TESTING!!!
+###
+Meteor.publish = _.wrap Meteor.publish, (f)->
+  args = _.rest arguments
+  #console.log args
+
+  name = args[0]
+  func = args[1]
+
+  args[1] = _.wrap func, (f1)->
+    t1 = Date.now()
+    args1 = _.rest arguments
+    console.log "Calling publish function #{name} with #{args1}"
+    ret = f1.apply this, args1
+    console.log "...executed in #{Date.now()-t1}ms"
+    ret
+
+  r = f.apply this, args
+  r
+###
+
 
 (exports ? this).Observatory = Observatory
