@@ -6,7 +6,7 @@ Observatory = @Observatory ? {}
 Observatory.version = 
   major: 0
   minor: 4
-  patch: 7
+  patch: 8
 
 # changing server definition function to meteor specific
 Observatory.isServer = -> Meteor.isServer
