@@ -145,6 +145,7 @@ _.extend Observatory,
       f.apply this, args
 
 
+    ###
     Meteor.call = _.wrap Meteor.call, (f)->
       console.log "hmm... call"
       console.log arguments
@@ -186,7 +187,7 @@ _.extend Observatory,
       console.dir args
       f.apply this, args
 
-    ###
+
     Meteor.apply = _.wrap Meteor.apply, (f)->
       console.log "hmm... apply"
       console.log arguments

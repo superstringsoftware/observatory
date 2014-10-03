@@ -11,6 +11,16 @@ class Observatory.Settings extends Observatory.SettingsCommon
   constructor: ->
     #console.log "constructor called"
     @col = Observatory.SettingsCommon.col
+
+    # quick-n-dirty protection for read-only stuff - for DEMO etc
+    # TODO: needs proper checking
+    ###
+    @col.deny
+      insert: -> true
+      update: -> true
+      remove: -> true
+    ###
+
     @col.allow
       insert: (uid, doc) -> Observatory.canRun(uid)
       update: (uid, doc, fields, modifier) -> Observatory.canRun(uid)
