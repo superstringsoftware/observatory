@@ -48,18 +48,23 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
     @_sessions = []
     @isRunning = false
     @_monitorHandle = null
+    @mi = new Observatory.MeteorInternals
+    # collection for storing non persistent monitoring events for publishing
+    # when a client is connected
+    @Monitors = new Mongo.Collection null
     super @name
 
   # Starting the monitoring process with timePeriod
   # Restarts in case it's already running
   # TODO: write the actual logic
   startMonitor: (timePeriod)->
+    #console.log "starting monitor"
     @stopMonitor if @isRunning
     timePeriod = timePeriod ? 60000
     @_monitorHandle = Meteor.setInterval =>
-      currentSessions = Meteor.call "_observatoryGetOpenSessions"
       obj = @measure()
-      obj.currentSessionNumber = currentSessions?.length
+      obj.currentSessionNumber = @mi.getSessionCount()
+      #console.dir obj
       msg = 
         isServer: true
         timestamp: new Date
@@ -78,6 +83,22 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
     if @isRunning
       Meteor.clearInterval @_monitorHandle
       @isRunning = false
+
+
+  startNonpersistentMonitor: (timePeriod = 5000)->
+    @_persistentMonitorHandle = Meteor.setInterval =>
+      o = @measure()
+      o.currentSessionNumber = @mi.getSessionCount()
+      o.timestamp = Date.now()
+      @Monitors.insert o
+    , timePeriod
+
+  stopNonpersistentMonitor: ->
+    #console.log "stopping non-persistent"
+    Meteor.clearInterval @_persistentMonitorHandle
+    @Monitors.remove {}
+
+
 
   # converting session into logging options
   sessionToLoggingOptions: (session)->

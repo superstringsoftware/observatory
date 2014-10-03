@@ -29,6 +29,8 @@ class Observatory.MeteorLogger extends Observatory.Logger
   # overriding the main logging method
   log: (message)=>
     if Meteor.isClient
+      #console.log "logging..."
+      #console.dir message
       if not Observatory.settingsController.currentSettings().logAnonymous
         if not Observatory.settingsController.currentSettings().logUser
           return
@@ -42,6 +44,7 @@ class Observatory.MeteorLogger extends Observatory.Logger
     #console.log msg
     @_logsCollection.insert msg
 
+  logsCount: -> @_logsCollection.find().count()
 
   # helper method to get userId
   # TODO: think how to get to it if we are in publish()

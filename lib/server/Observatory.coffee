@@ -51,11 +51,17 @@ Observatory.registerInitFunction (s)->
 
   @settingsController.processSettingsUpdate @settingsController.currentSettings()
 
+  # checking if running on localhost to bypass authorization
+  @isLocalhost = if Meteor.absoluteUrl(replaceLocalhost:true).indexOf("http://127.0.0.1") is 0 then true else false
+  #console.log @isLocalhost
+
   # setting up buffers checks for http and DDP logging
   Meteor.setInterval ->
     m = Observatory.getMeteorLogger()
     m.processBuffer()
   , 3000
+
+
 
 
 #Observatory.initialize()
@@ -66,5 +72,28 @@ if Meteor.isServer
     console.log "Trying to insert for " + uid
     true
 ###
+
+
+# TESTING!!!
+###
+Meteor.publish = _.wrap Meteor.publish, (f)->
+  args = _.rest arguments
+  #console.log args
+
+  name = args[0]
+  func = args[1]
+
+  args[1] = _.wrap func, (f1)->
+    t1 = Date.now()
+    args1 = _.rest arguments
+    console.log "Calling publish function #{name} with #{args1}"
+    ret = f1.apply this, args1
+    console.log "...executed in #{Date.now()-t1}ms"
+    ret
+
+  r = f.apply this, args
+  r
+###
+
 
 (exports ? this).Observatory = Observatory

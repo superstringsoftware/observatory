@@ -18,7 +18,7 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
     @_instance?= new Observatory.DDPConnectionEmitter "DDP Connection Emitter"
     @_instance
 
-  @SessionsCollection = new Mongo.Collection
+  @SessionsCollection = new Mongo.Collection null
 
   # TODO: add support for logging this in settings
   constructor: (@name, @formatter)->
@@ -28,6 +28,8 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
     if Observatory.DDPConnectionEmitter._instance? then throw new Error "Attempted to create another instance of DDPConnectionEmitter and it is a really bad idea"
     # registering to listen to connection events with Meteor
     Meteor.onConnection (con)=>
+      # need to call this for sessions support
+      Observatory.DDPConnectionEmitter.SessionsCollection.insert({connectionId: con.id, started: Date.now()})
       return unless Observatory.DDPConnectionEmitter.de().isOn #and Observatory.settings.logDDP
       Observatory.DDPConnectionEmitter.connectionCount++
       msg = Observatory.DDPConnectionEmitter.messageStub()
@@ -42,11 +44,13 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
       #console.log "Sessions: #{Observatory.MeteorInternals.getSessionCount()}"
       #console.log "Connections: #{Observatory.DDPConnectionEmitter.connectionCount}"
       Observatory.DDPConnectionEmitter.de().emitMessage msg, false
-      Observatory.DDPConnectionEmitter.SessionsCollection.insert({connectionId: con.id})
+
 
 
       con.onClose =>
         #console.log "Closing connection #{con.id}"
+        # need to call this for sessions support
+        Observatory.DDPConnectionEmitter.SessionsCollection.remove({connectionId: con.id})
         return unless Observatory.DDPConnectionEmitter.de().isOn #and Observatory.settings.logDDP
         Observatory.DDPConnectionEmitter.connectionCount--
         msg = Observatory.DDPConnectionEmitter.messageStub()
@@ -63,7 +67,7 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
         #console.log "Sessions: #{Observatory.MeteorInternals.getSessionCount()}"
         #console.log "Connections: #{Observatory.DDPConnectionEmitter.connectionCount}"
         Observatory.DDPConnectionEmitter.de().emitMessage msg, false
-        Observatory.DDPConnectionEmitter.SessionsCollection.remove({connectionId: con.id})
+
 
 
 
