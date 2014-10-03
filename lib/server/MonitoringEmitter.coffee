@@ -49,6 +49,9 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
     @isRunning = false
     @_monitorHandle = null
     @mi = new Observatory.MeteorInternals
+    # collection for storing non persistent monitoring events for publishing
+    # when a client is connected
+    @Monitors = new Mongo.Collection null
     super @name
 
   # Starting the monitoring process with timePeriod
@@ -80,6 +83,20 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
     if @isRunning
       Meteor.clearInterval @_monitorHandle
       @isRunning = false
+
+
+  startNonpersistentMonitor: (timePeriod = 5000)->
+    @_persistentMonitorHandle = Meteor.setInterval =>
+      o = @measure()
+      o.currentSessionNumber = @mi.getSessionCount()
+      o.timestamp = Date.now()
+      @Monitors.insert o
+    , timePeriod
+
+  stopNonpersistentMonitor: ->
+    Meteor.clearInterval @_persistentMonitorHandle
+    @Monitors.remove {}
+
 
   # converting session into logging options
   sessionToLoggingOptions: (session)->

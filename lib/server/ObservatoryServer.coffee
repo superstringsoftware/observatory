@@ -27,6 +27,7 @@ class Observatory.Server
 
   constructor: ->
     @mi = new Observatory.MeteorInternals
+    @monitor = new Observatory.MonitoringEmitter
 
   # TODO: need to log calls when there's no needsSetup - that's malicious activity!!!
   # now adding a new user with administrator priviliges and changing the initialSetupComplete doc in the database
@@ -53,7 +54,6 @@ class Observatory.Server
       sysinfo: Observatory.emitters.Monitor.sysInfoShort()
 
   heartbeat: ->
-    @monitor = @monitor ? new Observatory.MonitoringEmitter
     @monitor.measure()
   
 
@@ -186,7 +186,26 @@ class Observatory.Server
       @ready()
       @onStop = -> handle.stop()
       return
-      
+
+    monitor = @monitor # 'self = this' but don't want to mess with 'this' here
+    Meteor.publish '_observatory_nonpersistent_monitor', (timePeriod)->
+      return unless Observatory.canRun.call(@)
+      monitor.stopNonpersistentMonitor()
+      monitor.startNonpersistentMonitor timePeriod
+      #@added '_observatory_nonpersistent_monitor', new Mongo.ObjectID, o
+      handle = monitor.Monitors.find({}, sort: {timestamp: -1}).observe {
+        added: (doc)=>
+          #console.log doc
+          @added('_observatory_nonpersistent_monitor', doc._id, doc) #unless initializing
+
+        removed: (doc)=>
+          @removed('_observatory_nonpersistent_monitor', doc._id)
+      }
+      #initializing = false
+      @ready()
+      @onStop = -> handle.stop()
+      return
+
 
 
   startConnectionMonitoring: ->
