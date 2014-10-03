@@ -188,15 +188,17 @@ class Observatory.Server
       return
 
     monitor = @monitor # 'self = this' but don't want to mess with 'this' here
-    Meteor.publish '_observatory_nonpersistent_monitor', (timePeriod)->
+    Meteor.publish '_observatory_nonpersistent_monitor', (timePeriod = 5000, dataPoints = 50)->
       return unless Observatory.canRun.call(@)
       monitor.stopNonpersistentMonitor()
       monitor.startNonpersistentMonitor timePeriod
-      #@added '_observatory_nonpersistent_monitor', new Mongo.ObjectID, o
       handle = monitor.Monitors.find({}, sort: {timestamp: -1}).observe {
         added: (doc)=>
-          #console.log doc
+          #console.log "Monitors are ", monitor.Monitors.find({}).count()
           @added('_observatory_nonpersistent_monitor', doc._id, doc) #unless initializing
+          if monitor.Monitors.find({}).count() > dataPoints
+            #console.log "Monitors too many, cleaning up"
+            monitor.Monitors.remove timestamp: $lt: (Date.now() - timePeriod * dataPoints)
 
         removed: (doc)=>
           @removed('_observatory_nonpersistent_monitor', doc._id)
