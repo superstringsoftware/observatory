@@ -94,8 +94,10 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
     , timePeriod
 
   stopNonpersistentMonitor: ->
+    #console.log "stopping non-persistent"
     Meteor.clearInterval @_persistentMonitorHandle
     @Monitors.remove {}
+
 
 
   # converting session into logging options

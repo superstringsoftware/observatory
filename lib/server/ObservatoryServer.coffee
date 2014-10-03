@@ -205,7 +205,9 @@ class Observatory.Server
       }
       #initializing = false
       @ready()
-      @onStop = -> handle.stop()
+      @onStop = ->
+        handle.stop()
+        monitor.stopNonpersistentMonitor()
       return
 
 
