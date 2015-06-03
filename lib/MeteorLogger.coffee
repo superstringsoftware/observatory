@@ -1,6 +1,7 @@
 Observatory = @Observatory ? {}
 
 class Observatory.MeteorLogger extends Observatory.Logger
+
   constructor: (@name, @colName = '_observatory_logs', connection = null) ->
     super @name
     @_logsCollection = new Mongo.Collection @colName
@@ -14,15 +15,12 @@ class Observatory.MeteorLogger extends Observatory.Logger
         remove: (uid)=>
           @allowRemove uid
 
-
-
-
-
   # redefine these functions anytime on server side to be able to control what gets logged -
   # useful when in production and want to control what comes from the clients:
   # Observatory._meteorLogger.allowInsert = (uid) -> ...
   allowInsert: (uid)->
     false
+
   allowRemove: (uid)->
     false
 
@@ -55,10 +53,10 @@ class Observatory.MeteorLogger extends Observatory.Logger
     uid = null
     try
       uid = this.userId ? Meteor.userId()
-      #console.log uid
-      #return uid
+    #console.log uid
+    #return uid
     catch err
-      #console.log err
+    #console.log err
     uid
 
 

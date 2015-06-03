@@ -3,9 +3,7 @@ Observatory = @Observatory ? {}
 class Observatory.HttpEmitter extends @Observatory.MessageEmitter
   
   httpLogger: (req, res, next) =>
-    if @isOff
-      next()
-      return
+    return next() unless @isOn
 
     req._startTime = Date.now()
     end = res.end
