@@ -38,6 +38,16 @@ class Observatory.Server
     id = Accounts.createUser {username: user, email: email, password: password, profile: {observatoryProfile: {role: "administrator"}} }
     Observatory.settingsController.setupComplete() if id?
 
+  addProfileUser: (id) ->
+    Meteor.users.update
+      _id: id
+    ,
+      $set:
+        'profile.observatoryProfile':
+          role: 'administrator'
+    ,
+      upsert: true
+    Observatory.settingsController.setupComplete()
 
   handshake: ->
     #console.log Meteor.user()
@@ -120,7 +130,9 @@ class Observatory.Server
           #console.log "adding session to publish!!!", doc
           #console.log this
           # needs to be here because of mind-driving-crazy @userId thing in Meteor :(((
-          ss = mi.convertSessionToView mi.findSession(doc.connectionId)
+          session = mi.findSession doc.connectionId
+          return false unless session
+          ss = mi.convertSessionToView session
           ss.started = doc.started
           @added('_observatory_current_sessions', doc.connectionId, ss) #unless initializing
 
@@ -196,6 +208,10 @@ Meteor.methods
   # Initial (First Time) setup - so, no auth
   _observatoryInitialSetup: (options)-> Observatory.meteorServer.initialSetup options
 
+  # Add initial setup to loggined user
+  _observatoryAddUserProfile: (userId) ->
+    Observatory.meteorServer.addProfileUser userId
+
   # METHODS REQUIRING AUTHORIZATION
   # Current server - method and publish handlers
   # TODO - remove Observatory handlers?
@@ -217,8 +233,6 @@ Meteor.methods
     sessions.push mi.convertSessionToView(v) for k,v of ss
     #console.dir v._namedSubs
     sessions
-
-
 
 # auth stuff
 

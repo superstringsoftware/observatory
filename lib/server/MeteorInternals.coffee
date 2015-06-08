@@ -15,8 +15,8 @@ class Observatory.MeteorInternals
     #console.log "======================================== called getCurrentServer ======================================"
     #console.dir Meteor.server
     srv = Meteor.server
-    publishHandlers = ({name: k, func: v.toString().substring(0,v.toString().indexOf('{') - 1 ), body: v.toString().substring(v.toString().indexOf('{')) } for k,v of srv?.publish_handlers)
-    methodHandlers = ({name: k, func: v.toString().substring(0,v.toString().indexOf('{') - 1 ), body: v.toString().substring(v.toString().indexOf('{')) } for k,v of srv?.method_handlers)
+    publishHandlers = ({name: k, func: v?.toString?().substring(0,v.toString?().indexOf('{') - 1 ), body: v?.toString?().substring(v.toString?().indexOf('{')) } for k,v of srv?.publish_handlers)
+    methodHandlers = ({name: k, func: v?.toString?().substring(0,v.toString?().indexOf('{') - 1 ), body: v?.toString?().substring(v.toString?().indexOf('{')) } for k,v of srv?.method_handlers)
     {publishHandlers: publishHandlers, methodHandlers: methodHandlers}
 
 
@@ -50,9 +50,5 @@ class Observatory.MeteorInternals
       session.namedSubs.push ns
 
     session
-
-
-
-
 
 (exports ? this).Observatory = Observatory

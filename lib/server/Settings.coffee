@@ -40,6 +40,7 @@ class Observatory.Settings extends Observatory.SettingsCommon
 
   needsSetup: ->
     if @col.find({initialSetupComplete: true}).count()>0 then false else true
+
   setupComplete: ->
     @col.insert({initialSetupComplete: true})
 
@@ -100,14 +101,6 @@ class Observatory.Settings extends Observatory.SettingsCommon
         Observatory._meteorLogger.allowInsert = (uid) -> if uid? then true else false
       else
         Observatory._meteorLogger.allowInsert = -> false
-
-
-
-
-
-
-
-
 
 ######################################################################################################
   # Settings changing functions
