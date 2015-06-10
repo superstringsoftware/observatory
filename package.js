@@ -16,6 +16,7 @@ try {
 
         api.add_files('lib/server/MeteorInternals.coffee', 'server');
         api.add_files('lib/server/ObservatoryServer.coffee', 'server');
+        api.add_files('lib/server/ObservatoryMongo.coffee', 'server');
         api.add_files('lib/server/DDPEmitter.coffee', 'server');
         api.add_files('lib/server/DDPConnectionEmitter.coffee', 'server');
         api.add_files('lib/server/HttpEmitter.coffee', 'server');

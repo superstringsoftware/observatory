@@ -42,7 +42,8 @@ class Observatory.MeteorLogger extends Observatory.Logger
     #console.log msg
     @_logsCollection.insert msg
 
-  logsCount: -> @_logsCollection.find().count()
+  logsCount: ->
+    @_logsCollection.find().count()
 
   # helper method to get userId
   # TODO: think how to get to it if we are in publish()

@@ -28,6 +28,7 @@ class Observatory.Server
   constructor: ->
     @mi = new Observatory.MeteorInternals
     @monitor = new Observatory.MonitoringEmitter
+    @mongo = new Observatory.Mongo
 
   # TODO: need to log calls when there's no needsSetup - that's malicious activity!!!
   # now adding a new user with administrator priviliges and changing the initialSetupComplete doc in the database
@@ -62,6 +63,7 @@ class Observatory.Server
       meteorVersion: Meteor.release
       heartbeat: @heartbeat()
       sysinfo: Observatory.emitters.Monitor.sysInfoShort()
+      mongoCollectionsCount: @mongo.collectionCount()
 
   heartbeat: ->
     @monitor.measure()
