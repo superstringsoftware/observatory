@@ -139,7 +139,8 @@ class Observatory.Server
           @added('_observatory_current_sessions', doc.connectionId, ss) #unless initializing
 
         removed: (doc)=>
-          @removed('_observatory_current_sessions', doc.connectionId)
+#          console.log 'remove from _observatory_current_sessions', doc.connectionId, doc
+          @removed('_observatory_current_sessions', doc.connectionId) if doc.connectionId
       }
       #initializing = false
       @ready()
@@ -169,11 +170,11 @@ class Observatory.Server
       return
 
     monitor = @monitor # 'self = this' but don't want to mess with 'this' here
-    Meteor.publish '_observatory_nonpersistent_monitor', (timePeriod = 5000, dataPoints = 50)->
+    Meteor.publish '_observatory_nonpersistent_monitor', (timePeriod = 5000, dataPoints = 50) ->
       return unless Observatory.canRun.call(@)
       monitor.stopNonpersistentMonitor()
       monitor.startNonpersistentMonitor timePeriod
-      handle = monitor.Monitors.find({}, sort: {timestamp: -1}).observe {
+      handle = monitor.Monitors.find({}, sort: {timestamp: -1}).observe
         added: (doc)=>
           #console.log "Monitors are ", monitor.Monitors.find({}).count()
           @added('_observatory_nonpersistent_monitor', doc._id, doc) #unless initializing
@@ -181,9 +182,9 @@ class Observatory.Server
             #console.log "Monitors too many, cleaning up"
             monitor.Monitors.remove timestamp: $lt: (Date.now() - timePeriod * dataPoints)
 
-        removed: (doc)=>
-          @removed('_observatory_nonpersistent_monitor', doc._id)
-      }
+        removed: (doc) =>
+          @removed '_observatory_nonpersistent_monitor', doc._id
+
       #initializing = false
       @ready()
       @onStop = ->
