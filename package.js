@@ -1,7 +1,7 @@
 try {
     Package.describe({
         "summary": "Versatile and powerful logging and application management (http://observatoryjs.com)",
-        "version": "0.4.9",
+        "version": "0.4.9-rc.1_2",
         "name": 'superstringsoft:observatory-beta',
         "git": "https://github.com/superstringsoftware/observatory.git"
     });

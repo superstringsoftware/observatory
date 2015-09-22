@@ -14,6 +14,24 @@ class Observatory.MeteorLogger extends Observatory.Logger
           @allowInsert uid
         remove: (uid)=>
           @allowRemove uid
+    #hard override node.js stdout and stderror methods
+    @hookStream()
+
+  #Server Methods for override process.stdout
+  hookStream: ->
+    return if Meteor.isClient
+    stored_stdout_write = process.stdout.write
+    self = @
+    process.stdout.write = Meteor.bindEnvironment (string, encoding, fd) ->
+      self.log self.messageStub string
+      stored_stdout_write.apply process.stdout, arguments
+
+  messageStub: (message) ->
+    isServer: true
+    severity: Observatory.LOGLEVEL.INFO
+    module: "AUTO"
+    timestamp: new Date
+    textMessage: message
 
   # redefine these functions anytime on server side to be able to control what gets logged -
   # useful when in production and want to control what comes from the clients:

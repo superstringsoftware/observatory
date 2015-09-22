@@ -45,8 +45,6 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
       #console.log "Connections: #{Observatory.DDPConnectionEmitter.connectionCount}"
       Observatory.DDPConnectionEmitter.de().emitMessage msg, false
 
-
-
       con.onClose =>
         #console.log "Closing connection #{con.id}"
         # need to call this for sessions support
@@ -67,16 +65,5 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
         #console.log "Sessions: #{Observatory.MeteorInternals.getSessionCount()}"
         #console.log "Connections: #{Observatory.DDPConnectionEmitter.connectionCount}"
         Observatory.DDPConnectionEmitter.de().emitMessage msg, false
-
-
-
-
-
-
-
-
-
-
-
 
 (exports ? this).Observatory = Observatory
