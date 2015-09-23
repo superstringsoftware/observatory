@@ -5,6 +5,10 @@ class Observatory.MeteorLogger extends Observatory.Logger
   constructor: (@name, @colName = '_observatory_logs', connection = null) ->
     super @name
     @_logsCollection = new Mongo.Collection @colName
+    # ensure index for query by type and timestamp
+    @_logsCollection._ensureIndex
+      type: -1
+      timestamp: -1
     # can't update logs; setting up pointers to insert and remove allow functions
     if Meteor.isServer
       @_logsCollection.allow
