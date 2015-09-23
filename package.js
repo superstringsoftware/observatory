@@ -22,6 +22,7 @@ try {
         api.add_files('lib/server/DDPConnectionEmitter.coffee', 'server');
         api.add_files('lib/server/HttpEmitter.coffee', 'server');
         api.add_files('lib/server/MonitoringEmitter.coffee', 'server');
+        api.add_files('lib/server/SystemEmitter.coffee', 'server');
         api.add_files('lib/MeteorLogger.coffee', both);
 
         api.add_files('lib/Settings.coffee', both);

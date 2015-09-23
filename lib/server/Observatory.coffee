@@ -24,8 +24,6 @@ Observatory.setSettings = _.wrap Observatory.setSettings, (f, s)->
 
 # adding meteor-specific initialization
 Observatory.registerInitFunction (s)->
-
-
   # Default settings for loglevel and printToConsole are INFO and false (defined in Galileo).
   ###
   @settings.logsCollectionName = s?.logsCollectionName ? '_observatory_logs'
@@ -35,7 +33,7 @@ Observatory.registerInitFunction (s)->
   @settings.prohibitAutoPublish = s?.prohibitAutoPublish ? false
   @settings.logAnonymous = s?.logAnonymous ? false
   ###
-  
+
   # setting up client / server meteor loggers
   #console.log @settings
   @_meteorLogger = new Observatory.MeteorLogger 'Meteor Logger', @settingsController.currentSettings().logsCollectionName ? '_observatory_logs'
@@ -48,6 +46,7 @@ Observatory.registerInitFunction (s)->
   @emitters.DDPConnection = Observatory.DDPConnectionEmitter.de 'DDP Connection'
   @emitters.Http = new Observatory.HttpEmitter 'HTTP'
   @emitters.Monitor = new Observatory.MonitoringEmitter 'Monitor'
+  @emitters.System = new Observatory.SystemEmitter 'System', @_meteorLogger._logsCollection
 
   @settingsController.processSettingsUpdate @settingsController.currentSettings()
 
@@ -60,9 +59,6 @@ Observatory.registerInitFunction (s)->
     m = Observatory.getMeteorLogger()
     m.processBuffer()
   , 3000
-
-
-
 
 #Observatory.initialize()
 
@@ -94,6 +90,5 @@ Meteor.publish = _.wrap Meteor.publish, (f)->
   r = f.apply this, args
   r
 ###
-
 
 (exports ? this).Observatory = Observatory
