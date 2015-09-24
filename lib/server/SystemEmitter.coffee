@@ -16,7 +16,8 @@ class Observatory.SystemEmitter extends @Observatory.MessageEmitter
     stored_stdout_write = process.stdout.write
     self = @
     process.stdout.write = Meteor.bindEnvironment (string, encoding, fd) ->
-      self.log self.messageStub string
+      #FIXME: need back hook when change status isOff from isOn
+      self.log self.messageStub string if self.isOn
       stored_stdout_write.apply process.stdout, arguments
 
   messageStub: (message) ->
