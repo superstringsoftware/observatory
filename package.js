@@ -1,13 +1,13 @@
 try {
     Package.describe({
         "summary": "Versatile and powerful logging and application management (http://observatoryjs.com)",
-        "version": "0.4.9-rc.1_3",
+        "version": "0.4.9-rc.1_4",
         "name": 'superstringsoft:observatory-beta',
         "git": "https://github.com/superstringsoftware/observatory.git"
     });
 
     Package.on_use(function (api) {
-        api.versionsFrom("METEOR@0.9.0");
+        api.versionsFrom(["METEOR@1.1.0.3"]);
         var both = ['client', 'server'];
         api.use(['coffeescript', 'underscore', 'standard-app-packages', 'ejson'], both);
         api.use('accounts-password', 'server');
