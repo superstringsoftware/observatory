@@ -64,6 +64,8 @@ class Observatory.Server
       heartbeat: @heartbeat()
       sysinfo: Observatory.emitters.Monitor.sysInfoShort()
       mongoCollectionsCount: @mongo.collectionCount()
+      mongoCollections: @mongo.getCollections()
+      mongoStats: @mongo.getStats()
 
   heartbeat: ->
     @monitor.measure()

@@ -9,8 +9,15 @@ class Observatory.Mongo
   getCollections: ->
     db = @_db
     f = Meteor.wrapAsync (cb) ->
-      db.collectionNames cb
+      db.listCollections cb
     f()
+
+  getStats: ->
+    db = @_db
+    f = Meteor.wrapAsync (cb) ->
+      db.stats cb
+    f()
+
 
   collectionCount: ->
     collections = @getCollections()
