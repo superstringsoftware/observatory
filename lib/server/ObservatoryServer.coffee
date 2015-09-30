@@ -64,7 +64,6 @@ class Observatory.Server
       meteorVersion: Meteor.release
       heartbeat: @heartbeat()
       sysinfo: Observatory.emitters.Monitor.sysInfoShort()
-      mongoCollectionsCount: @mongo.collectionCount()
       mongoCollections: @mongo.getCollections()
       mongoStats: @mongo.getStats()
 
