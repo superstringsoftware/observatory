@@ -51,6 +51,7 @@ class Observatory.Server
     Observatory.settingsController.setupComplete()
 
   handshake: ->
+    #console.log "Handshake called"
     #console.log Meteor.user()
     #console.log Observatory.settingsController
     o =
@@ -66,6 +67,7 @@ class Observatory.Server
       mongoCollectionsCount: @mongo.collectionCount()
       mongoCollections: @mongo.getCollections()
       mongoStats: @mongo.getStats()
+
 
   heartbeat: ->
     @monitor.measure()
@@ -209,7 +211,11 @@ class Observatory.Server
 Meteor.methods
   # No authorization: initial handshake with the server
   # TODO: strip it down to Observatory version and essential info to establish a connection
-  _observatoryHandshake: -> Observatory.meteorServer.handshake()
+  _observatoryHandshake: ->
+    #console.log "_observatoryHandshake called"
+    Observatory.meteorServer.handshake()
+
+
   # Initial (First Time) setup - so, no auth
   _observatoryInitialSetup: (options)-> Observatory.meteorServer.initialSetup options
 

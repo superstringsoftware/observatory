@@ -6,10 +6,11 @@ class Observatory.Mongo
   constructor: ->
     @_db = new Meteor.Collection('_dummy').find()._mongo.db
 
+
   getCollections: ->
     db = @_db
     f = Meteor.wrapAsync (cb) ->
-      db.listCollections cb
+      db.collectionNames cb
     f()
 
   getStats: ->
