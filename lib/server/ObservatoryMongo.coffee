@@ -23,7 +23,9 @@ class Observatory.Mongo
     db = @_db
     f = Meteor.wrapAsync (cb) ->
       db.stats cb
-    f()
+    st = f()
+    st.url = db.options.url
+    st
 
 
   collectionCount: ->
