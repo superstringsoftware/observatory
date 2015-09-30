@@ -1,13 +1,13 @@
 try {
     Package.describe({
         "summary": "Versatile and powerful logging and application management (http://observatoryjs.com)",
-        "version": "0.4.9",
+        "version": "0.4.9-rc.1_4",
         "name": 'superstringsoft:observatory-beta',
         "git": "https://github.com/superstringsoftware/observatory.git"
     });
 
     Package.on_use(function (api) {
-        api.versionsFrom("METEOR@0.9.0");
+        api.versionsFrom(["METEOR@1.1.0.3"]);
         var both = ['client', 'server'];
         api.use(['coffeescript', 'underscore', 'standard-app-packages', 'ejson'], both);
         api.use('accounts-password', 'server');
@@ -22,6 +22,7 @@ try {
         api.add_files('lib/server/DDPConnectionEmitter.coffee', 'server');
         api.add_files('lib/server/HttpEmitter.coffee', 'server');
         api.add_files('lib/server/MonitoringEmitter.coffee', 'server');
+        api.add_files('lib/server/SystemEmitter.coffee', 'server');
         api.add_files('lib/MeteorLogger.coffee', both);
 
         api.add_files('lib/Settings.coffee', both);

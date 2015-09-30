@@ -5,8 +5,15 @@ Observatory = @Observatory ? {}
 class Observatory.Settings extends Observatory.SettingsCommon
 
   @defaultServerSettings:
-    logLevel: "INFO", printToConsole: false, logUser: true, logAnonymous: false,
-    logHttp: true, logDDP: false, logBasicDDP: true, prohibitAutoPublish: false
+    logLevel: "INFO"
+    printToConsole: false
+    logUser: true
+    logAnonymous: false
+    logHttp: true
+    logDDP: false
+    logSystem: false
+    logBasicDDP: true
+    prohibitAutoPublish: false
 
   constructor: ->
     #console.log "constructor called"
@@ -24,8 +31,9 @@ class Observatory.Settings extends Observatory.SettingsCommon
     @col.allow
       insert: (uid, doc) -> Observatory.canRun(uid)
       update: (uid, doc, fields, modifier) -> Observatory.canRun(uid)
-      # TODO: for removal, need to make sure SERVER, CLIENT and ANONYMOUS can't be deleted
-      remove: (uid, doc) -> Observatory.canRun(uid) and doc.type not in ["SERVER", "CLIENT_LOGGEDIN", "CLIENT_ANONYMOUS"]
+    # TODO: for removal, need to make sure SERVER, CLIENT and ANONYMOUS can't be deleted
+      remove: (uid, doc) -> Observatory.canRun(uid) and doc.type not in ["SERVER", "CLIENT_LOGGEDIN",
+                                                                         "CLIENT_ANONYMOUS"]
     #console.log this
     # every startup checking that the databse contains at least the key stuff
     @loadSettings()
@@ -39,7 +47,7 @@ class Observatory.Settings extends Observatory.SettingsCommon
     }
 
   needsSetup: ->
-    if @col.find({initialSetupComplete: true}).count()>0 then false else true
+    if @col.find({initialSetupComplete: true}).count() > 0 then false else true
 
   setupComplete: ->
     @col.insert({initialSetupComplete: true})
@@ -79,18 +87,13 @@ class Observatory.Settings extends Observatory.SettingsCommon
   processSettingsUpdate: (s)->
     # printToConsole and loglevel are handled by super() call
     super s
-    if s.logBasicDDP
-      Observatory.emitters.DDPConnection.turnOn()
-    else
-      Observatory.emitters.DDPConnection.turnOff()
-    if s.logDDP
-      Observatory.emitters.DDP.turnOn()
-    else
-      Observatory.emitters.DDP.turnOff()
-    if s.logHttp
-      Observatory.emitters.Http.turnOn()
-    else
-      Observatory.emitters.Http.turnOff()
+    getMethod = (isOn) ->
+      "turn#{if isOn then 'On' else 'Off'}"
+
+    Observatory.emitters.DDPConnection[getMethod s.logBasicDDP]()
+    Observatory.emitters.DDP[getMethod s.logDDP]()
+    Observatory.emitters.Http[getMethod s.logHttp]()
+    Observatory.emitters.System[getMethod s.logSystem]()
 
     # anonymous & client calls in general
     # this is somewhat dangerous as anonymous users can mess up the collection (but only inserting stuff, so not really)
@@ -103,7 +106,7 @@ class Observatory.Settings extends Observatory.SettingsCommon
         Observatory._meteorLogger.allowInsert = -> false
 
 ######################################################################################################
-  # Settings changing functions
-  ######################################################################################################
+# Settings changing functions
+######################################################################################################
 
 (exports ? this).Observatory = Observatory
