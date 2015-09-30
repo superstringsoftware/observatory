@@ -16,8 +16,18 @@ class Observatory.Mongo
       db.collections cb
     f1 = Meteor.wrapAsync (col, cb) ->
       col.stats cb
+
+    f2 = Meteor.wrapAsync (cb) ->
+      db.collectionNames cb
+
     cols = f()
-    (f1(c) for c in cols)
+    try
+      ret = (f1(c) for c in cols)
+      ret
+    catch
+      ret = f2()
+      ret
+
 
   getStats: ->
     db = @_db
