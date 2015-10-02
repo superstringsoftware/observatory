@@ -154,8 +154,8 @@ class Observatory.Server
           @changed('_observatory_current_sessions', newDoc.connectionId, ss)
       }
       #initializing = false
-      _self.ready() 
-      @onStop = -> handle.stop()
+      _self.ready()
+      _self.onStop = -> handle.stop()
       return
 
     # publishing users in the selected [id] list - useful for getting logged in users etc
