@@ -126,6 +126,7 @@ class Observatory.Server
 
     # open sessions - see DDPConnectionEmitter for hooks on manipulating dummy SessionsCollection
     Meteor.publish '_observatory_current_sessions', ->
+      _self = this
       return if not Observatory.canRun.call(@)
       mi = new Observatory.MeteorInternals
       #console.log "trying to publish current sessions"
@@ -144,9 +145,16 @@ class Observatory.Server
         removed: (doc)=>
 #          console.log 'remove from _observatory_current_sessions', doc.connectionId, doc
           @removed('_observatory_current_sessions', doc.connectionId) if doc.connectionId
+
+        changed: (oldDoc, newDoc)=>
+          session = mi.findSession newDoc.connectionId
+          return false unless session
+          ss = mi.convertSessionToView session
+          #console.log "Session changed", ss.id
+          @changed('_observatory_current_sessions', newDoc.connectionId, ss)
       }
       #initializing = false
-      @ready()
+      _self.ready() 
       @onStop = -> handle.stop()
       return
 

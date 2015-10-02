@@ -42,6 +42,7 @@ class Observatory.MeteorInternals
       namedSubs: []
 
     for k,v of ss.collectionViews
+      #console.dir v # -- need to understand format to eventually pass documents for specific collections
       cv =
         id: k
         name: v.collectionName
@@ -49,6 +50,7 @@ class Observatory.MeteorInternals
       session.collectionViews.push cv
 
     for k,v of ss._namedSubs
+      #console.dir v
       ns =
         name: v._name
         params: v._params

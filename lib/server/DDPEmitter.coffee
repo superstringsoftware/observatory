@@ -1,4 +1,3 @@
-
 Observatory = @Observatory ? {}
 
 class Observatory.DDPEmitter extends @Observatory.MessageEmitter
@@ -24,7 +23,7 @@ class Observatory.DDPEmitter extends @Observatory.MessageEmitter
     if Observatory.DDPEmitter._instance? then throw new Error "Attempted to create another instance of DDPEmitter and it is a really bad idea"
     # registering to listen to socket events with Meteor
     Meteor.default_server.stream_server.register (socket)->
-      return unless Observatory.DDPEmitter.de().isOn
+
       #console.log socket._session.connection
       msg = Observatory.DDPEmitter.messageStub()
       msg.socketId = socket.id
@@ -32,10 +31,16 @@ class Observatory.DDPEmitter extends @Observatory.MessageEmitter
       # emitting message and putting to the buffer for the sake of Meteor logging. Insensitive loggers, such as Console,
       # should actually ignore this
       #console.log msg
-      Observatory.DDPEmitter.de().emitMessage msg, true
+      Observatory.DDPEmitter.de().emitMessage msg, true if Observatory.DDPEmitter.de().isOn
 
       socket.on 'data', (raw_msg)->
         #console.log @_session.connection._meteorSession.id
+
+        # Updating current sessions collection to correctly handle stuff in Vega client
+        sessionId = @_session.connection._meteorSession.id
+        Observatory.DDPConnectionEmitter.SessionsCollection.update({connectionId: sessionId}, {$set: {touched: Date.now()} })
+
+        # proceed to logging now
         return unless Observatory.DDPEmitter.de().isOn
         msg = Observatory.DDPEmitter.messageStub()
         msg.socketId = @id
