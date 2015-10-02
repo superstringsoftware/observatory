@@ -28,7 +28,7 @@ class Observatory.MeteorInternals
 
 
 
-
+  # TODO: clean up filtering of publish and method handlers and make it configurable
   convertSessionToView: (ss)->
     #console.log "=============================================================================================="
     #console.dir ss.socket
@@ -47,7 +47,7 @@ class Observatory.MeteorInternals
         id: k
         name: v.collectionName
         documentCount: _.keys(v.documents).length
-      session.collectionViews.push cv
+      session.collectionViews.push cv unless cv.name.indexOf('_observatory') isnt -1 # filtering out observatory related stuff
 
     for k,v of ss._namedSubs
       #console.dir v
@@ -58,7 +58,7 @@ class Observatory.MeteorInternals
         deactivated: v._deactivated
         documentCount: _.keys(v._documents).length
         ready: v._ready
-      session.namedSubs.push ns
+      session.namedSubs.push ns unless ns.name.indexOf('_observatory') isnt -1 # filtering out observatory related stuff
 
     session
 
