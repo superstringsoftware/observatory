@@ -24,10 +24,12 @@ class Observatory.CommandServer
   # FIXME: for now, only takes userId and ignores session / connection Id, need to rethink
   publishLocal: ->
     col = @col
-    Meteor.publish '_observatory_local_commands', (uid, cid) ->
+    Meteor.publish '_observatory_local_commands', (options) ->
+      #console.log "_observatory_local_commands subscribing with uid", options
       _self = this
-      handle = col.find({userId: uid}).observe {
+      handle = col.find({userId: options.uid}).observe {
         added: (doc)=>
+          #console.log "Added to commands", doc
           @added('_observatory_local_commands', doc._id, doc)
       }
       #initializing = false
