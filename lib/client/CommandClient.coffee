@@ -30,5 +30,16 @@ class Observatory.CommandClient
           console.log "_observatory_local_commands ready"
       }
 
-  test: ->
-    eval "console.log(Meteor)"
+    @_handle = @_col.find({}).observe {
+      added: (doc)=>
+        #console.log "Added to commands", doc
+        @processCommand doc
+    }
+
+  # TODO: getObject needs some thinking, as logging an Object with functions is impossible and EJSON.stringify fails on them as well.
+  processCommand: (cmd)->
+    tb = Observatory.getToolbox()
+    console.log "received new command: ", cmd
+    switch cmd.command
+      when "getObject" # command that returns any object from the client (in theory)
+        tb.info("Response to the command", window[cmd.options.name], "COMMANDS")
