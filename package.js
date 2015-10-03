@@ -29,6 +29,9 @@ try {
         api.add_files('lib/server/Settings.coffee', 'server');
         api.add_files('lib/client/Settings.coffee', 'client');
 
+        api.add_files('lib/server/CommandServer.coffee', 'server');
+        api.add_files('lib/client/CommandClient.coffee', 'client');
+
         api.add_files('lib/server/Observatory.coffee', 'server');
         api.add_files('lib/client/Observatory.coffee', 'client');
         api.add_files('lib/client/templates.coffee', 'client');

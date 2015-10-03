@@ -29,6 +29,7 @@ class Observatory.Server
     @mi = new Observatory.MeteorInternals
     @monitor = new Observatory.MonitoringEmitter
     @mongo = new Observatory.Mongo
+    @commandServer = new Observatory.CommandServer
 
   # TODO: need to log calls when there's no needsSetup - that's malicious activity!!!
   # now adding a new user with administrator priviliges and changing the initialSetupComplete doc in the database

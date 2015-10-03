@@ -128,7 +128,7 @@ _.extend Observatory,
           args = _.rest _.rest arguments
           f.apply @, args
       else
-        cb.onError = ->
+        cb.onError = (err)->
           #console.log "OnError callback no arguments"
           t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
           tl._error "Error while subscribing to #{name}: " + err.reason, {error: err, subscription: name, timeElapsed: t, type: 'subscription'}

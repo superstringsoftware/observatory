@@ -25,5 +25,8 @@ Observatory.registerInitFunction (s)->
     @_meteorLogger = new Observatory.MeteorLogger 'Meteor Logger'
     @subscribeLogger @_meteorLogger
 
+    # creating command processor (client)
+    @_commandClient = new Observatory.CommandClient()
+
 
 (exports ? this).Observatory = Observatory
