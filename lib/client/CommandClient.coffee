@@ -40,6 +40,7 @@ class Observatory.CommandClient
   processCommand: (cmd)->
     tb = Observatory.getToolbox()
     console.log "received new command: ", cmd
+    Meteor.call "_observatoryTakeResponse", Observatory.lastSessionId(), {command: cmd, response: "processed"}
     switch cmd.command
       when "getObject" # command that returns any object from the client (in theory)
         tb.info("Response to the command", window[cmd.options.name], "COMMANDS")
