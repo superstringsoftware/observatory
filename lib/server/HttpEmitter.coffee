@@ -1,5 +1,9 @@
 Observatory = @Observatory ? {}
 
+###
+  Automagical Http logging - via connect middleware
+###
+
 class Observatory.HttpEmitter extends @Observatory.MessageEmitter
   
   httpLogger: (req, res, next) =>

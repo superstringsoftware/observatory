@@ -1,5 +1,10 @@
 Observatory = @Observatory ? {}
 
+###
+  Detailed DDP tracking - logs all DDP messages and updates non-persistent current sessions collection
+  so that we can eventually track it and send to Vega
+###
+
 class Observatory.DDPEmitter extends @Observatory.MessageEmitter
   @messageStub: ->
     options =

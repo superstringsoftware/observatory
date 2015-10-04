@@ -1,6 +1,9 @@
-
 Observatory = @Observatory ? {}
 
+###
+  Basic DDP Connection tracking - only Connect and Disconnect events
+  This is needed for tracking sessions eventually
+###
 class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
   @connectionCount: 0
   @messageStub: ->
