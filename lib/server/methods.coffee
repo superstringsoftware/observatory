@@ -12,7 +12,6 @@ Meteor.methods
     #console.log "_observatoryHandshake called"
     Observatory.meteorServer.handshake()
 
-
 # Initial (First Time) setup - so, no auth
   _observatoryInitialSetup: (options)-> Observatory.meteorServer.initialSetup options
 
@@ -41,3 +40,13 @@ Meteor.methods
     sessions.push mi.convertSessionToView(v) for k,v of ss
     #console.dir v._namedSubs
     sessions
+
+  ###
+    Methods to be accessed locally (from the client served from the server with Observatory, NOT from Vega
+  ###
+
+  # taking reponse to a command (typically), although can be more versatile
+  _observatoryTakeResponse: (sessionId, response)->
+    #console.log "_observatoryTakeResponse called on the SERVER"
+    #console.log sessionId, response
+    Observatory.meteorServer.commandServer.sendCommandResponse sessionId, response

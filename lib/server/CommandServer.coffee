@@ -25,7 +25,16 @@ class Observatory.CommandServer
     col1 = @colCommandResponses
     Meteor.publish "_observatory_command_responses", ->
       return if not Observatory.canRun.call(@) # only publishing to observatory admins
-      col1.find {}
+      _self = this
+      handle = col1.find().observe {
+        added: (doc)=>
+          @added('_observatory_command_responses', doc._id, doc) #unless initializing
+
+      }
+      #initializing = false
+      _self.ready()
+      _self.onStop = -> handle.stop()
+      return
 
   # this is a more important function that publishes commands to a specific local client
   # -- we are observing cursor on _observatory_commands and once a new command comes
@@ -47,4 +56,4 @@ class Observatory.CommandServer
       return
 
   # this is called from one of Meteor.methods (see methods.coffee)
-  sendCommandResponse: (response, sessionId)-> @colCommandResponses.insert {sessionId: sessionId, response: response}
+  sendCommandResponse: (sessionId, response)-> @colCommandResponses.insert {sessionId: sessionId, response: response}
