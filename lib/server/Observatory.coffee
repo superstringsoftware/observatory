@@ -1,8 +1,9 @@
-# TODO: Need to define settings and stuff on the SERVER and publish to the client
-# the client needs to be a slave
-# SERVER
-
 Observatory = @Observatory ? {}
+
+###
+  Different initializations and startup functions.
+  Needs clean up together with Galileo
+###
 
 # initialize runs all functions that are registered with registerInitFunction with s as arguments
 Observatory.initialize = _.wrap Observatory.initialize, (f, s)->

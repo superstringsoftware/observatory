@@ -28,5 +28,7 @@ Observatory.registerInitFunction (s)->
     # creating command processor (client)
     @_commandClient = new Observatory.CommandClient()
 
+# abstracting hidden Meteor APIs to get current session on the client
+Observatory.lastSessionId = -> Meteor.connection._lastSessionId
 
 (exports ? this).Observatory = Observatory

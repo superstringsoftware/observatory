@@ -50,7 +50,7 @@ class Observatory.MeteorLogger extends Observatory.Logger
     #console.log "Logging in Meteor Server: #{Meteor.isServer}"
     msg = message # do we really need the clone thing??
     msg.userId = msg.userId ? @_checkUserId()
-    msg.connectionId = Meteor.connection._lastSessionId if not Meteor.isServer
+    msg.sessionId = Observatory.lastSessionId() if not Meteor.isServer
     #console.log msg
     @_logsCollection.insert msg
 

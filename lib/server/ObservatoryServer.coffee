@@ -137,22 +137,22 @@ class Observatory.Server
           #console.log "adding session to publish!!!", doc
           #console.log this
           # needs to be here because of mind-driving-crazy @userId thing in Meteor :(((
-          session = mi.findSession doc.connectionId
+          session = mi.findSession doc.sessionId
           return false unless session
           ss = mi.convertSessionToView session
           ss.started = doc.started
-          @added('_observatory_current_sessions', doc.connectionId, ss) #unless initializing
+          @added('_observatory_current_sessions', doc.sessionId, ss) #unless initializing
 
         removed: (doc)=>
 #          console.log 'remove from _observatory_current_sessions', doc.connectionId, doc
-          @removed('_observatory_current_sessions', doc.connectionId) if doc.connectionId
+          @removed('_observatory_current_sessions', doc.sessionId) if doc.sessionId
 
         changed: (oldDoc, newDoc)=>
-          session = mi.findSession newDoc.connectionId
+          session = mi.findSession newDoc.sessionId
           return false unless session
           ss = mi.convertSessionToView session
           #console.log "Session changed", ss.id
-          @changed('_observatory_current_sessions', newDoc.connectionId, ss)
+          @changed('_observatory_current_sessions', newDoc.sessionId, ss)
       }
       #initializing = false
       _self.ready()
@@ -182,6 +182,9 @@ class Observatory.Server
       return
 
     monitor = @monitor # 'self = this' but don't want to mess with 'this' here
+    # non-persistent monitors simply fires up monitor for the heartbeat and a live chart in the monitoring tab in Vega
+    # TODO: this needs to go once we do proper architecture as heartbeat and monitoring will be implemented separately
+
     Meteor.publish '_observatory_nonpersistent_monitor', (timePeriod = 5000, dataPoints = 50) ->
       return unless Observatory.canRun.call(@)
       monitor.stopNonpersistentMonitor()
@@ -209,7 +212,7 @@ class Observatory.Server
   startConnectionMonitoring: ->
 
 
-
+###
 _checkUserId = ->
   #console.log @
   uid = null
@@ -220,5 +223,7 @@ _checkUserId = ->
   catch err
     #console.log err
     uid
+
+###
   
 (exports ? this).Observatory = Observatory

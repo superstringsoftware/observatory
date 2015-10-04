@@ -32,11 +32,12 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
     # registering to listen to connection events with Meteor
     Meteor.onConnection (con)=>
       # need to call this for sessions support
-      Observatory.DDPConnectionEmitter.SessionsCollection.insert({connectionId: con.id, started: Date.now()})
+      Observatory.DDPConnectionEmitter.SessionsCollection.insert({sessionId: con.id, connectionId: con.id, started: Date.now()})
       return unless Observatory.DDPConnectionEmitter.de().isOn #and Observatory.settings.logDDP
       Observatory.DDPConnectionEmitter.connectionCount++
       msg = Observatory.DDPConnectionEmitter.messageStub()
       msg.connectionId = con.id
+      msg.sessionId = con.id
       msg.textMessage = "New connection #{con.id} from #{con.clientAddress}"
       msg.IP = con.clientAddress
       msg.object = headers: con.httpHeaders, totalConnections: Observatory.DDPConnectionEmitter.connectionCount
@@ -56,6 +57,7 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
         Observatory.DDPConnectionEmitter.connectionCount--
         msg = Observatory.DDPConnectionEmitter.messageStub()
         msg.connectionId = con.id
+        msg.sessionId = con.id
         msg.textMessage = "Closing connection #{con.id} from #{con.clientAddress}"
         msg.IP = con.clientAddress
         msg.object = totalConnections: Observatory.DDPConnectionEmitter.connectionCount

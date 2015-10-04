@@ -16,7 +16,7 @@ class Observatory.Settings extends Observatory.SettingsCommon
     Meteor.startup =>
       Tracker.autorun =>
         uid = if Accounts? then Meteor.userId() else null
-        @sub = Meteor.subscribe '_observatory_settings', {uid: uid, connectionId: Meteor.connection._lastSessionId}, {
+        @sub = Meteor.subscribe '_observatory_settings', {uid: uid, sessionId: Observatory.lastSessionId()}, {
           onError: (err)->
             console.log err
           onReady: =>

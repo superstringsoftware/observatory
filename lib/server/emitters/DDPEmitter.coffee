@@ -43,7 +43,7 @@ class Observatory.DDPEmitter extends @Observatory.MessageEmitter
 
         # Updating current sessions collection to correctly handle stuff in Vega client
         sessionId = @_session.connection._meteorSession.id
-        Observatory.DDPConnectionEmitter.SessionsCollection.update({connectionId: sessionId}, {$set: {touched: Date.now()} })
+        Observatory.DDPConnectionEmitter.SessionsCollection.update({sessionId: sessionId}, {$set: {touched: Date.now()} })
 
         # proceed to logging now
         return unless Observatory.DDPEmitter.de().isOn

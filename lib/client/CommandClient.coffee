@@ -25,7 +25,7 @@ class Observatory.CommandClient
     # subscribing to commands with specific user and session Ids for granular support
     Tracker.autorun =>
       uid = if Accounts? then Meteor.userId() else null
-      @sub = Meteor.subscribe '_observatory_local_commands', {uid: uid, connectionId: Meteor.connection._lastSessionId}, {
+      @sub = Meteor.subscribe '_observatory_local_commands', {sessionId: Observatory.lastSessionId()}, {
         onReady: =>
           console.log "_observatory_local_commands ready"
       }

@@ -34,6 +34,7 @@ class Observatory.MeteorInternals
     #console.dir ss.socket
     session =
       id: ss.id
+      sessionId: ss.id
       connectionId: ss.connectionHandle.id
       ip: ss.connectionHandle.clientAddress
       headers: ss.connectionHandle.httpHeaders
