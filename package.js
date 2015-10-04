@@ -18,11 +18,11 @@ try {
         api.add_files('lib/server/MeteorInternals.coffee', 'server');
         api.add_files('lib/server/ObservatoryServer.coffee', 'server');
         api.add_files('lib/server/ObservatoryMongo.coffee', 'server');
-        api.add_files('lib/server/DDPEmitter.coffee', 'server');
-        api.add_files('lib/server/DDPConnectionEmitter.coffee', 'server');
-        api.add_files('lib/server/HttpEmitter.coffee', 'server');
-        api.add_files('lib/server/MonitoringEmitter.coffee', 'server');
-        api.add_files('lib/server/SystemEmitter.coffee', 'server');
+        api.add_files('lib/server/emitters/DDPEmitter.coffee', 'server');
+        api.add_files('lib/server/emitters/DDPConnectionEmitter.coffee', 'server');
+        api.add_files('lib/server/emitters/HttpEmitter.coffee', 'server');
+        api.add_files('lib/server/emitters/MonitoringEmitter.coffee', 'server');
+        api.add_files('lib/server/emitters/SystemEmitter.coffee', 'server');
         api.add_files('lib/MeteorLogger.coffee', both);
 
         api.add_files('lib/Settings.coffee', both);
@@ -33,6 +33,7 @@ try {
         api.add_files('lib/client/CommandClient.coffee', 'client');
 
         api.add_files('lib/server/Observatory.coffee', 'server');
+        api.add_files('lib/server/methods.coffee', 'server');
         api.add_files('lib/client/Observatory.coffee', 'client');
         api.add_files('lib/client/templates.coffee', 'client');
         api.add_files(['lib/Observatory.coffee'], both);
