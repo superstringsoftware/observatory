@@ -22,6 +22,12 @@ class Observatory.CommandServer
       return if not Observatory.canRun.call(@) # only publishing to observatory admins
       col.find {}, {limit:50}
 
+    # setting up a watcher on the commands collection to catch server commands and handle them.
+    # client commands are processed in publishLocal() below
+    handle = col.find({server: true}).observe {
+      added: (doc)=> @_processCommand doc
+    }
+
 
     # publishing command responses to Vega - will be processed in Vega, not here, so just passing the response
     col1 = @colCommandResponses
@@ -59,3 +65,12 @@ class Observatory.CommandServer
 
   # this is called from one of Meteor.methods (see methods.coffee)
   sendCommandResponse: (sessionId, response)-> @colCommandResponses.insert {sessionId: sessionId, response: response}
+
+  # processes server command
+  _processCommand: (cmd)->
+    console.log "Processing server command", cmd
+    tb = Observatory.getToolbox()
+    accessor = cmd.command.split('.')
+    t = global
+    t = t[accessor[i]] for i in [0...accessor.length]
+    @colCommandResponses.insert {server: true, response: {command: cmd, response: tb.inspect t} }
