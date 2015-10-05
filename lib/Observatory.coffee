@@ -17,5 +17,6 @@ Observatory.getMeteorLogger = -> Observatory._meteorLogger
 
 Observatory.initialize()
 
+Observatory.SYSTEM_DEBUG = true # whether we are debugging observatory itself: TODO: set to FALSE before publishing to atmosphere!!!
 
 (exports ? this).Observatory = Observatory

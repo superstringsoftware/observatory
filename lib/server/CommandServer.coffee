@@ -10,6 +10,8 @@ class Observatory.CommandServer
       insert: (uid,doc)-> Observatory.canRun uid
       remove: (uid,doc)-> Observatory.canRun uid
 
+    #@col.remove {} # cleaning up at startup
+
     # non-persistent collection published to Vega where we will put command responses
     @colCommandResponses = new Mongo.Collection null
 
@@ -68,7 +70,7 @@ class Observatory.CommandServer
 
   # processes server command
   _processCommand: (cmd)->
-    console.log "Processing server command", cmd
+    #console.log "Processing server command", cmd
     tb = Observatory.getToolbox()
     accessor = cmd.command.split('.')
     t = global

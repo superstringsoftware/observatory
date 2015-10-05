@@ -21,8 +21,12 @@ class Observatory.MeteorInternals
 
     #console.log m.name, m.name.indexOf('_observatory') for m in ph
     # filtering out observatory stuff
-    methodHandlers = (m for m in mh when (m.name.indexOf('/insert') < 0) and (m.name.indexOf('/update') < 0)  and (m.name.indexOf('/remove') <0) and (m.name.indexOf('_observatory') <0 ) )
-    publishHandlers = (p for p in ph when p.name.indexOf('_observatory') < 0)
+    if Observatory.SYSTEM_DEBUG
+      methodHandlers = (m for m in mh when (m.name.indexOf('/insert') < 0) and (m.name.indexOf('/update') < 0)  and (m.name.indexOf('/remove') <0) )
+      publishHandlers = ph
+    else
+      methodHandlers = (m for m in mh when (m.name.indexOf('/insert') < 0) and (m.name.indexOf('/update') < 0)  and (m.name.indexOf('/remove') <0) and (m.name.indexOf('_observatory') <0 ) )
+      publishHandlers = (p for p in ph when p.name.indexOf('_observatory') < 0)
 
     {publishHandlers: publishHandlers, methodHandlers: methodHandlers}
 
@@ -48,7 +52,10 @@ class Observatory.MeteorInternals
         id: k
         name: v.collectionName
         documentCount: _.keys(v.documents).length
-      session.collectionViews.push cv unless cv.name.indexOf('_observatory') isnt -1 # filtering out observatory related stuff
+      if Observatory.SYSTEM_DEBUG
+        session.collectionViews.push cv
+      else
+        session.collectionViews.push cv unless cv.name.indexOf('_observatory') isnt -1 # filtering out observatory related stuff
 
     for k,v of ss._namedSubs
       #console.dir v
@@ -59,7 +66,10 @@ class Observatory.MeteorInternals
         deactivated: v._deactivated
         documentCount: _.keys(v._documents).length
         ready: v._ready
-      session.namedSubs.push ns unless ns.name.indexOf('_observatory') isnt -1 # filtering out observatory related stuff
+      if Observatory.SYSTEM_DEBUG
+        session.namedSubs.push ns
+      else
+        session.namedSubs.push ns unless ns.name.indexOf('_observatory') isnt -1 # filtering out observatory related stuff
 
     session
 
