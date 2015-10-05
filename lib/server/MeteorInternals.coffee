@@ -16,8 +16,8 @@ class Observatory.MeteorInternals
     #console.log "======================================== called getCurrentServer ======================================"
     #console.dir Meteor.server
     srv = Meteor.server
-    ph = ({name: k, func: v?.toString?().substring(0,v.toString?().indexOf('{') - 1 ), body: v?.toString?().substring(v.toString?().indexOf('{')) } for k,v of srv?.publish_handlers)
-    mh = ({name: k, func: v?.toString?().substring(0,v.toString?().indexOf('{') - 1 ), body: v?.toString?().substring(v.toString?().indexOf('{')) } for k,v of srv?.method_handlers)
+    ph = ({name: k, func: v?.toString?().substring(8,v.toString?().indexOf('{') - 1 ), body: v?.toString?().substring(v.toString?().indexOf('{')) } for k,v of srv?.publish_handlers)
+    mh = ({name: k, func: v?.toString?().substring(8,v.toString?().indexOf('{') - 1 ), body: v?.toString?().substring(v.toString?().indexOf('{')) } for k,v of srv?.method_handlers)
 
     #console.log m.name, m.name.indexOf('_observatory') for m in ph
     # filtering out observatory stuff
