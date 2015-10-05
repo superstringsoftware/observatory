@@ -72,5 +72,5 @@ class Observatory.CommandServer
     tb = Observatory.getToolbox()
     accessor = cmd.command.split('.')
     t = global
-    t = t[accessor[i]] for i in [0...accessor.length]
+    t = t[accessor[i]] for i in [0...accessor.length] if cmd.command isnt 'global'
     @colCommandResponses.insert {server: true, response: {command: cmd, response: tb.inspect t} }
