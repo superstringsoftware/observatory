@@ -37,10 +37,18 @@ class Observatory.CommandClient
     }
 
   # TODO: getObject needs some thinking, as logging an Object with functions is impossible and EJSON.stringify fails on them as well.
+  # For now, it's just arbitrary object inspection based on Toolbox.inspect()
   processCommand: (cmd)->
     tb = Observatory.getToolbox()
     console.log "received new command: ", cmd
-    Meteor.call "_observatoryTakeResponse", Observatory.lastSessionId(), {command: cmd, response: "processed"}
+    accessor = cmd.command.split('.')
+    t = window
+    t = t[accessor[i]] for i in [0...accessor.length]
+    #obj = tb.inspect t
+    #console.log t, obj, accessor
+    Meteor.call "_observatoryTakeResponse", Observatory.lastSessionId(), {command: cmd, response: tb.inspect t}
+    ###
     switch cmd.command
       when "getObject" # command that returns any object from the client (in theory)
         tb.info("Response to the command", window[cmd.options.name], "COMMANDS")
+    ###

@@ -4,7 +4,7 @@ Observatory = @Observatory ? {}
 class Observatory.CommandServer
 
   constructor: ->
-    # commands collection, will be published to Vega
+    # commands collection, will be published to Vega and will accept incoming commands
     @col = new Mongo.Collection "_observatory_commands"
     @col.allow
       insert: (uid,doc)-> Observatory.canRun uid
@@ -16,12 +16,14 @@ class Observatory.CommandServer
   # publishing commands collection to vega to further observe and send commands to local clients
   publishAdmin: ->
     # TODO: need to think whether to publish all the command history here
+    # publishing collection that will accept incoming commands from Vega
     col = @col
     Meteor.publish "_observatory_commands", ->
       return if not Observatory.canRun.call(@) # only publishing to observatory admins
-      col.find {}
+      col.find {}, {limit:50}
 
-    # publishing command responses to Vega
+
+    # publishing command responses to Vega - will be processed in Vega, not here, so just passing the response
     col1 = @colCommandResponses
     Meteor.publish "_observatory_command_responses", ->
       return if not Observatory.canRun.call(@) # only publishing to observatory admins
@@ -36,9 +38,9 @@ class Observatory.CommandServer
       _self.onStop = -> handle.stop()
       return
 
-  # this is a more important function that publishes commands to a specific local client
+  # publishes commands to a specific local client
   # -- we are observing cursor on _observatory_commands and once a new command comes
-  # related to a specific uid or cid - publishing it to the client
+  # related to a specific sessionId - publishing it to the client
   # TODO: describe format of the command
   publishLocal: ->
     col = @col
