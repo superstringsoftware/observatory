@@ -5,10 +5,10 @@ Observatory = @Observatory ? {}
 # This is KEY for handshakes and stuff
 Observatory.version =
   major: 0
-  minor: 4
-  patch: 9
+  minor: 5
+  patch: 0
   prerelease: ['rc', 1],
-  wrapNum: 3
+  wrapNum: 0
 
 # changing server definition function to meteor specific
 Observatory.isServer = -> Meteor.isServer
