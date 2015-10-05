@@ -26,7 +26,7 @@ class Observatory.CommandServer
 
     # setting up a watcher on the commands collection to catch server commands and handle them.
     # client commands are processed in publishLocal() below
-    handle = col.find({server: true}).observe {
+    handle = col.find({server: true, sentAt: {$gt: Date.now()} }).observe {
       added: (doc)=> @_processCommand doc
     }
 
@@ -55,7 +55,7 @@ class Observatory.CommandServer
     Meteor.publish '_observatory_local_commands', (options) ->
       #console.log "_observatory_local_commands subscribing with uid", options
       _self = this
-      handle = col.find({sessionId: options.sessionId}).observe {
+      handle = col.find({sessionId: options.sessionId, sentAt: {$gt: Date.now()}}).observe {
         added: (doc)=>
           #console.log "Added to commands", doc
           @added('_observatory_local_commands', doc._id, doc)
