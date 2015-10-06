@@ -15,8 +15,8 @@ Observatory.canRun = (uid, action = 'view')->
     try
       user = (Meteor.users.findOne(_id: @userId) ? Meteor.user()) if not uid?
     catch err
-  #console.log @userId
-  #console.log user
+    #console.log @userId
+    #console.log user
   res = true if user?.profile?.observatoryProfile?.role is "administrator"
   #console.log "Result of running canRun is #{res}"
   res
@@ -37,7 +37,7 @@ class Observatory.Server
     return unless Observatory.settingsController.needsSetup()
     {user, email, password} = options
     #console.log "#{user}, #{password}, #{email}"
-    id = Accounts.createUser {username: user, email: email, password: password, profile: {observatoryProfile: {role: "administrator"}} }
+    id = Accounts.createUser {username: user, email: email, password: password, profile: {observatoryProfile: {role: "administrator"}}}
     Observatory.settingsController.setupComplete() if id?
 
   addProfileUser: (id) ->
@@ -71,7 +71,7 @@ class Observatory.Server
 
   heartbeat: ->
     @monitor.measure()
-  
+
 
   # publishing settings and other info to local Observatory clients (local to the App being monitored that is)
   # now, of course you can connect to anything published both directly as well as via ddp.connect,
@@ -80,15 +80,16 @@ class Observatory.Server
   publishLocal: -> Observatory.settingsController.publishLocal()
 
 
-  _publishLogsTimed: (name, collectionName, selector)->
-    Meteor.publish name, (hours = 12, scrollback = 0, limit = 2000)->
+  _publishLogsTimed: (name, collectionName, selector = {}) ->
+    Meteor.publish name, (hours = 12, filter = {}, limit = 2000) ->
       return if not Observatory.canRun.call(@)
       cl = Observatory.getMeteorLogger()._logsCollection
       dt = new Date (Date.now() - 3600000 * hours)
-      selector.timestamp = $gt: dt
-      #console.dir selector
-      handle = cl.find(selector, {sort: {timestamp: -1}, limit: limit}).observe {
-        added: (doc)=>
+      selector.timestamp =
+        $gt: dt
+      query = _.extend filter, selector
+      handle = cl.find(query, {sort: {timestamp: -1}, limit: limit}).observe {
+        added: (doc) =>
           @added(collectionName, doc._id, doc)
       }
       @ready()
@@ -113,16 +114,18 @@ class Observatory.Server
     ###
 
     # funky stuff - publishing specific query, just the monitoring logs
-    @_publishLogsTimed '_observatory_logs', '_observatory_remote_logs', type: $ne: 'monitor'
+    @_publishLogsTimed '_observatory_logs', '_observatory_remote_logs', type:
+      $ne: 'monitor'
     @_publishLogsTimed '_observatory_monitoring', '_observatory_monitoring', type: 'monitor'
     @_publishLogsTimed '_observatory_http_logs', '_observatory_http_logs', module: 'HTTP'
-    @_publishLogsTimed '_observatory_errors', '_observatory_errors', severity: $lte: 1
+    @_publishLogsTimed '_observatory_errors', '_observatory_errors', severity:
+      $lte: 1
     @_publishLogsTimed '_observatory_profiling', '_observatory_profiling', type: 'profile'
 
 
-########################################################################################################################
-# NON - PERSISTENT PUBLISHES
-########################################################################################################################
+    ########################################################################################################################
+    # NON - PERSISTENT PUBLISHES
+    ########################################################################################################################
 
 
     # open sessions - see DDPConnectionEmitter for hooks on manipulating dummy SessionsCollection
@@ -168,7 +171,9 @@ class Observatory.Server
       # (does not breach security because all server calls check if the user can run it in any case -
       # the only reason we are doing it is for more graceful handling of logged in users, who are NOT
       # Observatory admins)
-      handle = Meteor.users.find({$or: [  {_id: {$in: userIds}}, {"profile.observatoryProfile.role": "administrator"}  ]}, fields: services: 0).observe {
+      handle = Meteor.users.find({$or: [{_id: {$in: userIds}}, {"profile.observatoryProfile.role": "administrator"}]},
+        fields:
+          services: 0).observe {
         added: (doc)=>
           #console.log doc
           @added('_observatory_remote_users', doc._id, doc) #unless initializing
@@ -195,7 +200,8 @@ class Observatory.Server
           @added('_observatory_nonpersistent_monitor', doc._id, doc) #unless initializing
           if monitor.Monitors.find({}).count() > dataPoints
             #console.log "Monitors too many, cleaning up"
-            monitor.Monitors.remove timestamp: $lt: (Date.now() - timePeriod * dataPoints)
+            monitor.Monitors.remove timestamp:
+              $lt: (Date.now() - timePeriod * dataPoints)
 
         removed: (doc) =>
           @removed '_observatory_nonpersistent_monitor', doc._id
@@ -212,18 +218,18 @@ class Observatory.Server
   startConnectionMonitoring: ->
 
 
-###
-_checkUserId = ->
-  #console.log @
-  uid = null
-  try
-    uid = this.userId ? Meteor.userId()
-    #console.log uid
-    return uid
-  catch err
-    #console.log err
-    uid
+    ###
+    _checkUserId = ->
+      #console.log @
+      uid = null
+      try
+        uid = this.userId ? Meteor.userId()
+        #console.log uid
+        return uid
+      catch err
+        #console.log err
+        uid
 
-###
-  
+    ###
+
 (exports ? this).Observatory = Observatory
