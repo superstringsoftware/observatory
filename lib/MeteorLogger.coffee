@@ -18,6 +18,10 @@ class Observatory.MeteorLogger extends Observatory.Logger
       @_logsCollection._ensureIndex
         type: -1
         timestamp: -1
+       
+      @_logsCollection._ensureIndex
+        severity: -1
+        timestamp: -1
 
       @_logsCollection.allow
         update: (uid)->
