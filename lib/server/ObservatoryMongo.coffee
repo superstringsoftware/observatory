@@ -12,11 +12,20 @@ class Observatory.Mongo
   # TODO: add proper error handling / logging in the async wrapper!
   getCollections: ->
     f = Meteor.wrapAsync @_db.collections, @_db
-    f1 = Meteor.wrapAsync @_col.stats, @_col
     f2 = Meteor.wrapAsync @_db.collectionNames, @_db
 
     try
-      ret = (f1(c) for c in f())
+      ret = []
+      for c in f()
+        f1 = Meteor.wrapAsync c.stats, c
+        r1 = f1(c)
+        #console.log r1
+        # taking out db name from collection name
+        name = r1.ns.split '.'
+        name.shift()
+        ns = name.join '.'
+        r1.ns = ns
+        ret.push r1
       ret
     catch
       ret = f2()
