@@ -31,6 +31,11 @@ class Observatory.MeteorLogger extends Observatory.Logger
         remove: (uid)=>
           @allowRemove uid
 
+    # setting up interval to process buffered messages (we are using them in automagical stuff)
+    Meteor.setInterval =>
+      @processBuffer()
+    , 5000 # every 5 seconds, should be enough
+
   # redefine these functions anytime on server side to be able to control what gets logged -
   # useful when in production and want to control what comes from the clients:
   # Observatory._meteorLogger.allowInsert = (uid) -> ...
@@ -43,7 +48,7 @@ class Observatory.MeteorLogger extends Observatory.Logger
   # overriding the main logging method
   log: (message)=>
     if Meteor.isClient
-      #console.log "logging..."
+      #console.log "logging...", message
       #console.dir message
       if not Observatory.settingsController.currentSettings().logAnonymous
         if not Observatory.settingsController.currentSettings().logUser

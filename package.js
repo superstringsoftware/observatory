@@ -34,14 +34,18 @@ try {
         api.add_files('features/CommandProcessor/server/methods.coffee', 'server');
         api.add_files('features/CommandProcessor/client/CommandClient.coffee', 'client');
 
+        // automagical
+        api.add_files('features/automagical-overloaded/subscriptions.coffee', 'client');
+        api.add_files('features/automagical-overloaded/collections.coffee', both);
+
         api.add_files('lib/server/Observatory.coffee', 'server');
         api.add_files('lib/server/methods.coffee', 'server');
         api.add_files('lib/client/Observatory.coffee', 'client');
-        api.add_files('lib/client/templates.coffee', 'client');
+
         api.add_files(['lib/Observatory.coffee'], both);
         api.add_files('globals.js', both);
         api.export('Observatory');
-        api.export('TLog');
+
     });
 }
 catch (err) {
