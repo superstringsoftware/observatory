@@ -37,7 +37,10 @@ class Observatory.Server
     return unless Observatory.settingsController.needsSetup()
     {user, email, password} = options
     #console.log "#{user}, #{password}, #{email}"
-    id = Accounts.createUser {username: user, email: email, password: password, profile: {observatoryProfile: {role: "administrator"}}}
+    try
+      id = Accounts.createUser {username: user, email: email, password: password, profile: {observatoryProfile: {role: "administrator"}}}
+    catch err
+      throw new Meteor.Error 'create user', err
     Observatory.settingsController.setupComplete() if id?
 
   addProfileUser: (id) ->
