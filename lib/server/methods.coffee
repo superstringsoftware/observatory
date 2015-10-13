@@ -45,8 +45,11 @@ Meteor.methods
     Methods to be accessed locally (from the client served from the server with Observatory, NOT from Vega
   ###
 
-  # taking reponse to a command (typically), although can be more versatile
+###
   _observatoryTakeResponse: (sessionId, response)->
     #console.log "_observatoryTakeResponse called on the SERVER"
     #console.log sessionId, response
     Observatory.meteorServer.commandServer.sendCommandResponse sessionId, response
+###
+
+

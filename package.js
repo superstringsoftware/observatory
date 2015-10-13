@@ -29,8 +29,10 @@ try {
         api.add_files('lib/server/Settings.coffee', 'server');
         api.add_files('lib/client/Settings.coffee', 'client');
 
-        api.add_files('lib/server/CommandServer.coffee', 'server');
-        api.add_files('lib/client/CommandClient.coffee', 'client');
+        // loading CommandProcessor module
+        api.add_files('features/CommandProcessor/server/CommandServer.coffee', 'server');
+        api.add_files('features/CommandProcessor/server/methods.coffee', 'server');
+        api.add_files('features/CommandProcessor/client/CommandClient.coffee', 'client');
 
         api.add_files('lib/server/Observatory.coffee', 'server');
         api.add_files('lib/server/methods.coffee', 'server');

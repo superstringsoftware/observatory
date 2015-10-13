@@ -45,8 +45,8 @@ Observatory.registerInitFunction (s)->
   @meteorServer.publishLocal() # basically, only settings
 
   # turning on commands processing
-  @meteorServer.commandServer.publishAdmin()
-  @meteorServer.commandServer.publishLocal()
+  #@meteorServer.commandServer.publishAdmin()
+  #@meteorServer.commandServer.publishLocal()
 
   # initializing emitters
   @emitters.DDP = Observatory.DDPEmitter.de 'DDP'

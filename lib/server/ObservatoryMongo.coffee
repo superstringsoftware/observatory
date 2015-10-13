@@ -8,6 +8,13 @@ class Observatory.Mongo
     @_db = Observatory._meteorLogger._logsCollection.rawDatabase()
     @_col = Observatory._meteorLogger._logsCollection.rawCollection()
 
+    ###
+    @_db.executeDbAdminCommand {"hostInfo" : 1}, (err, res)->
+      console.log err
+      console.log res.documents[0]
+
+    ###
+
 
   # TODO: add proper error handling / logging in the async wrapper!
   getCollections: ->

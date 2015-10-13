@@ -4,6 +4,7 @@ Observatory = @Observatory ? {}
 class Observatory.CommandServer
 
   constructor: ->
+    #console.log "Command Server constructor called"
     # commands collection, will be published to Vega and will accept incoming commands
     @col = new Mongo.Collection "_observatory_commands"
     @col.allow
