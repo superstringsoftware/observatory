@@ -40,18 +40,19 @@ Observatory.automagical.logCollections = ->
     tb = Observatory.getToolbox()
 
     args = _.rest (_.rest arguments)
+    sargs = EJSON.stringify args
     orig_callback = args.pop()
 
     callback = (err,res)=>
+      t2 = Date.now() - @__startTime
       if @_name? and @_name.indexOf('_observatory') < 0
-        t2 = Date.now() - t1
-        msg = "#{m} call finished in #{t2} ms for collection.#{@_name}"
-        #console.log msg
-        #console.log "2: ", args
+        msg = "#{m} call finished in #{t2} ms for collection #{@_name}"
         object =
           timeElapsed: t2
           method: m
-          arguments: EJSON.stringify args
+          arguments: sargs
+          collectionName: @_name
+          type: "profile.end"
         tb._verbose msg, object, 'profiler', 'profile', true
 
       orig_callback err, res if typeof orig_callback is 'function'
@@ -62,7 +63,16 @@ Observatory.automagical.logCollections = ->
       args.push orig_callback
       args.push callback
 
-    t1 = Date.now()
+    if @_name? and @_name.indexOf('_observatory') < 0
+      msg = "#{m} call started for collection #{@_name}"
+      object =
+        method: m
+        arguments: sargs
+        collectionName: @_name
+        type: "profile.start"
+      tb._verbose msg, object, 'profiler', 'profile', true
+
+    @__startTime = Date.now()
     f.apply this, args
 
   for m in async
