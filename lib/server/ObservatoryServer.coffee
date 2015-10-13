@@ -27,7 +27,7 @@ class Observatory.Server
 
   constructor: ->
     @mi = new Observatory.MeteorInternals
-    @monitor = new Observatory.MonitoringEmitter
+    @monitor = Observatory.emitters.Monitor
     @mongo = new Observatory.Mongo
     @commandServer = new Observatory.CommandServer
 
@@ -70,7 +70,6 @@ class Observatory.Server
       sysinfo: Observatory.emitters.Monitor.sysInfoShort()
       mongoCollections: @mongo.getCollections()
       mongoStats: @mongo.getStats()
-
 
   heartbeat: ->
     @monitor.measure()

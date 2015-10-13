@@ -70,8 +70,8 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
   # Restarts in case it's already running
   # TODO: write the actual logic
   startMonitor: (timePeriod)->
-    #console.log "starting monitor"
     @stopMonitor if @isRunning
+    @isRunning = true
     timePeriod = timePeriod ? 60000
     @_monitorHandle = Meteor.setInterval =>
       obj = @measure()
@@ -87,7 +87,6 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
         textMessage: "Monitoring every #{timePeriod / 1000}s"
 
       @emitMessage msg
-      @isRunning = true
     , timePeriod
 
   # Stopping the monitoring process
@@ -95,7 +94,6 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
     if @isRunning
       Meteor.clearInterval @_monitorHandle
       @isRunning = false
-
 
   startNonpersistentMonitor: (timePeriod = 5000)->
     @_persistentMonitorHandle = Meteor.setInterval =>
