@@ -42,14 +42,14 @@ Observatory.automagical.logSubscriptions = ->
         #console.log "OnReady callback"
         #console.log arguments
         t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
-        tl._profile "Subscription ready for #{name} in #{t} ms", t, {subscription: name, type: 'subscription'}
+        tl.forceDumbProfile  "Subscription ready for #{name} in #{t} ms", t, {subscription: name, type: 'subscription'}
         args = _.rest arguments
         f.apply @, args
     else
       cb.onReady = ->
         #console.log "OnReady callback no arguments"
         t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
-        tl._profile "Subscription ready for #{name} in #{t} ms", t, {subscription: name, type: 'subscription'}
+        tl.forceDumbProfile "Subscription ready for #{name} in #{t} ms", t, {subscription: name, type: 'subscription'}
 
     if origOnError?
       cb.onError = _.wrap origOnError, (f)->
