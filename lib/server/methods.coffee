@@ -41,15 +41,16 @@ Meteor.methods
     #console.dir v._namedSubs
     sessions
 
-  ###
-    Methods to be accessed locally (from the client served from the server with Observatory, NOT from Vega
-  ###
-
-###
-  _observatoryTakeResponse: (sessionId, response)->
-    #console.log "_observatoryTakeResponse called on the SERVER"
-    #console.log sessionId, response
-    Observatory.meteorServer.commandServer.sendCommandResponse sessionId, response
-###
-
-
+  # get all modules from observatory logs
+  _observatoryLogModules: ->
+    #raw collection
+    col = Observatory.meteorServer.mongo._col
+    aggregate = Meteor.wrapAsync col.aggregate.bind col
+    aggregate [
+      $group:
+        _id:
+          module: "$module"
+    ,
+      $project:
+        module: "$_id.module"
+    ]

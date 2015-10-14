@@ -16,6 +16,9 @@ class Observatory.MeteorLogger extends Observatory.Logger
       @_logsCollection._createCappedCollection 1048576, 10000
       # ensure index for query by type and timestamp
       @_logsCollection._ensureIndex
+        timestamp: -1
+
+      @_logsCollection._ensureIndex
         type: -1
         timestamp: -1
        

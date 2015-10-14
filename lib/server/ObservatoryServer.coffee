@@ -27,7 +27,7 @@ class Observatory.Server
 
   constructor: ->
     @mi = new Observatory.MeteorInternals
-    @monitor = new Observatory.MonitoringEmitter
+    @monitor = Observatory.emitters.Monitor
     @mongo = new Observatory.Mongo
     #@commandServer = new Observatory.CommandServer
 
@@ -37,7 +37,10 @@ class Observatory.Server
     return unless Observatory.settingsController.needsSetup()
     {user, email, password} = options
     #console.log "#{user}, #{password}, #{email}"
-    id = Accounts.createUser {username: user, email: email, password: password, profile: {observatoryProfile: {role: "administrator"}}}
+    try
+      id = Accounts.createUser {username: user, email: email, password: password, profile: {observatoryProfile: {role: "administrator"}}}
+    catch err
+      throw new Meteor.Error 'create user', err
     Observatory.settingsController.setupComplete() if id?
 
   addProfileUser: (id) ->
@@ -67,7 +70,6 @@ class Observatory.Server
       sysinfo: Observatory.emitters.Monitor.sysInfoShort()
       mongoCollections: @mongo.getCollections()
       mongoStats: @mongo.getStats()
-
 
   heartbeat: ->
     @monitor.measure()

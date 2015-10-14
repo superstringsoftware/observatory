@@ -40,6 +40,13 @@ Observatory.registerInitFunction (s)->
   @_meteorLogger = new Observatory.MeteorLogger 'Meteor Logger', @settingsController.currentSettings().logsCollectionName ? '_observatory_logs'
   @subscribeLogger @_meteorLogger
 
+  # initializing emitters
+  @emitters.DDP = Observatory.DDPEmitter.de 'DDP'
+  @emitters.DDPConnection = Observatory.DDPConnectionEmitter.de 'DDP Connection'
+  @emitters.Http = new Observatory.HttpEmitter 'HTTP'
+  @emitters.Monitor = new Observatory.MonitoringEmitter 'Monitor'
+  @emitters.System = new Observatory.SystemEmitter 'System', @_meteorLogger._logsCollection
+
   @meteorServer = new Observatory.Server
   @meteorServer.publish() #unless @settings.prohibitAutoPublish
   @meteorServer.publishLocal() # basically, only settings
@@ -47,13 +54,6 @@ Observatory.registerInitFunction (s)->
   # turning on commands processing
   #@meteorServer.commandServer.publishAdmin()
   #@meteorServer.commandServer.publishLocal()
-
-  # initializing emitters
-  @emitters.DDP = Observatory.DDPEmitter.de 'DDP'
-  @emitters.DDPConnection = Observatory.DDPConnectionEmitter.de 'DDP Connection'
-  @emitters.Http = new Observatory.HttpEmitter 'HTTP'
-  @emitters.Monitor = new Observatory.MonitoringEmitter 'Monitor'
-  @emitters.System = new Observatory.SystemEmitter 'System', @_meteorLogger._logsCollection
 
   @settingsController.processSettingsUpdate @settingsController.currentSettings()
 
