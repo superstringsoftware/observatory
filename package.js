@@ -13,7 +13,12 @@ try {
         api.use('accounts-password', 'server');
 
         // galileo files
+        api.add_files('lib/lib/observatory-galileo/src/MessageEmitter.coffee', both);
+        api.add_files('lib/lib/observatory-galileo/src/GenericEmitter.coffee', both);
+        api.add_files('lib/lib/observatory-galileo/src/Logger.coffee', both);
+        api.add_files('lib/lib/observatory-galileo/src/ConsoleLogger.coffee', both);
         api.add_files(['lib/lib/observatory-galileo/src/Observatory.coffee', 'lib/lib/observatory-galileo/src/Toolbox.coffee'], both);
+
 
         api.add_files('lib/server/MeteorInternals.coffee', 'server');
         api.add_files('lib/server/ObservatoryServer.coffee', 'server');
