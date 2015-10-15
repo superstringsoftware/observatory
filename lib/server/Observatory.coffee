@@ -17,26 +17,11 @@ Observatory.initialize = _.wrap Observatory.initialize, (f, s)->
 Observatory.setSettings = _.wrap Observatory.setSettings, (f, s)->
   # calling base function
   f.call Observatory, s
-  ###
-  @settings.logUser = s.logUser ? @settings.logUser
-  @settings.logHttp = s?.logHttp ? @settings.logHttp
-  @settings.logDDP = s?.logDDP ? @settings.logDDP
-  ###
+
 
 # adding meteor-specific initialization
 Observatory.registerInitFunction (s)->
-  # Default settings for loglevel and printToConsole are INFO and false (defined in Galileo).
-  ###
-  @settings.logsCollectionName = s?.logsCollectionName ? '_observatory_logs'
-  @settings.logUser = s?.logUser ? true
-  @settings.logHttp = s?.logHttp ? true
-  @settings.logDDP = s?.logDDP ? false
-  @settings.prohibitAutoPublish = s?.prohibitAutoPublish ? false
-  @settings.logAnonymous = s?.logAnonymous ? false
-  ###
-
   # setting up client / server meteor loggers
-  #console.log @settings
   @_meteorLogger = new Observatory.MeteorLogger 'Meteor Logger', @settingsController.currentSettings().logsCollectionName ? '_observatory_logs'
   @subscribeLogger @_meteorLogger
 
@@ -51,7 +36,7 @@ Observatory.registerInitFunction (s)->
   @meteorServer.publish() #unless @settings.prohibitAutoPublish
   @meteorServer.publishLocal() # basically, only settings
 
-  # turning on commands processing
+  # turning on commands processing - this went into a separate init function in the CommandProcessor package
   #@meteorServer.commandServer.publishAdmin()
   #@meteorServer.commandServer.publishLocal()
 
@@ -67,35 +52,5 @@ Observatory.registerInitFunction (s)->
     m.processBuffer()
   , 3000
 
-#Observatory.initialize()
-
-###
-if Meteor.isServer
-  Observatory._meteorLogger.allowInsert = (uid)->
-    console.log "Trying to insert for " + uid
-    true
-###
-
-
-# TESTING!!!
-###
-Meteor.publish = _.wrap Meteor.publish, (f)->
-  args = _.rest arguments
-  #console.log args
-
-  name = args[0]
-  func = args[1]
-
-  args[1] = _.wrap func, (f1)->
-    t1 = Date.now()
-    args1 = _.rest arguments
-    console.log "Calling publish function #{name} with #{args1}"
-    ret = f1.apply this, args1
-    console.log "...executed in #{Date.now()-t1}ms"
-    ret
-
-  r = f.apply this, args
-  r
-###
 
 (exports ? this).Observatory = Observatory
