@@ -1,2 +1,2 @@
-mocha -R spec --watch --compilers coffee:coffee-script ttt.coffee
+mocha -w --compilers coffee:coffee-script/register --require coffee-script/register -R spec
 

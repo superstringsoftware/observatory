@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "test": "mocha -w --compilers coffee:coffee-script/register --require coffee-script/register"
+  }
+}
