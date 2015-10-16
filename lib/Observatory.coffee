@@ -5,9 +5,9 @@ Observatory = @Observatory ? {}
 # This is KEY for handshakes and stuff
 Observatory.version =
   major: 0
-  minor: 5
+  minor: 9
   patch: 0
-  prerelease: ['rc', 1],
+  prerelease: [] #'rc', 1
   wrapNum: 0
 
 # changing server definition function to meteor specific
