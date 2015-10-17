@@ -106,7 +106,7 @@ class Observatory.Server
 
   # func should return whether we allow publishing or not
   # This is the heart of Vega operations - publishing all necessary data to the client
-  publish: (func)->
+  publish: ->
     # publishing ALL settings for management purposes
     Observatory.settingsController.publishAdmin()
 

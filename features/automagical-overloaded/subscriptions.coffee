@@ -28,8 +28,8 @@ Observatory.automagical.logSubscriptions = ->
       if last.onReady?
         origOnReady = last.onReady
         changeLast = true
-      if last.onError?
-        origOnError = last.onError
+      if last.onStop?
+        origOnStop = last.onStop
         changeLast = true
     else
       if typeof last is 'function'
@@ -51,17 +51,17 @@ Observatory.automagical.logSubscriptions = ->
         t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
         tl.forceDumbProfile "Subscription ready for #{name} in #{t} ms", t, {subscription: name, type: 'subscription'}
 
-    if origOnError?
-      cb.onError = _.wrap origOnError, (f)->
-        #console.log "OnError callback"
+    if origOnStop?
+      cb.onStop = _.wrap origOnStop, (f)->
+        #console.log "OnStop callback"
         #console.log arguments
         t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
         tl._error "Error while subscribing to #{name}: " + err.reason, {error: err, subscription: name, timeElapsed: t, type: 'subscription'}
         args = _.rest _.rest arguments
         f.apply @, args
     else
-      cb.onError = (err)->
-        #console.log "OnError callback no arguments"
+      cb.onStop = (err)->
+        #console.log "OnStop callback no arguments"
         t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
         tl._error "Error while subscribing to #{name}: " + err.reason, {error: err, subscription: name, timeElapsed: t, type: 'subscription'}
 
@@ -70,10 +70,8 @@ Observatory.automagical.logSubscriptions = ->
     if changeLast then args[args.length - 1] = cb # replacing original callbacks
     else args.push cb # adding callbacks
 
-    #console.log args
-
     Session.set "_obs.subscription.#{name}.profileStart", Date.now()
-    tl._verbose "Subscribing to #{name}", "Meteor"
+    tl.verbose "Subscribing to #{name}", "Meteor"
     f.apply this, args
 
 
