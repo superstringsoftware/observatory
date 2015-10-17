@@ -1,5 +1,4 @@
 Observatory = @Observatory ? {}
-Fiber = Npm.require 'fibers'
 
 #Mongo native instance for getting all info
 class Observatory.Mongo

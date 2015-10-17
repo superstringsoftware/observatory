@@ -32,7 +32,7 @@ Observatory.automagical.logCollections = ->
     ret
 
   for m in sync
-    Meteor.Collection::[m] = _.wrap Meteor.Collection::[m], _.partial g, m
+    Mongo.Collection::[m] = _.wrap Mongo.Collection::[m], _.partial g, m
 
 
   # the same for async:
@@ -76,7 +76,7 @@ Observatory.automagical.logCollections = ->
     f.apply this, args
 
   for m in async
-    Meteor.Collection::[m] = _.wrap Meteor.Collection::[m], _.partial h, m
+    Mongo.Collection::[m] = _.wrap Mongo.Collection::[m], _.partial h, m
 
 
 
