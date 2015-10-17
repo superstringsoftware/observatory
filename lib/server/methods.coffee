@@ -10,7 +10,9 @@ Meteor.methods
 # TODO: strip it down to Observatory version and essential info to establish a connection
   _observatoryHandshake: ->
     #console.log "_observatoryHandshake called"
-    Observatory.meteorServer.handshake()
+    tb = Observatory.getToolbox()
+    s = Observatory.meteorServer
+    tb.profile method: "handshake()", s, s.handshake
 
 # Initial (First Time) setup - so, no auth
   _observatoryInitialSetup: (options)-> Observatory.meteorServer.initialSetup options
@@ -25,6 +27,13 @@ Meteor.methods
   _observatoryGetCurrentServer: ->
     throw new Meteor.Error(77,"Observatory access denied") if not Observatory.canRun()
     Observatory.meteorServer.mi.getCurrentServer()
+
+  _observatoryServerStats: ->
+    throw new Meteor.Error(77,"Observatory access denied") if not Observatory.canRun()
+    tb = Observatory.getToolbox()
+    s = Observatory.meteorServer
+    tb.profile method: "serverStats()", s, s.serverStats
+
 
 # Regular heartbeat
   _observatoryHeartbeat: ->

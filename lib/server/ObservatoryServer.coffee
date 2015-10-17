@@ -55,21 +55,27 @@ class Observatory.Server
     Observatory.settingsController.setupComplete()
 
   handshake: ->
-    #console.log "Handshake called"
-    #console.log Meteor.user()
-    #console.log Observatory.settingsController
+    tb = Observatory.getToolbox()
     o =
       version: Observatory.version
       isLocalhost: Observatory.isLocalhost
       needsSetup: Observatory.settingsController.needsSetup()
       monitoring: Observatory.emitters.Monitor.isRunning
-      registeredUsers: Meteor.users.find().count()
-      logsCount: Observatory.getMeteorLogger().logsCount()
       meteorVersion: Meteor.release
       heartbeat: @heartbeat()
       sysinfo: Observatory.emitters.Monitor.sysInfoShort()
-      mongoCollections: @mongo.getCollections()
-      mongoStats: @mongo.getStats()
+      mongoCollections: [] # tb.profile method: "hadnshake() > getCollections()", @mongo, @mongo.getCollections
+      mongoStats: {} # tb.profile method: "hadnshake() > getStats()", @mongo, @mongo.getStats
+
+  serverStats: ->
+    tb = Observatory.getToolbox()
+    o =
+      registeredUsers: Meteor.users.find().count()
+      logsCount: Observatory.getMeteorLogger().logsCount()
+      heartbeat: @heartbeat()
+      sysinfoFull: Observatory.emitters.Monitor.sysInfo()
+      mongoCollections: tb.profile method: "hadnshake() > getCollections()", @mongo, @mongo.getCollections
+      mongoStats: tb.profile method: "hadnshake() > getStats()", @mongo, @mongo.getStats
 
   heartbeat: ->
     @monitor.measure()
