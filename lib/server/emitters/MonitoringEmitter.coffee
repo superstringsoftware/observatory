@@ -61,16 +61,15 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
 
   switchPowerMonitor: (power = false) ->
     console.log "Server monitoring is #{power}"
+    @stopMonitor()
     if power is true
       @startMonitor 10000
-    else
-      @stopMonitor()
 
   # Starting the monitoring process with timePeriod
   # Restarts in case it's already running
   # TODO: write the actual logic
   startMonitor: (timePeriod)->
-    @stopMonitor if @isRunning
+    return if @isRunning is true
     @isRunning = true
     timePeriod = timePeriod ? 60000
     @_monitorHandle = Meteor.setInterval =>
@@ -91,9 +90,9 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
 
   # Stopping the monitoring process
   stopMonitor: ->
-    if @isRunning
-      Meteor.clearInterval @_monitorHandle
-      @isRunning = false
+    Meteor.clearInterval @_monitorHandle
+    delete @_monitorHandle
+    @isRunning = false
 
   startNonpersistentMonitor: (timePeriod = 5000)->
     @_persistentMonitorHandle = Meteor.setInterval =>
