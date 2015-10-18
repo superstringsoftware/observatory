@@ -15,7 +15,7 @@ logging to console
 * Log any or all client activity along with server logs, automatically record user and session information
  for additional security review or debugging
 
-* Augomagical logging, profiling and error handling for DDP, http, Collections, Subscriptions,
+* Automagical logging, profiling and error handling for DDP, http, Collections, Subscriptions,
 Template lifecycle methods (*soon*) and any custom code
 
 * Detailed review of your application internals: publish and methods handlers, active sessions, collections
@@ -34,9 +34,26 @@ Installation
 
 Usage
 ---------
+###### Manual Logging:
+```javascript
+	tb = Observatory.getToolbox();
+	tb.warn("This is a warning message");
+	// plus all other logging methods for every level, and ability to override it
+```
+*Read about and use automagical using the documentation link below*
+###### Manual Profiling:
+```javascript
+	// when you have functions you want to profile:
+	f = function(x) {/* do something potentially complicated and taking a long time synchronously */ }
+	g = function(x, callback) {/* do something potentially complicated and taking a long time asynchronously */ }
 
-	tb = Observatory.getToolbox()
-	tb.warn("This is a warning message")
+	// profile their execution, respecting Warning and Error thresholds
+	tb = Observatory.getToolbox();
+	// instead of y = f(14):
+	y = profile: ({method: "common > f()", message: "hope it doesn't happen"}, thisArg, f, 14 /* x=14 */);
+	// for async function:
+	profile: ({method: "call to API > g()", message: "hope it doesn't happen"}, thisArg, g, callback);
+```
 
 There's *much* more.
 [Read full docs](http://observatoryjs.com) and start using our cloud solution!
@@ -51,6 +68,10 @@ to share your thoughts and ideas!
 Revision history
 -----------------
 
+#### 0.9.1: October, 18, 2015
+* Some clean up of profiling methods
+* Hook into all server collections for future management in Vega
+
 ### MAJOR: 0.9.0: October, 4, 2015
 *Major changes, enhancements and additions after Observatory team got some strong corporate backing
 and returned to the project with renewed commitment*
@@ -64,7 +85,7 @@ for the full-featured remote console
 * Hooks into Mongo database monitoring
 * Log publish architecture enhancements to allow for better sorting, filtering and search
 
-Most of these changes are fully benefited when using [Observatory Vega](http://observatoryjs.com/)
+Most of these changes are fully benefited from when using [Observatory Vega](http://observatoryjs.com/)
 cloud solution - improvements there are too numerous to list here, but it has a dedicated user guide
 so we encourage you to sign up and try it!
 
