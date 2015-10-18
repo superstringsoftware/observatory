@@ -9,6 +9,36 @@ Observatory = @Observatory ? {}
 
 Observatory.automagical = Observatory.automagical ? {}
 
+Observatory.automagical.subsLogFunction = (t2, name, args)->
+  tb = Observatory.getToolbox()
+  loglevel = tb._determineProfilingLevel t2
+  #console.log "loglevel is ", loglevel
+  # only logging if thresholds are ok, otherwise simply returning
+  if loglevel <= Observatory.settings.profiling.maxProfilingLevel
+    options =
+      message: "subscription: #{name}"
+      method: 'Meteor.subscribe()'
+      profileType: 'subscription'
+      obj: subscription: name
+    tb._forceEmitWithSeverity loglevel, tb._prepareMessage t2, options, args
+
+
+Observatory.automagical.subsErrorFunction = (t2, name, args, err)->
+  tb = Observatory.getToolbox()
+  loglevel = Observatory.LOGLEVEL.ERROR
+  #console.log "loglevel is ", loglevel
+  # only logging if thresholds are ok, otherwise simply returning
+  if loglevel <= Observatory.settings.profiling.maxProfilingLevel
+    options =
+      message: "Error while subscribing to #{name} - #{err.reason}"
+      method: 'Meteor.subscribe()'
+      profileType: 'subscription'
+      obj:
+        subscription: name
+        error: err
+    tb._forceEmitWithSeverity loglevel, tb._prepareMessage t2, options, args
+
+
 # automagical subscription logging
 Observatory.automagical.logSubscriptions = ->
   #console.log "logging Meteor - CALLED ALL DYNAMIC STUFF"
@@ -36,34 +66,39 @@ Observatory.automagical.logSubscriptions = ->
         origOnReady = last
         changeLast = true
 
+
     cb = {}
     if origOnReady?
       cb.onReady = _.wrap origOnReady, (f)->
         #console.log "OnReady callback"
         #console.log arguments
         t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
-        tl.forceDumbProfile  "Subscription ready for #{name} in #{t} ms", t, {subscription: name, type: 'subscription'}
+        #tl.forceDumbProfile  "Subscription ready for #{name} in #{t} ms", t, {subscription: name, type: 'subscription'}
         args = _.rest arguments
+        Observatory.automagical.subsLogFunction t, name, args
         f.apply @, args
     else
       cb.onReady = ->
         #console.log "OnReady callback no arguments"
         t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
-        tl.forceDumbProfile "Subscription ready for #{name} in #{t} ms", t, {subscription: name, type: 'subscription'}
+        #tl.forceDumbProfile "Subscription ready for #{name} in #{t} ms", t, {subscription: name, type: 'subscription'}
+        Observatory.automagical.subsLogFunction t, name, args
 
     if origOnStop?
       cb.onStop = _.wrap origOnStop, (f)->
         #console.log "OnStop callback"
         #console.log arguments
         t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
-        tl._error "Error while subscribing to #{name}: " + err.reason, {error: err, subscription: name, timeElapsed: t, type: 'subscription'}
+        #tl._error "Error while subscribing to #{name}: " + err.reason, {error: err, subscription: name, timeElapsed: t, type: 'subscription'}
         args = _.rest _.rest arguments
+        Observatory.automagical.subsErrorFunction t, name, args, args[0]
         f.apply @, args
     else
       cb.onStop = (err)->
         #console.log "OnStop callback no arguments"
         t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
-        tl._error "Error while subscribing to #{name}: " + err.reason, {error: err, subscription: name, timeElapsed: t, type: 'subscription'}
+        Observatory.automagical.subsErrorFunction t, name, args, err
+        #tl._error "Error while subscribing to #{name}: " + err.reason, {error: err, subscription: name, timeElapsed: t, type: 'subscription'}
 
     args = _.rest arguments
 
