@@ -50,9 +50,9 @@ g = function(x, callback) {/* do something potentially complicated and taking a 
 // profile their execution, respecting Warning and Error thresholds
 tb = Observatory.getToolbox();
 // instead of y = f(14):
-y = profile: ({method: "common > f()", message: "hope it doesn't happen"}, thisArg, f, 14 /* x=14 */);
+y = tb.profile ({method: "common > f()", message: "hope it doesn't happen"}, thisArg, f, 14 /* x=14 */);
 // for async function:
-profile: ({method: "call to API > g()", message: "hope it doesn't happen"}, thisArg, g, callback);
+tb.profile ({method: "call to API > g()", message: "hope it doesn't happen"}, thisArg, g, callback);
 ```
 
 There's *much* more.
