@@ -41,7 +41,8 @@ tb.warn("This is a warning message");
 // plus all other logging methods for every level / severity, and ability to override it
 
 // Full logging methods signature (see full docs for detailed description):
-tb.<logging_method> (message, custom_object, module_name, log_type, buffer = false);
+// options may contain: obj: custom_object, module: module_name (there's more in the docs)
+tb.<logging_method> (message, options);
 ```
 *Read about and use automagical using the documentation link below*
 ###### Manual Profiling:
@@ -55,7 +56,7 @@ tb = Observatory.getToolbox();
 // instead of y = f(14):
 y = tb.profile ({method: "common > f()", message: "hope it doesn't happen"}, thisArg, f, 14 /* x=14 */);
 // for async function, instead of g(x, callback):
-tb.profile ({method: "call to API > g()", message: "hope it doesn't happen"}, thisArg, g, x, callback);
+tb.profileAsync ({method: "call to API > g()", message: "hope it doesn't happen"}, thisArg, g, x, callback);
 ```
 
 There's *much* more.
