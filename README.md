@@ -39,6 +39,9 @@ Basic API Usage
 tb = Observatory.getToolbox();
 tb.warn("This is a warning message");
 // plus all other logging methods for every level / severity, and ability to override it
+
+// Full logging methods signature (see full docs for detailed description):
+tb.<logging_method> (message, custom_object, module_name, log_type, buffer = false);
 ```
 *Read about and use automagical using the documentation link below*
 ###### Manual Profiling:
@@ -51,8 +54,8 @@ g = function(x, callback) {/* do something potentially complicated and taking a 
 tb = Observatory.getToolbox();
 // instead of y = f(14):
 y = tb.profile ({method: "common > f()", message: "hope it doesn't happen"}, thisArg, f, 14 /* x=14 */);
-// for async function:
-tb.profile ({method: "call to API > g()", message: "hope it doesn't happen"}, thisArg, g, callback);
+// for async function, instead of g(x, callback):
+tb.profile ({method: "call to API > g()", message: "hope it doesn't happen"}, thisArg, g, x, callback);
 ```
 
 There's *much* more.
