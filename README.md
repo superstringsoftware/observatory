@@ -32,27 +32,27 @@ Installation
 
 	meteor add superstringsoft:observatory
 
-Usage
+Basic API Usage
 ---------
 ###### Manual Logging:
 ```javascript
-	tb = Observatory.getToolbox();
-	tb.warn("This is a warning message");
-	// plus all other logging methods for every level, and ability to override it
+tb = Observatory.getToolbox();
+tb.warn("This is a warning message");
+// plus all other logging methods for every level / severity, and ability to override it
 ```
 *Read about and use automagical using the documentation link below*
 ###### Manual Profiling:
 ```javascript
-	// when you have functions you want to profile:
-	f = function(x) {/* do something potentially complicated and taking a long time synchronously */ }
-	g = function(x, callback) {/* do something potentially complicated and taking a long time asynchronously */ }
+// when you have functions you want to profile:
+f = function(x) {/* do something potentially complicated and taking a long time synchronously */ }
+g = function(x, callback) {/* do something potentially complicated and taking a long time asynchronously */ }
 
-	// profile their execution, respecting Warning and Error thresholds
-	tb = Observatory.getToolbox();
-	// instead of y = f(14):
-	y = profile: ({method: "common > f()", message: "hope it doesn't happen"}, thisArg, f, 14 /* x=14 */);
-	// for async function:
-	profile: ({method: "call to API > g()", message: "hope it doesn't happen"}, thisArg, g, callback);
+// profile their execution, respecting Warning and Error thresholds
+tb = Observatory.getToolbox();
+// instead of y = f(14):
+y = profile: ({method: "common > f()", message: "hope it doesn't happen"}, thisArg, f, 14 /* x=14 */);
+// for async function:
+profile: ({method: "call to API > g()", message: "hope it doesn't happen"}, thisArg, g, callback);
 ```
 
 There's *much* more.
