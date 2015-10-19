@@ -6,7 +6,7 @@ Observatory = @Observatory ? {}
 Observatory.version =
   major: 0
   minor: 9
-  patch: 1
+  patch: 2
   prerelease: [] #'rc', 1
   wrapNum: 0
 
