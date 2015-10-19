@@ -71,6 +71,9 @@ to share your thoughts and ideas!
 
 Revision history
 -----------------
+#### 0.9.2: October, 18, 2015
+* Role information for user auth moved to a more secure location
+
 
 #### 0.9.1: October, 18, 2015
 * Significant clean up of profiling methods (in Galileo) and Emitter architecture
