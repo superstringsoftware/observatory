@@ -73,8 +73,9 @@ Revision history
 -----------------
 
 #### 0.9.1: October, 18, 2015
-* Some clean up of profiling methods
+* Significant clean up of profiling methods (in Galileo) and Emitter architecture
 * Hook into all server collections for future management in Vega
+* Automagical Collections and Subscriptions profiling respects thresholds
 
 ### MAJOR: 0.9.0: October, 4, 2015
 *Major changes, enhancements and additions after Observatory team got some strong corporate backing
