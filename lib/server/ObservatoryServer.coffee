@@ -17,7 +17,7 @@ Observatory.canRun = (uid, action = 'view')->
     catch err
     #console.log @userId
     #console.log user
-  res = true if user?.profile?.observatoryProfile?.role is "administrator"
+  res = true if user?.profile?.observatoryProfile?.role is "administrator" or user?.securityProfile?.observatoryProfile?.role is "administrator"
   #console.log "Result of running canRun is #{res}"
   res
 

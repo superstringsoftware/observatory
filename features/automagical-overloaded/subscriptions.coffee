@@ -86,18 +86,16 @@ Observatory.automagical.logSubscriptions = ->
 
     if origOnStop?
       cb.onStop = _.wrap origOnStop, (f)->
-        #console.log "OnStop callback"
-        #console.log arguments
         t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
         #tl._error "Error while subscribing to #{name}: " + err.reason, {error: err, subscription: name, timeElapsed: t, type: 'subscription'}
-        args = _.rest _.rest arguments
-        Observatory.automagical.subsErrorFunction t, name, args, args[0]
+        args = _.rest arguments
+        Observatory.automagical.subsErrorFunction t, name, args, args[0] if args[0]?
         f.apply @, args
     else
       cb.onStop = (err)->
         #console.log "OnStop callback no arguments"
         t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
-        Observatory.automagical.subsErrorFunction t, name, args, err
+        Observatory.automagical.subsErrorFunction t, name, args, err if err?
         #tl._error "Error while subscribing to #{name}: " + err.reason, {error: err, subscription: name, timeElapsed: t, type: 'subscription'}
 
     args = _.rest arguments
