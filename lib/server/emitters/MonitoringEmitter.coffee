@@ -63,7 +63,7 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
     console.log "Server monitoring is #{power}"
     @stopMonitor()
     if power is true
-      @startMonitor 10000
+      @startMonitor 60000
 
   # Starting the monitoring process with timePeriod
   # Restarts in case it's already running

@@ -30,7 +30,7 @@ Observatory.automagical.subsErrorFunction = (t2, name, args, err)->
   # only logging if thresholds are ok, otherwise simply returning
   if loglevel <= Observatory.settings.profiling.maxProfilingLevel
     options =
-      message: "Error while subscribing to #{name} - #{err.reason}"
+      message: "Error while subscribing to #{name} - #{err?.reason}"
       method: 'Meteor.subscribe()'
       profileType: 'subscription'
       obj:
