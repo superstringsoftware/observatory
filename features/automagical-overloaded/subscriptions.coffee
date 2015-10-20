@@ -9,7 +9,7 @@ Observatory = @Observatory ? {}
 
 Observatory.automagical = Observatory.automagical ? {}
 
-Observatory.automagical.subsLogFunction = (t2, name, args)->
+Observatory.automagical.subsLogFunction = (t2, name)->
   tb = Observatory.getToolbox()
   loglevel = tb._determineProfilingLevel t2
   #console.log "loglevel is ", loglevel
@@ -20,10 +20,12 @@ Observatory.automagical.subsLogFunction = (t2, name, args)->
       method: 'Meteor.subscribe()'
       profileType: 'subscription'
       obj: subscription: name
-    tb._forceEmitWithSeverity loglevel, tb._prepareMessage t2, options, args
+      useBuffer: false
+    #console.log "Calling _forceEmitWithSeverity() #{t2}, #{loglevel}", options
+    tb._forceEmitWithSeverity loglevel, tb._prepareMessage(t2, options)
 
 
-Observatory.automagical.subsErrorFunction = (t2, name, args, err)->
+Observatory.automagical.subsErrorFunction = (t2, name, err)->
   tb = Observatory.getToolbox()
   loglevel = Observatory.LOGLEVEL.ERROR
   #console.log "loglevel is ", loglevel
@@ -33,10 +35,11 @@ Observatory.automagical.subsErrorFunction = (t2, name, args, err)->
       message: "Error while subscribing to #{name} - #{err?.reason}"
       method: 'Meteor.subscribe()'
       profileType: 'subscription'
+      useBuffer: false
       obj:
         subscription: name
         error: err
-    tb._forceEmitWithSeverity loglevel, tb._prepareMessage t2, options, args
+    tb._forceEmitWithSeverity loglevel, tb._prepareMessage(t2, options)
 
 
 # automagical subscription logging
@@ -45,15 +48,18 @@ Observatory.automagical.logSubscriptions = ->
   #console.log Meteor.subscribe
 
   Meteor.subscribe = _.wrap Meteor.subscribe, (f)->
-    #console.log "hmm... subscribe"
-    #console.log arguments
     tl = Observatory.getToolbox()
-    name = arguments[1]
+    __name_p = arguments[1]
+    #console.log __name_p
+    args = (arguments[k] for k in [1...arguments.length])
+    #console.log "hmm... subscribe #{__name_p}"
+    #console.log args
     #console.log Observatory.settings.maxSeverity
 
     # some funky stuff to wrap original callbacks
-    last = _.last arguments
+    last = args.pop()
     changeLast = false
+    #console.log "last is #{last}"
     if typeof last is 'object'
       if last.onReady?
         origOnReady = last.onReady
@@ -70,41 +76,53 @@ Observatory.automagical.logSubscriptions = ->
     cb = {}
     if origOnReady?
       cb.onReady = _.wrap origOnReady, (f)->
-        #console.log "OnReady callback"
+        #console.log "\n\nOnReady callback #{__name_p}"
         #console.log arguments
-        t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
-        #tl.forceDumbProfile  "Subscription ready for #{name} in #{t} ms", t, {subscription: name, type: 'subscription'}
-        args = _.rest arguments
-        Observatory.automagical.subsLogFunction t, name, args
-        f.apply @, args
+        t = Date.now() - Session.get "_obs.subscription.#{__name_p}.profileStart"
+        #tl.forceDumbProfile  "Subscription ready for #{__name_p} in #{t} ms", t, {subscription: __name_p, type: 'subscription'}
+        Observatory.automagical.subsLogFunction t, __name_p
+        f.apply @
     else
       cb.onReady = ->
-        #console.log "OnReady callback no arguments"
-        t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
-        #tl.forceDumbProfile "Subscription ready for #{name} in #{t} ms", t, {subscription: name, type: 'subscription'}
-        Observatory.automagical.subsLogFunction t, name, args
+        #console.log arguments
+        t = Date.now() - Session.get "_obs.subscription.#{__name_p}.profileStart"
+        #console.log "\n\nOnReady callback no arguments #{__name_p}, #{t}"
+        #tl.forceDumbProfile "Subscription ready for #{__name_p} in #{t} ms", t, {subscription: __name_p, type: 'subscription'}
+        Observatory.automagical.subsLogFunction t, __name_p
 
     if origOnStop?
       cb.onStop = _.wrap origOnStop, (f)->
-        t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
-        #tl._error "Error while subscribing to #{name}: " + err.reason, {error: err, subscription: name, timeElapsed: t, type: 'subscription'}
-        args = _.rest arguments
-        Observatory.automagical.subsErrorFunction t, name, args, args[0] if args[0]?
-        f.apply @, args
+        #console.log "OnStop callback #{__name_p}"
+        t = Date.now() - Session.get "_obs.subscription.#{__name_p}.profileStart"
+        #tl._error "Error while subscribing to #{__name_p}: " + err.reason, {error: err, subscription: __name_p, timeElapsed: t, type: 'subscription'}
+        if arguments[1]?
+          Observatory.automagical.subsErrorFunction t, __name_p, arguments[1]
+          f.apply @, arguments[1]
+        else
+          Observatory.automagical.subsErrorFunction t, __name_p
+          f.apply @
     else
       cb.onStop = (err)->
-        #console.log "OnStop callback no arguments"
-        t = Date.now() - Session.get "_obs.subscription.#{name}.profileStart"
-        Observatory.automagical.subsErrorFunction t, name, args, err if err?
-        #tl._error "Error while subscribing to #{name}: " + err.reason, {error: err, subscription: name, timeElapsed: t, type: 'subscription'}
+        #console.log "OnStop callback no arguments #{__name_p}"
+        t = Date.now() - Session.get "_obs.subscription.#{__name_p}.profileStart"
+        Observatory.automagical.subsErrorFunction t, __name_p, err if err?
+        #tl._error "Error while subscribing to #{__name_p}: " + err.reason, {error: err, subscription: __name_p, timeElapsed: t, type: 'subscription'}
 
-    args = _.rest arguments
+    # args = _.rest arguments
+    # args.shift() # taking out this function from arguments
 
-    if changeLast then args[args.length - 1] = cb # replacing original callbacks
-    else args.push cb # adding callbacks
+    #if changeLast then args[args.length - 1] = cb # replacing original callbacks
+    if changeLast
+      args.push cb # adding callbacks
+    else
+      args.push last
+      args.push cb
 
-    Session.set "_obs.subscription.#{name}.profileStart", Date.now()
-    tl.verbose "Subscribing to #{name}", "Meteor"
+
+    Session.set "_obs.subscription.#{__name_p}.profileStart", Date.now()
+    tl.verbose "Subscribing to #{__name_p}", "Meteor"
+
+    #console.log "Calling original function with args: ", args
     f.apply this, args
 
 
