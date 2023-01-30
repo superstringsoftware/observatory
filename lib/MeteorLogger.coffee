@@ -2,18 +2,23 @@ Observatory = @Observatory ? {}
 
 class Observatory.MeteorLogger extends Observatory.Logger
 
-  constructor: (@name, @colName = '_observatory_logs', connection = null) ->
-    super @name
+  constructor: (nm, @colName = '_observatory_logs', connection = null) ->
+    super nm
+    #console.log("Calling MeteorLogger constructor")
+    @name = nm
     #TODO: need add remove db connection url to external settins
     #    remoteDB = new MongoInternals.RemoteCollectionDriver "mongodb://localhost:3001/logs_db"
     #    @_logsCollection = new Mongo.Collection @colName,
     #      _driver: remoteDB
     @_logsCollection = new Mongo.Collection @colName
+    #console.log("Called NEW COLLECTION")
     # 1048576 Bytes is 1MB
     # can't update logs; setting up pointers to insert and remove allow functions
     if Meteor.isServer
+      #console.log "Inside SERVER, next call is create capped coll"
       # by hard default capped collection have 10 000 count rows
-      @_logsCollection._createCappedCollection 1048576, 10000
+      #@_logsCollection._createCappedCollection 1048576, 10000
+      #console.log "called succesfully"
       # ensure index for query by type and timestamp
       @_logsCollection._ensureIndex
         timestamp: -1

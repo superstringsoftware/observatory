@@ -24,9 +24,11 @@ class Observatory.DDPConnectionEmitter extends @Observatory.MessageEmitter
   @SessionsCollection = new Mongo.Collection null
 
   # TODO: add support for logging this in settings
-  constructor: (@name, @formatter)->
+  constructor: (name, formatter)->
     #console.log "DDPEmitter::constructor #{name}"
-    super @name, @formatter
+    super name, formatter
+    @name = name
+    @formatter = formatter
     @turnOff()
     if Observatory.DDPConnectionEmitter._instance? then throw new Error "Attempted to create another instance of DDPConnectionEmitter and it is a really bad idea"
     # registering to listen to connection events with Meteor

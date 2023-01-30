@@ -38,7 +38,8 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
     numseconds = ((seconds % 86400) % 3600) % 60
     numdays + " days " + numhours + " hours " + numminutes + " minutes " + numseconds + " seconds"
 
-  constructor: (@name)->
+  constructor: (name)->
+    super name
     # Map of the current sessions
     @name = name ? 'Monitor'
     @_sessions = []
@@ -48,7 +49,7 @@ class Observatory.MonitoringEmitter extends @Observatory.MessageEmitter
     # collection for storing non persistent monitoring events for publishing
     # when a client is connected
     @Monitors = new Mongo.Collection null
-    super @name
+    
 
     cur = Observatory.settingsController.col.find
       type: "SERVER"

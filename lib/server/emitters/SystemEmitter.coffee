@@ -4,9 +4,10 @@ class Observatory.SystemEmitter extends @Observatory.MessageEmitter
   #FIXME: _collection param: need create collection manager (I can't create few collection with the same name)
   # @param {String} name
   # @param {Mongo.Collection object} _collection
-  constructor: (@name, @_collection) ->
+  constructor: (name, @_collection) ->
+    super name
     throw new Error "SystemEmitter constructor: param `Collection` is not defined" unless @_collection
-    super @name
+    @name = name
     #hard override node.js stdout and stderror methods
     @hookStream()
 

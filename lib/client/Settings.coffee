@@ -4,6 +4,7 @@ Observatory = @Observatory ? {}
 class Observatory.Settings extends Observatory.SettingsCommon
 
   constructor: ->
+    super()
     @col = Observatory.SettingsCommon.col
     @processSettingsUpdate @currentSettings()
     # observing the settings changes and rerunning the setup

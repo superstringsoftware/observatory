@@ -47,10 +47,10 @@ class Observatory.HttpEmitter extends @Observatory.MessageEmitter
       @emitFormattedMessage obj, true
     next()
 
-  constructor: (@name)->
-    @turnOff()
+  constructor: (name)->
+    
 
-    @formatter = (l)->
+    formatter = (l)->
       #"#{l.method} #{l.url}: #{l.status} in #{l.responseTime} ms\n#{l.userAgent}\n#{l.responseHeader}\nreferrer: #{l.referrer?}"
       msg = "#{l.method} #{l.url}: #{l.status} from #{l.forwardedFor} in #{l.responseTime} ms"
       severity = Observatory.LOGLEVEL.VERBOSE
@@ -72,7 +72,10 @@ class Observatory.HttpEmitter extends @Observatory.MessageEmitter
         object: l # recording original message in full
       options
 
-    super @name, @formatter
+    super name, formatter
+    @turnOff()
+    @name = name
+    @formatter = formatter
     # hooking up into Connect middleware
     WebApp.connectHandlers.use @httpLogger
     

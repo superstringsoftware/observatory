@@ -16,6 +16,7 @@ class Observatory.Settings extends Observatory.SettingsCommon
     prohibitAutoPublish: false
 
   constructor: ->
+    super()
     #console.log "constructor called"
     @col = Observatory.SettingsCommon.col
 

@@ -21,13 +21,15 @@ class Observatory.DDPEmitter extends @Observatory.MessageEmitter
     @_instance?= new Observatory.DDPEmitter "DDP Emitter"
     @_instance
 
-  constructor: (@name, @formatter)->
+  constructor: (name, formatter)->
     #console.log "DDPEmitter::constructor #{name}"
-    super @name, @formatter
+    super name, formatter
+    @name = name
+    @formatter = formatter
     @turnOff()
     if Observatory.DDPEmitter._instance? then throw new Error "Attempted to create another instance of DDPEmitter and it is a really bad idea"
     # registering to listen to socket events with Meteor
-    Meteor.default_server.stream_server.register (socket)->
+    Meteor.server.stream_server.register (socket)->
 
       #console.log socket._session.connection
       msg = Observatory.DDPEmitter.messageStub()
